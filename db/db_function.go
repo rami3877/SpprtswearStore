@@ -44,27 +44,26 @@ func (db *DB) CreateTable(a any, name string) error {
 		log.Fatal(err)
 	}
 	if info.Size() == 0 {
+		db.seekTo(0)
 		nodeFile := file.InitFileNode()
 		nodeFile.InsrtByIndex(0, name, []byte(handerstruct.JoinNameOFFieldAndType(a)))
 		nodeFile.WritToFile(db.FileDataBase)
 	} else {
-
 		db.seekTo(0)
 		nodeFile := file.NewFileNodeFormFile(db.FileDataBase)
-		if nodeFile == nil {
-			return errors.New("cant read file")
-		}
+		root := nodeFile.HeadFile
 		for i := 0; i != nodeFile.Len; i++ {
-			root := nodeFile.HeadFile
 			if root.Name == name {
-				return errors.New("table is exied")
-			} else if root.Next == nil {
+				return errors.New("is exitd "+ name)
+			}
+			if root.Next == nil {
 				break
 			}
 			root = root.Next
 		}
-		nodeFile.Append(&file.Node{Name: name, Data: []byte(handerstruct.JoinNameOFFieldAndType(a))})
-		db.seekTo(0)
+		db.FileDataBase.Seek(0, 0)
+		dataofTable := []byte(handerstruct.JoinNameOFFieldAndType(a))
+		nodeFile.Append(&file.Node{Name: name, Data: dataofTable, Size: uint64(len(dataofTable))})
 		nodeFile.WritToFile(db.FileDataBase)
 	}
 

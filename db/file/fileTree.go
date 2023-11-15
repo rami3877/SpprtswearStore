@@ -33,7 +33,6 @@ func (n *FileNode) Append(node *Node) {
 		node.Per = &*n.Tail
 		n.Tail.Next = &*node
 		n.Tail = &*node
-
 	}
 	n.Len++
 }
@@ -112,7 +111,6 @@ func (node *FileNode) WritToFile(writer io.Writer) []byte {
 	writer.Write(binary.LittleEndian.AppendUint64([]byte{}, uint64(node.Len)))
 	writer.Write(alldata)
 
-
 	return alldata
 }
 
@@ -166,10 +164,15 @@ var offset = 8
 
 func makeNodes(File *os.File) *FileNode {
 	root := InitFileNode()
+	File.Seek(0, 0)
+
 	data, _ := io.ReadAll(File)
 	Len := int(binary.LittleEndian.Uint64(data[:8]))
 	for i := 0; i < Len; i++ {
 		root.Append(&*nextNode(data))
+		if offset >= len(data){
+			 break
+		}
 	}
 	offset = 8
 	return root
