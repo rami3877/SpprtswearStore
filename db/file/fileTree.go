@@ -112,6 +112,7 @@ func (node *FileNode) WritToFile(writer io.Writer) []byte {
 	writer.Write(binary.LittleEndian.AppendUint64([]byte{}, uint64(node.Len)))
 	writer.Write(alldata)
 
+
 	return alldata
 }
 

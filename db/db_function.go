@@ -1,8 +1,8 @@
 package db
 
 import (
-	handerstruct "db/HanderStruct"
-	"db/tools"
+	"db/file"
+	"db/handerStruct"
 	"encoding/binary"
 	"errors"
 	"fmt"
@@ -33,71 +33,39 @@ func (db *DB) CreateTable(a any, name string) error {
 
 	FileDB := "DBFILE_" + db.FileDataBase.Name()
 	os.Mkdir(FileDB, 0777)
-	info, _ := db.FileDataBase.Stat()
 
-	file, err := os.OpenFile(FileDB+"/"+name+".db", os.O_CREATE, 0600)
+	f, err := os.OpenFile(FileDB+"/"+name+".db", os.O_CREATE|os.O_RDWR, 0600)
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
-
+	defer f.Close()
+	info, err := db.FileDataBase.Stat()
+	if err != nil {
+		log.Fatal(err)
+	}
 	if info.Size() == 0 {
-		if !handerstruct.IsFxidSize(a) {
-			return errors.New("not fixe")
-		}
-		buffer :=tools.NewBuffer(nil)
-		// how many table -> headerSize
-		buffer.Ints(int64(1))
-		var nameByte [50]byte
-		copy(nameByte[:], []byte(name))
-		buffer.Write(nameByte[:])
-		str := db.JoinNameOFFieldAndType(a)
-		buffer.Ints(int64(len(str)))
-		buffer.WriteString(str)
-		buffer.WriteToFile(db.FileDataBase)
+		nodeFile := file.InitFileNode()
+		nodeFile.InsrtByIndex(0, name, []byte(handerstruct.JoinNameOFFieldAndType(a)))
+		nodeFile.WritToFile(db.FileDataBase)
 	} else {
-		if !handerstruct.IsFxidSize(a) {
-			return errors.New("not fixe")
-		}
+
 		db.seekTo(0)
-		buffer := tools.NewBuffer(nil)
-		buffer.ReadFile(db.FileDataBase)
-		lenHeader := binary.LittleEndian.Uint64(buffer.Next(8))
-		for i := 0; i < int(lenHeader); i++ {
-			str := buffer.Next(50)
-			s := 0
-
-			for j := 0; j < len(name); j++ {
-				if str[j] == []byte(name)[j] {
-					s++
-				}
-				if j+1 == len(name) && j+1 < len(name) && str[j+1] != 0 {
-					s = 0
-					break
-				}
-			}
-
-			if s == len(name) {
-				return errors.New("is table Exit")
-			}
-
-			buffer.Next(8)
+		nodeFile := file.NewFileNodeFormFile(db.FileDataBase)
+		if nodeFile == nil {
+			return errors.New("cant read file")
 		}
-		buffer.WriteFromIndex(binary.LittleEndian.AppendUint64(nil, lenHeader+1), 0)
-		var nameByte [50]byte
-		copy(nameByte[:], []byte(name))
-		buffer.AppendFromIdex((int(lenHeader) * 58), nameByte[:])
-
-		str := db.JoinNameOFFieldAndType(a)
-
-		buffer.AppendFromIdex((int(lenHeader*(58)) + 50-16), tools.Ints( int64 (len(str))))
-		buffer.WriteString(str)
-		g := db.FileDataBase.Name()
-		os.Remove(db.FileDataBase.Name())
-		db.FileDataBase , _ = os.OpenFile(g, os.O_CREATE| os.O_RDWR, 0600)
-		buffer.WriteToFile(db.FileDataBase)
-
-
+		for i := 0; i != nodeFile.Len; i++ {
+			root := nodeFile.HeadFile
+			if root.Name == name {
+				return errors.New("table is exied")
+			} else if root.Next == nil {
+				break
+			}
+			root = root.Next
+		}
+		nodeFile.Append(&file.Node{Name: name, Data: []byte(handerstruct.JoinNameOFFieldAndType(a))})
+		db.seekTo(0)
+		nodeFile.WritToFile(db.FileDataBase)
 	}
 
 	return nil
@@ -150,20 +118,6 @@ func (db *DB) seekTo(s int64) {
 	if db.errSeek != nil {
 		log.Fatal(db.errSeek)
 	}
-}
-
-func (db *DB) JoinNameOFFieldAndType(a any) string {
-	FieldName := handerstruct.GetStructNameOfField(a)
-	TypeName := handerstruct.GetStructTypeOfFieldString(a)
-	str := ""
-	for i, v := range FieldName {
-		str += v + ":" + TypeName[i]
-		if i != len(TypeName)-1 {
-			str += "\r"
-		}
-	}
-	str += "\r"
-	return str
 }
 
 func (db *DB) Close() {
