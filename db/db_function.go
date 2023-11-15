@@ -2,13 +2,11 @@ package db
 
 import (
 	"db/file"
-	"db/handerStruct"
-	"encoding/binary"
+	handerstruct "db/handerStruct"
 	"errors"
-	"fmt"
 	"log"
 	"os"
-	"unsafe"
+	"strings"
 )
 
 func OpenDB(name string) (*DB, error) {
@@ -22,8 +20,40 @@ func OpenDB(name string) (*DB, error) {
 	}, err
 }
 
-func (db *DB) CreateTable(a any, name string) error {
+func (db *DB) InsterStruct(a any, name string) error {
+	if !handerstruct.IsStruct(a) {
+		return errors.New("is not struct")
+	} else if len(name) == 0 {
+		return errors.New("no name ")
+	}
+	db.FileDataBase.Seek(0, 0)
+	Node := file.NewFileNodeFormFile(db.FileDataBase)
+	root := Node.HeadFile
+	var tableNode *file.Node = nil
+	for root.Next != nil {
+		if root.Name == name {
+			tableNode = root
+			break
+		}
+		root = root.Next
+	}
+	if tableNode == nil {
+		return errors.New("ERROR table not exit {" + name + "} try use CreateTable function ")
+	}
 
+	mapKT := file.UncodeFromDataBase(tableNode.Data)
+	for k := range mapKT {
+		if !handerstruct.FoundField(a, k) {
+			return errors.New("ERROR: cant found " + k)
+		}
+		// TODO  check if type of field  some field type of pass struct 
+	}
+
+	return nil
+}
+
+func (db *DB) CreateTable(a any, name string) error {
+	name = strings.TrimSpace(name)
 	if len(name) > 50 {
 		return errors.New("name of table so long")
 	}
@@ -44,17 +74,17 @@ func (db *DB) CreateTable(a any, name string) error {
 		log.Fatal(err)
 	}
 	if info.Size() == 0 {
-		db.seekTo(0)
+		db.FileDataBase.Seek(0, 0)
 		nodeFile := file.InitFileNode()
 		nodeFile.InsrtByIndex(0, name, []byte(handerstruct.JoinNameOFFieldAndType(a)))
 		nodeFile.WritToFile(db.FileDataBase)
 	} else {
-		db.seekTo(0)
+		db.FileDataBase.Seek(0, 0)
 		nodeFile := file.NewFileNodeFormFile(db.FileDataBase)
 		root := nodeFile.HeadFile
 		for i := 0; i != nodeFile.Len; i++ {
 			if root.Name == name {
-				return errors.New("is exitd "+ name)
+				return errors.New("is exitd " + name)
 			}
 			if root.Next == nil {
 				break
@@ -70,64 +100,6 @@ func (db *DB) CreateTable(a any, name string) error {
 	return nil
 }
 
-func (db *DB) GetDataAsStruct(a any) {
-
-}
-
-func (db *DB) ReadIndex() (it []indexTable) {
-	db.seekTo(0)
-	var d int64
-	db.ReadData(&d)
-	for i := int64(0); i != d; i++ {
-		indexes := new(indexTable)
-		db.ReadData(indexes)
-		it = append(it, *indexes)
-	}
-	return it
-}
-
-func (db *DB) ReadIndex2() (it []indexTable) {
-	db.seekTo(0)
-	var d int64
-	for {
-		if err := binary.Read(db.FileDataBase, binary.LittleEndian, &d); err != nil {
-			break
-		}
-		fmt.Println(IntToByteArray(d))
-	}
-	return it
-}
-
-func IntToByteArray(num int64) []byte {
-	size := int(unsafe.Sizeof(num))
-	arr := make([]byte, size)
-	for i := 0; i < size; i++ {
-		byt := *(*uint8)(unsafe.Pointer(uintptr(unsafe.Pointer(&num)) + uintptr(i)))
-		arr[i] = byt
-	}
-	return arr
-}
-func (db *DB) ReadData(a any) {
-	//db.seek = int64(SizeOfInterface(a))
-	binary.Read(db.FileDataBase, binary.LittleEndian, a)
-}
-
-func (db *DB) seekTo(s int64) {
-	db.seek, db.errSeek = db.FileDataBase.Seek(s, 0)
-	if db.errSeek != nil {
-		log.Fatal(db.errSeek)
-	}
-}
-
 func (db *DB) Close() {
 	db.FileDataBase.Close()
-
-}
-func (db *DB) fetchDataDB(s any) (error, string) {
-	return nil, "data"
-}
-
-func (db *DB) WriteData(s any) error {
-
-	return nil
 }

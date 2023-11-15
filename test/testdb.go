@@ -2,11 +2,13 @@ package main
 
 import (
 	"db"
+	"fmt"
 	"log"
 )
 
 func main() {
 	dataBase, err := db.OpenDB("rami")
+	defer dataBase.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -15,12 +17,8 @@ func main() {
 		B    uint64
 	}
 	_ = dataBase
-	if err := dataBase.CreateTable(s{}, "user"); err != nil {
-		log.Println(err)
-	}
-
-	if err := dataBase.CreateTable(s{}, "user1"); err != nil {
-		log.Println(err)
+	if err = dataBase.InsterStruct(s{}, "useraaa"); err != nil {
+		fmt.Println(err)
 	}
 
 }
