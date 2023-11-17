@@ -1,8 +1,10 @@
-package main 
+package main
 
-import "db"
+import (
+	server "srever"
+)
 
 func main(){
-       db.OpenDB("dsadasd")
+	 server.Run()
 	 
 }
