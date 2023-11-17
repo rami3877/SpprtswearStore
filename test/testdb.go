@@ -17,7 +17,11 @@ func main() {
 		B    uint64
 	}
 	_ = dataBase
-	if err = dataBase.InsterStruct(s{}, "useraaa"); err != nil {
+
+	fg := s{}
+	copy(fg.Name[:] , []byte("dasdasdsada"))
+	fg.B = 12 
+	if err = dataBase.InsterStruct(fg, "user"); err != nil {
 		fmt.Println(err)
 	}
 

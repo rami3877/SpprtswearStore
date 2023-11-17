@@ -2,7 +2,14 @@ package handerstruct
 
 import "reflect"
 
+func GetDataOfFieldOfStructByName(a any, name string) (data interface{}) {
+	if !IsStruct(a) {
+		return nil
+	}
+	return reflect.ValueOf(a).FieldByName(name).Interface()
+}
 func FoundField(a any, nameField string) bool {
+
 	if !IsStruct(a) {
 		return false
 	}
@@ -11,4 +18,12 @@ func FoundField(a any, nameField string) bool {
 	}
 
 	return true
+}
+
+func SomeType(a any, fieldName string, typeField string) bool {
+	if reflect.ValueOf(a).FieldByName(fieldName).Type().String() != typeField {
+		return false
+	} else {
+		return true
+	}
 }

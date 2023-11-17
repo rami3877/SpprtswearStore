@@ -3,7 +3,9 @@ package db
 import (
 	"db/file"
 	handerstruct "db/handerStruct"
+	"encoding/binary"
 	"errors"
+
 	"log"
 	"os"
 	"strings"
@@ -21,6 +23,7 @@ func OpenDB(name string) (*DB, error) {
 }
 
 func (db *DB) InsterStruct(a any, name string) error {
+	name = strings.TrimSpace(name)
 	if !handerstruct.IsStruct(a) {
 		return errors.New("is not struct")
 	} else if len(name) == 0 {
@@ -28,9 +31,14 @@ func (db *DB) InsterStruct(a any, name string) error {
 	}
 	db.FileDataBase.Seek(0, 0)
 	Node := file.NewFileNodeFormFile(db.FileDataBase)
+
+	if Node == nil {
+		return errors.New("something woring")
+	}
 	root := Node.HeadFile
 	var tableNode *file.Node = nil
-	for root.Next != nil {
+
+	for root != nil {
 		if root.Name == name {
 			tableNode = root
 			break
@@ -42,12 +50,24 @@ func (db *DB) InsterStruct(a any, name string) error {
 	}
 
 	mapKT := file.UncodeFromDataBase(tableNode.Data)
-	for k := range mapKT {
+	dataToFile := []byte{}
+	for k, v := range mapKT {
 		if !handerstruct.FoundField(a, k) {
 			return errors.New("ERROR: cant found " + k)
 		}
-		// TODO  check if type of field  some field type of pass struct 
+		if !handerstruct.SomeType(a, k, v) {
+			return errors.New("ERROR: not some type " + k)
+		}
+		// bad storage  when fixed array be byte
+		dataToFile = append(dataToFile, file.CodeingToRow(handerstruct.GetDataOfFieldOfStructByName(a, k))...)
 	}
+	fileOFtable, err := os.OpenFile("DBFILE_"+db.FileDataBase.Name()+"/"+name+".db", os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
+	if err != nil {
+		return err
+	}
+	defer fileOFtable.Close()
+	fileOFtable.Write(binary.LittleEndian.AppendUint64(nil, uint64(len(dataToFile))))
+	fileOFtable.Write(dataToFile)
 
 	return nil
 }
@@ -97,6 +117,51 @@ func (db *DB) CreateTable(a any, name string) error {
 		nodeFile.WritToFile(db.FileDataBase)
 	}
 
+	return nil
+}
+
+func (db *DB) FecthData(a *any, name string) error {
+
+	name = strings.TrimSpace(name)
+	if !handerstruct.IsStruct(a) {
+		return errors.New("is not struct")
+	} else if len(name) == 0 {
+		return errors.New("no name ")
+	}
+	db.FileDataBase.Seek(0, 0)
+	Node := file.NewFileNodeFormFile(db.FileDataBase)
+
+	if Node == nil {
+		return errors.New("something woring")
+	}
+	root := Node.HeadFile
+	var tableNode *file.Node = nil
+
+	for root != nil {
+		if root.Name == name {
+			tableNode = root
+			break
+		}
+		root = root.Next
+	}
+	if tableNode == nil {
+		return errors.New("ERROR table not exit {" + name + "} try use CreateTable function ")
+	}
+
+	mapKT := file.UncodeFromDataBase(tableNode.Data)
+	for k, v := range mapKT {
+		if !handerstruct.FoundField(a, k) {
+			return errors.New("ERROR: cant found " + k)
+		}
+		if !handerstruct.SomeType(a, k, v) {
+			return errors.New("ERROR: not some type " + k)
+		}
+
+	}
+	fileOFtable, err := os.OpenFile("DBFILE_"+db.FileDataBase.Name()+"/"+name+".db", os.O_RDONLY, 0600)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
