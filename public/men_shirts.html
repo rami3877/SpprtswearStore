@@ -3,22 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="men_shirts.css">
+    <link rel="stylesheet" href="/public/men_shirts.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
     <title>T-Shirts For Men</title>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Exclusive T-Shirts For Men</h1>
-            
-            <div>
-                <img src="/public/shopping-cart.png" alt="">
-                <h2>Product Name</h2>
-                <div class="price">$50</div>
-            </div>
-        </header>
-    </div>
+    <!-- navbar -->
+    <header>
+        <div class="nav_container">
+            <p class="logo"> SS </p>
 
-    <script src="men_shirts.js"></script>
+            <i class='bx bx-shopping-bag bx-tada' id="cart-icon" data-quantity="0"></i>
+        
+         <div class="cart">
+            <h2 class="cart-title">Your Cart</h2>
+
+            <div class="cart-contant">
+                <div class="cart-box">
+                    <img src="/public/test_image1.jpg" alt="" class="cart-img">
+                    <div class="detail-box">
+                        <div class="cart-product-title">Product Shirt</div>
+                        <div class="cart-price">$50</div>
+                        <input type="number"
+                        name=""
+                        id=""
+                        value="1"
+                        class="cart-quantity" />
+                    </div>
+                    <i class='bx bx-trash' id="cart-remove"></i>
+                </div>
+            </div>
+
+            <div class="total">
+                <div class="total-title">Total</div>
+                <div class="total-price">$0</div>
+            </div>
+
+            <button type="button" class="btn-buy"> Order Now </button>
+            
+            <i class='bx bx-x' id="close-cart"></i>
+        </div>
+        </div>
+    </header>
+
+    <!--link to js-->
+    <script src="/public/men_shirts.js"></script>
 </body>
 </html>
