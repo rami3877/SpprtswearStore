@@ -56,7 +56,7 @@ header{
     font-size: 1.38rem;
 }
 .headerlogin-icon i{
-    font-size: 500px;
+    font-size: 38px;
     color: var(--text-color);
     margin-right: 20px;
     transition: all .36s ease;
