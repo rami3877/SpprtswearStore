@@ -120,7 +120,7 @@ func (db *DB) CreateTable(a any, name string) error {
 	return nil
 }
 
-func (db *DB) FecthData(a *any, name string) error {
+func (db *DB) FecthData(a *any, name string , where string) error {
 
 	name = strings.TrimSpace(name)
 	if !handerstruct.IsStruct(a) {
@@ -159,6 +159,7 @@ func (db *DB) FecthData(a *any, name string) error {
 
 	}
 	fileOFtable, err := os.OpenFile("DBFILE_"+db.FileDataBase.Name()+"/"+name+".db", os.O_RDONLY, 0600)
+	_=fileOFtable
 	if err != nil {
 		return err
 	}
