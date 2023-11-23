@@ -19,3 +19,4 @@ headerloginIcon.addEventListener('click', ()=> {
 closeLogin.addEventListener('click', ()=> {
     login.classList.remove('active-popup');
 });
+

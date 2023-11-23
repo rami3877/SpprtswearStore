@@ -1,10 +1,11 @@
 package main
 
 import (
-	server "srever"
+
+	"srever"
 )
 
-func main(){
-	 server.Run()
+func main() {
+	 srever.InitSever().Run()
 	 
 }
