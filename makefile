@@ -1,7 +1,7 @@
 
 
 clean:
-	@rm *.db -r 
+	@rm DataBase -r 
 
 run:
 	@go run app
