@@ -7,7 +7,7 @@
     scroll-behavior: smooth;
     box-sizing: border-box;
     list-style: none;
-    text-decoration: none;
+    
 }
 img{
     width: 100%;
@@ -15,6 +15,9 @@ img{
 body{
     color: white;
     background: #1e1e2aea;
+}
+section{
+    padding: 4rem 0 3rem;
 }
 .logo{
     font-size: 50px;
@@ -30,8 +33,9 @@ header{
     top: 0;
     left: 0;
     width: 100%;
-    box-shadow: 0 1px 4px hsla(0, 0, 98%, .1);
-    z-index: 100;   
+    box-shadow: 0 1px 4px hsla(0, 0%, 100%, 0.400);
+    height: 88px;
+    background: #1e1e2a;
 }
 .nav_container{
     display: flex;
@@ -43,7 +47,6 @@ header{
     width: 100%;
 }
 #cart-icon{
-    position: relative;
     font-size: 2rem;
     cursor: pointer;
 }
@@ -181,13 +184,65 @@ header{
     margin-top: 2rem;
 }
 .section-title{
-    font-size: 1.5rem;
+    font-size: 1.66rem;
     font-weight: 600;
     text-align: center;
-    margin-bottom: 1.8rem;
+    margin-bottom: 1.7rem;
+    margin-top: .8rem;
 }
 .shop-content{
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, auto));
+    grid-template-columns: repeat(4, minmax(220px, auto));
     gap: 1.5rem;
+    display: grid;
+    padding: 0 3rem;
+}
+.product-box{
+    background: #1e1e2aea;
+    padding: 10px;
+    border-radius: 10px;
+    transition: .4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.product-box:hover{
+    background: #fff;
+    border: 3px solid #c8815f;
+    box-shadow: 0 8px 32px #000000;
+    transition: .4s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+.product-box:hover .product-title,
+.product-box:hover .price{
+    color: #1e1e2a;
+}
+.product-img{
+    height: 330px;
+    border-radius: 10px;
+    margin-bottom: .4rem;
+}
+.product-title{
+    padding-left: 5px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+.price-cart{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.price{
+    padding-left: 5px;
+    font-weight: 500;
+}
+#add-to-cart{
+    background: #c8815f;
+    color: #fff;
+    padding: 10px;
+    font-size: 1.4rem;
+    font-weight: bolder;
+    border-radius: 50%;
+    cursor: pointer;
+}
+#add-to-cart:hover{
+    background: #1e1e2a;
 }
