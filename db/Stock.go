@@ -35,19 +35,9 @@ type stock struct {
 	database  map[string]map[string]*bbolt.DB
 }
 
-/*
-	type Model struct {
-		Id          int           `json:"id"`
-		Sizes       []Size        `json:"sizes"`
-		Price       int           `json:"price"`
-		Description string      `json:"description"`
-		Discount    int           `json:"discount"`
-		LinkesImage []string      `json:"linkesImage"`
-		Commint     []UserCommint `json:"commint"`
-	}
-*/
 
-func (s *stock) AddCommint(id int, Container, kind string, commint structs.UserCommint) error {
+
+func (s *stock) addCommint(id int, Container, kind string, commint structs.UserCommint) error {
 	if len(commint.Commint) == 0 {
 		return ErrModelCommintEmpty
 	}
@@ -311,7 +301,9 @@ func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, si
 		if err != nil {
 			return err
 		}
-
+		if len(model.Sizes) == 0 || model.Sizes == nil {
+			model.Sizes = make(map[string]structs.Size)
+		}
 		model.Sizes[sizeName] = size
 		dataTodatabase, err := json.Marshal(model)
 		if err != nil {
@@ -323,50 +315,59 @@ func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, si
 
 }
 
-func (s *stock) AddModelToKind(Container, kind string, model *structs.Model) error {
+func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, OutStock bool) error {
+
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
 	v, ok := s.database[Container][kind]
 	if !ok {
 		return errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
 	}
-
-	if len(model.Sizes) == 0 {
-		return ErrModelSize
-	}
-	for _, v := range model.Sizes {
-		if len(v.Colors) == 0 {
+	if OutStock {
+		if len(model.Sizes) == 0 {
 			return ErrModelSize
-		} else {
-			for _, s := range v.Colors {
-				if len(s.ColorName) == 0 || s.Qty <= 0 {
-					return ErrModelSize
+		}
+		for _, v := range model.Sizes {
+			if len(v.Colors) == 0 {
+				return ErrModelSize
+			} else {
+				for _, s := range v.Colors {
+					if len(s.ColorName) == 0 || s.Qty <= 0 {
+						return ErrModelSize
+					}
 				}
 			}
 		}
-	}
-	if model.Price <= 0 {
-		return ErrModelPrice
-	}
-	if len(model.Description) == 0 {
-		return ErrModelDescription
-	}
-	if len(model.LinkesImage) == 0 {
-		return ErrModelLinkesImage
-	}
 
+		if model.Price <= 0 {
+			return ErrModelPrice
+		}
+		if len(model.Description) == 0 {
+			return ErrModelDescription
+		}
+		if len(model.LinkesImage) == 0 {
+			return ErrModelLinkesImage
+		}
+	}
 	return v.Batch(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte(kind))
 		if b == nil {
 			return ErrKindNotFound
 		}
-		c, err := b.NextSequence()
+		if OutStock {
+
+			c, err := b.NextSequence()
+			if err != nil {
+				// this not to clinc
+				return err
+			}
+			model.Id = int(c)
+		}
+		data, err := json.Marshal(&model)
 		if err != nil {
 			// this not to clinc
 			return err
 		}
-		model.Id = int(c)
-		data, err := json.Marshal(&model)
 		return b.Put(itob(model.Id), data)
 	})
 

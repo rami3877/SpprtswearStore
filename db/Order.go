@@ -14,6 +14,7 @@ var (
 	ErrOrdersId        = errors.New("id is zero or less then zore")
 	ErrOrdersContainer = errors.New("Container is empty")
 	ErrOrdersType      = errors.New("Type is empty")
+	ErrOrderNotFound   = errors.New("Order id not found")
 )
 
 type Orders struct {
@@ -23,11 +24,22 @@ type Orders struct {
 	Color     string `json:"color"`
 	Size      string `json:"size"`
 	Container string `json:"Container"`
-	Type      string `json:"type"`
+	Kind      string `json:"Kind"`
 }
 
 type order struct {
 	dataBase *bbolt.DB
+}
+
+func (o *order) Delete(id int) error {
+
+	return o.dataBase.Batch(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("orders"))
+		if b == nil {
+			return ErrOrderNotFound
+		}
+		return b.Delete(itob(id))
+	})
 }
 
 func (o *order) Add(order Orders) error {
@@ -49,7 +61,7 @@ func (o *order) Add(order Orders) error {
 			return ErrOrdersContainer
 		}
 
-		if order.Type == "" {
+		if order.Kind == "" {
 			return ErrOrdersType
 		}
 

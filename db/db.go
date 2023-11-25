@@ -1,9 +1,12 @@
 package db
 
 import (
-	"go.etcd.io/bbolt"
+	"errors"
 	"log"
 	"os"
+	"slices"
+	"structs"
+	"go.etcd.io/bbolt"
 )
 
 type DataBase struct {
@@ -12,6 +15,73 @@ type DataBase struct {
 	OutStock     stock
 	Orders       order
 	Users        user
+}
+
+var (
+	ErrDataBaseOutStock = errors.New("Sorry, out of stock")
+)
+
+func (db *DataBase) AddCommint(id int, Container, kind string, commint structs.UserCommint) error {
+	err := db.Users.GetUser(commint.Username, nil)
+	if err == ErrUsereNotFound {
+		return err
+	}
+	return db.InStock.addCommint(id, Container, kind, commint)
+}
+
+func (db *DataBase) Buy(order Orders) error {
+	kinds, err := db.InStock.GetModelsInKind(order.IdModel, 0, order.Container, order.Kind)
+	if err != nil {
+		return err
+	}
+	err = db.Users.GetUser(order.Username, nil)
+	if err == ErrUsereNotFound {
+		return err
+	}
+
+	if len(kinds) == 0 {
+		log.Fatal("[error in code ] Buy database len is  zero")
+	}
+
+	kind := kinds[0]
+	index := -1
+	for k, color := range kind.Sizes[order.Size].Colors {
+		if color.ColorName == order.Color {
+			index = k
+		}
+	}
+	if index == -1 {
+		return ErrDataBaseOutStock
+	}
+	kind.Sizes[order.Size].Colors[index].Qty--
+	if kind.Sizes[order.Size].Colors[index].Qty <= 0 {
+		// i dont know if will work
+		news := kind.Sizes[order.Size].Colors
+		news = slices.DeleteFunc(news, func(s structs.Color) bool {
+			return s.ColorName == order.Color
+		})
+		db.InStock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.Size, kind.Sizes[order.Size])
+
+	} else {
+		db.InStock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.Size, kind.Sizes[order.Size])
+
+	}
+
+	if len(kind.Sizes) == 0 {
+		_, err := db.OutStock.ContainerAndKindIsExited(order.Container, order.Kind)
+		if err != nil {
+			db.OutStock.AddNewContainer(order.Container)
+			db.OutStock.NewKindtoContainer(order.Container, order.Kind)
+			db.OutStock.AddModelToKind(order.Container, order.Kind, &kind, false)
+		}
+		db.InStock.DeleteModelFromKind(order.Container, order.Kind, order.IdModel)
+
+	} else if len(kind.Sizes[order.Size].Colors) == 0 {
+		db.InStock.DeleteSizeFromModel(order.IdModel, order.Container, order.Kind, order.Size)
+	}
+	db.Orders.Add(order)
+
+	return nil
 }
 
 func (db *DataBase) Close() {
@@ -85,3 +155,5 @@ func OpenDirDataBase(name string) *DataBase {
 	})
 	return &db
 }
+
+
