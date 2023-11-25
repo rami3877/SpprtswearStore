@@ -1,0 +1,435 @@
+package db
+
+import (
+	"encoding/json"
+	"errors"
+	"go.etcd.io/bbolt"
+	"regexp"
+	"structs"
+	"unicode"
+)
+
+var (
+	ErrUserOpenDatabase = errors.New("can't open database")
+	ErrUserExist        = errors.New("user is already exists")
+	ErrUsereNotFound    = errors.New("user Doesn't exist")
+
+	ErrUserNameIsShortOrEmpty = errors.New("username is short or empty")
+	ErrUserEmailInvalid       = errors.New("Email is Invalid ")
+
+	ErrUserPasswordIsSome         = errors.New("the same password")
+	ErrUserPasswordIsShortOrEmpty = errors.New("Password is short or empty")
+
+	ErrUserAddrCity      = errors.New("City is Invalid")
+	ErrUserAddrStreet    = errors.New("Street is Invalid")
+	ErrUserAddrBuilding  = errors.New("Building is Invalid")
+	ErrUserAddrApartment = errors.New("Apartment is Invalid")
+
+	ErrUservisaInvalidNumber         = errors.New("Number is Invalid")
+	ErrUservisaInvalidCvv            = errors.New("Cvv is Invalid")
+	ErrUservisaInvalidExpirationDate = errors.New("ExpirationDate is Invalid")
+	ErrUservisaNumberIsExit          = errors.New("visa Number Is Exit")
+	ErrUserPhoneNumberInvalid        = errors.New("is NOT a valid phone number")
+	ErrUserFirstNameInvalid          = errors.New("First Name  is Invalid")
+	ErrUserLastNameInvalid           = errors.New("Last Name  is Invalid")
+	ErrUserNotStrongPassword         = errors.New("is NOT a strong password")
+
+	ErrUserNameIslong          = errors.New("username Must be less than 20")
+	ErrUserNameNotStartLetter  = errors.New("username Must start with a letter")
+	ErrUserNameNotAlphanumeric = errors.New("username Must all characters are alphanumeric")
+)
+
+type user struct {
+	dataBase *bbolt.DB
+}
+
+func (u *user) AddNew(users structs.User) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("users"))
+
+		if b == nil {
+			return ErrUserOpenDatabase
+		}
+		checkIfuserExist := b.Get([]byte(users.Username))
+		if checkIfuserExist != nil {
+			return ErrUserExist
+		}
+		if err := isAcceptableUsername(users.Username); err != nil {
+			return err
+		}
+
+		if !isStrongPassword(users.Password) {
+			return ErrUserNotStrongPassword
+		}
+
+		if !isValidEmail(users.UserEmail.EmailName) {
+			return ErrUserEmailInvalid
+		}
+
+		dataUser, err := json.Marshal(users)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(users.Username), dataUser)
+		return nil
+	})
+}
+
+func (u *user) GetUser(username string, users *structs.User) error {
+	return u.dataBase.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("users"))
+		data := b.Get([]byte(username))
+		if data == nil {
+			return ErrUsereNotFound
+		}
+		err := json.Unmarshal(data, users)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
+func (u *user) UpdataPassword(username string, oldPassword string, newPassword string) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("users"))
+		userdata := b.Get([]byte(username))
+		if userdata == nil {
+			return ErrUserExist
+		}
+		if !isStrongPassword(newPassword) {
+			return ErrUserNotStrongPassword
+		}
+		usr := structs.User{}
+		if err := json.Unmarshal(userdata, &usr); err != nil {
+			return err
+		}
+		if newPassword == usr.Password {
+			return ErrUserPasswordIsSome
+		}
+		usr.Password = newPassword
+		data, err := json.Marshal(usr)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(usr.Username), data)
+
+		return nil
+	})
+
+}
+
+func (u *user) UpdataAddr(username string, addr structs.Addr) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+		if addr.City == "" {
+			return ErrUserAddrCity
+		}
+		if addr.Street == "" {
+			return ErrUserAddrStreet
+		}
+		if addr.Building <= 0 {
+			return ErrUserAddrBuilding
+		}
+		if addr.Apartment <= 0 {
+			return ErrUserAddrApartment
+		}
+
+		b := tx.Bucket([]byte("users"))
+
+		userdata := b.Get([]byte(username))
+		if userdata == nil {
+			return ErrUserExist
+		}
+		usr := structs.User{}
+		if err := json.Unmarshal(userdata, &usr); err != nil {
+			return err
+		}
+
+		usr.UserAddr = addr
+
+		data, err := json.Marshal(usr)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(usr.Username), data)
+
+		return nil
+	})
+
+}
+
+func (u *user) AddVisa(username string, visa structs.Visa) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+		// check if visa valid
+
+		if len(visa.Number) != 8 {
+			return ErrUservisaInvalidNumber
+		}
+		if len(visa.Cvv) != 3 {
+			return ErrUservisaInvalidCvv
+		}
+		if len(visa.ExpirationData) != 5 {
+			return ErrUservisaInvalidExpirationDate
+		}
+		for _, v := range visa.Number {
+			if !unicode.IsNumber(v) {
+				return ErrUservisaInvalidNumber
+			}
+		}
+		for _, v := range visa.Cvv {
+			if !unicode.IsNumber(v) {
+				return ErrUservisaInvalidCvv
+			}
+		}
+		if !unicode.IsNumber(rune(visa.ExpirationData[0])) || !unicode.IsNumber(rune(visa.ExpirationData[1])) ||
+			visa.ExpirationData[2] != '/' || !unicode.IsNumber(rune(visa.ExpirationData[3])) || !unicode.IsNumber(rune(visa.ExpirationData[4])) {
+			return ErrUservisaInvalidExpirationDate
+		}
+
+		b := tx.Bucket([]byte("users"))
+
+		usr := structs.User{}
+		if err := u.GetUser(username, &usr); err != nil {
+			return err
+		}
+
+		if len(usr.UserVisa) == 0 {
+			usr.UserVisa = append(usr.UserVisa, visa)
+		} else {
+			for _, v := range usr.UserVisa {
+				if v.Number == visa.Number {
+					return ErrUservisaNumberIsExit
+				}
+			}
+			usr.UserVisa = append(usr.UserVisa, visa)
+		}
+
+		data, err := json.Marshal(usr)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(usr.Username), data)
+
+		return nil
+	})
+
+}
+
+func (u *user) DeleteVisa(username, first3Number, last3Number string) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+
+		for _, v := range first3Number {
+			if !unicode.IsNumber(v) {
+				return errors.New("first 3 number is not number")
+			}
+		}
+
+		for _, v := range last3Number {
+			if !unicode.IsNumber(v) {
+				return errors.New("last 3 number is not number")
+			}
+		}
+
+		b := tx.Bucket([]byte("users"))
+
+		usr := structs.User{}
+		if err := u.GetUser(username, &usr); err != nil {
+			return err
+		}
+
+		newVisa := []structs.Visa{}
+
+		for _, v := range usr.UserVisa {
+			if v.Number[:3] != first3Number && string(v.Number[len(v.Number)-3:]) != last3Number {
+				newVisa = append(newVisa, v)
+			}
+		}
+		usr.UserVisa = newVisa
+
+		data, err := json.Marshal(usr)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(usr.Username), data)
+
+		return nil
+	})
+
+}
+
+func (u *user) UpdataPhone(username string, phone string) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+
+		re := regexp.MustCompile(`^(079|078|077)\d{7}$`)
+		if !re.MatchString(phone) {
+			return ErrUserPhoneNumberInvalid
+		}
+		b := tx.Bucket([]byte("users"))
+
+		usr := structs.User{}
+		if err := u.GetUser(username, &usr); err != nil {
+			return err
+		}
+
+		// updata number phone to dataBase
+		usr.Phone = phone
+
+		data, err := json.Marshal(usr)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(usr.Username), data)
+
+		return nil
+	})
+
+}
+
+func (u *user) UpdataLastName(username string, LastName string) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("users"))
+		if len(LastName) == 0 {
+			return ErrUserLastNameInvalid
+		}
+
+		usr := structs.User{}
+		if err := u.GetUser(username, &usr); err != nil {
+			return err
+		}
+
+		usr.LastName = LastName
+
+		data, err := json.Marshal(usr)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(usr.Username), data)
+
+		return nil
+	})
+
+}
+
+func (u *user) UpdataFirstName(username string, FirstName string) error {
+	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte("users"))
+
+		if len(FirstName) == 0 {
+			return ErrUserFirstNameInvalid
+		}
+
+		usr := structs.User{}
+		if err := u.GetUser(username, &usr); err != nil {
+			return err
+		}
+
+		usr.FirstName = FirstName
+
+		data, err := json.Marshal(usr)
+		if err != nil {
+			return err
+		}
+		b.Put([]byte(usr.Username), data)
+
+		return nil
+	})
+
+}
+
+func isStrongPassword(password string) bool {
+	// Check minimum length
+	if len(password) < 8 {
+		return false
+	}
+
+	// Check for at least one uppercase letter
+	hasUpperCase := false
+	for _, char := range password {
+		if unicode.IsUpper(char) {
+			hasUpperCase = true
+			break
+		}
+	}
+
+	if !hasUpperCase {
+		return false
+	}
+
+	// Check for at least one lowercase letter
+	hasLowerCase := false
+	for _, char := range password {
+		if unicode.IsLower(char) {
+			hasLowerCase = true
+			break
+		}
+	}
+
+	if !hasLowerCase {
+		return false
+	}
+
+	// Check for at least one digit
+	hasDigit := false
+	for _, char := range password {
+		if unicode.IsDigit(char) {
+			hasDigit = true
+			break
+		}
+	}
+
+	if !hasDigit {
+		return false
+	}
+
+	// Check for at least one special character
+	hasSpecialChar := false
+	specialChars := "!@#$%^&*()-=_+[]{}|;:'\",.<>?/"
+	for _, char := range password {
+		if unicode.IsSymbol(char) || unicode.IsPunct(char) {
+			for _, special := range specialChars {
+				if char == special {
+					hasSpecialChar = true
+					break
+				}
+			}
+		}
+		if hasSpecialChar {
+			break
+		}
+	}
+
+	return hasSpecialChar
+}
+
+func isAcceptableUsername(username string) error {
+	// Check length
+	if len(username) < 4 {
+		return ErrUserNameIsShortOrEmpty
+	}
+	if len(username) > 20 {
+		return ErrUserNameIslong
+	}
+
+	// Check if the first character is a letter
+	if !unicode.IsLetter(rune(username[0])) {
+		return ErrUserNameNotStartLetter
+	}
+
+	// Check if all characters are alphanumeric
+	for _, char := range username {
+		if !unicode.IsLetter(char) && !unicode.IsDigit(char) {
+			return ErrUserNameNotAlphanumeric
+
+		}
+	}
+
+	return nil
+}
+
+func isValidEmail(email string) bool {
+	emailRegex := `^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`
+
+	re := regexp.MustCompile(emailRegex)
+
+	return re.MatchString(email)
+}
