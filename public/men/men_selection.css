@@ -62,7 +62,7 @@ header{
     letter-spacing: 4px;
 }
 .list{
-    background: url(/public/stars1.png);
+    background: url(/images/stars1.png);
     height: 100vh;
     display: flex;
     justify-content: center;
@@ -124,7 +124,7 @@ header{
     content: '';
     width: 80px;
     height: 80px;
-    background: url(/public/shirt.png);
+    background: url(/images/shirt.png);
     position: absolute;
     left: 50%;
     top: 50%;
@@ -140,7 +140,7 @@ header{
     content: '';
     width: 80px;
     height: 80px;
-    background: url(/public/pants.png);
+    background: url(/images/pants.png);
     position: absolute;
     left: 50%;
     top: 50%;
@@ -156,7 +156,7 @@ header{
     content: '';
     width: 100px;
     height: 100px;
-    background: url(/public/shoes.png);
+    background: url(/images/shoes.png);
     position: absolute;
     left: 50%;
     top: 50%;

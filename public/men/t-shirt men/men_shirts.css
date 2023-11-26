@@ -44,7 +44,6 @@ header{
     padding: 20px 0;
     max-width: 1068px;
     margin: auto;
-    width: 100%;
 }
 #cart-icon{
     font-size: 2rem;
@@ -74,7 +73,7 @@ header{
     background: #1e1e2a;
     top: 0;
     right: -100%;
-    width: 360px;
+    width: 26%;
     min-height: 100vh;
     padding: 20px;
     box-shadow: -2px 0 4px hsl(0, 4%, 15% / 10%);
@@ -193,9 +192,8 @@ header{
 }
 .shop-content{
     display: grid;
-    grid-template-columns: repeat(4, minmax(220px, auto));
+    grid-template-columns: repeat( 4, minmax(220px, auto));
     gap: 1.5rem;
-    display: grid;
     padding: 0 3rem;
 }
 .product-box{
@@ -287,4 +285,40 @@ header{
     background: #fff;
     color: #c8815f;
     border-color: #c8815f;
+}
+@media (max-width: 1080px) {
+    .nav_container{
+        max-width: 850px;
+    }
+    .shop-content{
+        display: grid;
+        grid-template-columns: repeat( 3, minmax(220px, auto));
+    }
+    .cart{
+        width: 35.5%;
+    }
+}
+@media (max-width: 901px) {
+    .nav_container{
+        max-width: 550px;
+    }
+    .shop-content{
+        display: grid;
+        grid-template-columns: repeat( 2, minmax(220px, auto));
+    }
+    .cart{
+        width: 50%;
+    }
+}
+@media (max-width: 620px) {
+    .nav_container{
+        max-width: 350px;
+    }
+    .shop-content{
+        display: grid;
+        grid-template-columns: repeat( 1, minmax(220px, auto));
+    }
+    .cart{
+        width: 100%;
+    }
 }
