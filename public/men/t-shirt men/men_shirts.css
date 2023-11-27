@@ -286,6 +286,7 @@ header{
     color: #c8815f;
     border-color: #c8815f;
 }
+/* responsive */
 @media (max-width: 1080px) {
     .nav_container{
         max-width: 850px;

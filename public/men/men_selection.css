@@ -70,6 +70,7 @@ header{
 }
 .selections{
     text-align: center;
+    z-index: 1;
 }
 .selections:hover li a{
     opacity: 0;
@@ -176,4 +177,33 @@ header{
     background: url(man.png);
     height: 500px;
     width: 318px;
+}
+.slider{
+    position: absolute;
+    bottom: 40px;
+    left: 25%;
+    font-weight: 600;
+    color: #000;
+    width: 50%;
+    height: 2rem;
+    scale: 1.4;
+    overflow: hidden;
+}
+.slider ul{
+    padding: .5rem 0;
+    display: flex;
+    width: max-content;
+    animation: runSlider 9s linear infinite;
+}
+.slider li{
+    letter-spacing: 1px;
+    font-family: monospace;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-right: 5px;
+}
+@keyframes runSlider{
+    from{ transform: translateX(-765px);}
+    to{ transform: translateX(0);}
 }
