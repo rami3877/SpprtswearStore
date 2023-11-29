@@ -3,20 +3,19 @@ package db
 import (
 	"encoding/json"
 	"errors"
+	"go.etcd.io/bbolt"
 	"os"
 	"path"
 	"strings"
 	"structs"
-
-	"go.etcd.io/bbolt"
 )
 
 var (
 	ErrDataBase = errors.New("data base err")
 
 	ErrNotFoundInStock            = errors.New("not found in Stock")
-	ErrContainerIsExistInStock    = errors.New("is exist")
-	ErrContainerIsNotExistInStock = errors.New("is not exist")
+	ErrContainerIsExistInStock    = errors.New("Container  is exist")
+	ErrContainerIsNotExistInStock = errors.New("Container is not exist")
 	ErrKindNotFound               = errors.New("cant found the kind")
 	ErrKindIsExited               = errors.New(" kind is exited ")
 
@@ -35,7 +34,22 @@ type stock struct {
 	database  map[string]map[string]*bbolt.DB
 }
 
+func (s *stock) DeleteKind(container, kind string) error {
+	v, ok := s.database[container]
+	if !ok {
+		return ErrContainerIsNotExistInStock
+	}
+	kind1, ok1 := v[kind]
+	if !ok1 {
+		return ErrKindNotFound
+	}
+	deleteKindPath := kind1.Path()
+	kind1.Close()
+	os.Remove(deleteKindPath)
+	delete(s.database[container], kind)
 
+	return nil
+}
 
 func (s *stock) addCommint(id int, Container, kind string, commint structs.UserCommint) error {
 	if len(commint.Commint) == 0 {
@@ -158,7 +172,7 @@ func (s *stock) UpateDescription(id int, Description, Container, kind string) er
 
 }
 
-func (s *stock) UpatePrice(id, Price int, Container, kind string) error {
+func (s *stock) UpatePrice(id int, Price float32, Container, kind string) error {
 	if Price <= 0 {
 		return ErrModelPrice
 	}
@@ -196,6 +210,41 @@ func (s *stock) UpatePrice(id, Price int, Container, kind string) error {
 		return b.Put(itob(model.Id), dataTodatabase)
 	})
 
+}
+
+func (s *stock) GetALLSize(id int, Container, kind, sizeName string) (*map[string][]structs.Size, error) {
+	Container = strings.TrimSpace(Container)
+	kind = strings.TrimSpace(kind)
+	v, ok := s.database[Container][kind]
+	if !ok {
+		return nil, errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
+	}
+
+	Size := make(map[string][]structs.Size)
+	err := v.View(func(tx *bbolt.Tx) error {
+
+		b := tx.Bucket([]byte(kind))
+		if b == nil {
+			return ErrKindNotFound
+		}
+		return b.ForEach(func(k, v []byte) error {
+			model := structs.Model{}
+			if err := json.Unmarshal(v, &model); err != nil {
+				return err
+			}
+			for k, v := range model.Sizes {
+				Size[k] = append(Size[k], v)
+			}
+
+			return nil
+		})
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &Size, nil
 }
 
 func (s *stock) GetModleSize(id int, Container, kind, sizeName string) (*structs.Size, error) {
@@ -375,12 +424,16 @@ func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, Out
 func (s *stock) NewKindtoContainer(Container, kind string) error {
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
+
 	_, ok := s.database[Container][kind]
 	if ok {
 		return ErrKindIsExited
 	}
+	if _, ok := s.database[Container]; !ok {
+		return ErrContainerIsNotExistInStock
+	}
 
-	b, err := bbolt.Open(s.pathStock+"/"+Container+"/"+kind, 0600, nil)
+	b, err := bbolt.Open(s.pathStock+"/"+Container+"/"+kind+".db", 0600, nil)
 	if err != nil {
 		return err
 	}
@@ -390,6 +443,9 @@ func (s *stock) NewKindtoContainer(Container, kind string) error {
 		return err
 	}); err != nil {
 		return err
+	}
+	if s.database[Container] == nil {
+		s.database[Container] = make(map[string]*bbolt.DB)
 	}
 	s.database[Container][kind] = b
 
@@ -408,11 +464,49 @@ func (s *stock) DeleteModelFromKind(Container, kind string, id int) error {
 		if b == nil {
 			return ErrKindNotFound
 		}
-		return b.Delete(itob(id))
+		if err := b.Get(itob(id)); err == nil {
+			return errors.New("ID Not found")
+		}
 
+		b.Delete(itob(id))
+		return nil
 	})
 
 }
+
+// just for admin
+// return all models  in kind  at Container
+func (s *stock) GetAllModelsInKind(Container, kind string) (models []structs.Model, _ error) {
+	Container = strings.TrimSpace(Container)
+	kind = strings.TrimSpace(kind)
+	v, ok := s.database[Container][kind]
+	if !ok {
+		return models, ErrContainerIsNotExistInStock
+	}
+	err := v.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte(kind))
+		// check if bucket is exit
+		if b == nil {
+			return ErrKindNotFound
+		}
+
+		return b.ForEach(func(_, v []byte) error {
+			getModel := structs.Model{}
+			if err := json.Unmarshal(v, &getModel); err != nil {
+				return err
+			}
+			models = append(models, getModel)
+			return nil
+		})
+
+	})
+	if err != nil {
+		return models, nil
+	}
+
+	return models, nil
+}
+
 func (s *stock) GetModelsInKind(formId, count int, Container, kind string) (models []structs.Model, _ error) {
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
@@ -472,10 +566,10 @@ func (S *stock) GetAllContainer() (Container []string) {
 
 func (S *stock) GetAllContainerAndKind() (ContainerAndKind map[string][]string) {
 	ContainerAndKind = make(map[string][]string)
-	for k, v := range S.database {
-		ContainerAndKind[k] = nil
+	for k1, v := range S.database {
+		ContainerAndKind[k1] = make([]string, 0)
 		for k := range v {
-			ContainerAndKind[k] = append(ContainerAndKind[k], k)
+			ContainerAndKind[k1] = append(ContainerAndKind[k1], k)
 		}
 	}
 	return ContainerAndKind
@@ -486,21 +580,21 @@ func (db *stock) IsExist(name string) bool {
 	_, ok := db.database[name]
 	return ok
 }
-func (db *stock) DeleteContainer (name string ) error {
-	  v, ok := db.database[name]
-	 if !ok {
-		  return ErrContainerIsNotExistInStock
-	 }
-	 for _ ,  database := range v  {
-		  database.Close()
-	 }
-	 delete(db.database , name)
+func (db *stock) DeleteContainer(name string) error {
+	v, ok := db.database[name]
+	if !ok {
+		return ErrContainerIsNotExistInStock
+	}
+	for _, database := range v {
+		database.Close()
+	}
+	delete(db.database, name)
 
-	 err:=  os.RemoveAll(db.pathStock+"/"+name)
-	 if err != nil {
-		  return err
-	 }
-	 return nil 
+	err := os.RemoveAll(db.pathStock + "/" + name)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (db *stock) AddNewContainer(name string) error {
@@ -544,7 +638,7 @@ func (db *stock) init() error {
 			}
 			for _, file := range filesInSubDir {
 
-				if !file.IsDir() && path.Base(v.Name()) == ".db" {
+				if !file.IsDir() && path.Ext(file.Name()) == ".db" {
 					lenCut := len(file.Name()) - 3
 					ptrdb, err := bbolt.Open(db.pathStock+"/"+v.Name()+"/"+file.Name(), 0600, nil)
 					if err != nil {

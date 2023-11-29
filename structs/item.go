@@ -19,7 +19,7 @@ type Size struct {
 type Model struct {
 	Id          int             `json:"id"`
 	Sizes       map[string]Size `json:"sizes"`
-	Price       int             `json:"price"`
+	Price       float32         `json:"price"`
 	Description string          `json:"description"`
 	Discount    int             `json:"discount"`
 	LinkesImage []string        `json:"linkesImage"`
