@@ -17,6 +17,9 @@ type DataBase struct {
 	Users        user
 }
 
+
+var MainDB *DataBase 
+
 var (
 	ErrDataBaseOutStock = errors.New("Sorry, out of stock")
 )
@@ -153,6 +156,7 @@ func OpenDirDataBase(name string) *DataBase {
 
 		return nil
 	})
+	MainDB = &db
 	return &db
 }
 

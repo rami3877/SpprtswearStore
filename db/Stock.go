@@ -486,6 +486,13 @@ func (db *stock) IsExist(name string) bool {
 	_, ok := db.database[name]
 	return ok
 }
+func (db *stock) DeleteContainer (name string ) error {
+	 err:=  os.RemoveAll(db.pathStock+"/"+name)
+	 if err != nil {
+		  return err
+	 }
+	 return nil 
+}
 
 func (db *stock) AddNewContainer(name string) error {
 	name = strings.TrimSpace(name)
@@ -501,9 +508,7 @@ func (db *stock) AddNewContainer(name string) error {
 }
 
 func (db *stock) init() error {
-	if db.database != nil {
-		return nil
-	}
+
 	f, err := os.Open(db.pathStock)
 	defer f.Close()
 	if err != nil {
@@ -516,7 +521,10 @@ func (db *stock) init() error {
 
 	for _, v := range files {
 		if v.IsDir() {
+			db.database[v.Name()] = make(map[string]*bbolt.DB)
+
 			SubDir, err := os.Open(db.pathStock + "/" + v.Name())
+
 			if err != nil {
 				return err
 			}
@@ -525,7 +533,6 @@ func (db *stock) init() error {
 			if filesInSubDir == nil {
 				continue
 			}
-			db.database[v.Name()] = make(map[string]*bbolt.DB)
 			for _, file := range filesInSubDir {
 
 				if !file.IsDir() && path.Base(v.Name()) == ".db" {
