@@ -487,6 +487,15 @@ func (db *stock) IsExist(name string) bool {
 	return ok
 }
 func (db *stock) DeleteContainer (name string ) error {
+	  v, ok := db.database[name]
+	 if !ok {
+		  return ErrContainerIsNotExistInStock
+	 }
+	 for _ ,  database := range v  {
+		  database.Close()
+	 }
+	 delete(db.database , name)
+
 	 err:=  os.RemoveAll(db.pathStock+"/"+name)
 	 if err != nil {
 		  return err

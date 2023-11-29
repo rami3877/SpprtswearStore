@@ -128,6 +128,13 @@ func (*Srever) Run() {
 			}
 
 		})
+		admin.POST("/product/kind" , func(ctx *gin.Context) {
+			 // here make kind add & delete
+
+		})
+
+		admin.DELETE("/product/kind" , func(ctx *gin.Context) {
+		})
 		admin.DELETE("/product/container", func(ctx *gin.Context) {
 			Container, err := io.ReadAll(ctx.Request.Body)
 			if err != nil {
