@@ -2,13 +2,15 @@ package srever
 
 import (
 	"db"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
+	"strings"
 	"structs"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -298,7 +300,6 @@ func (*Srever) Run() {
 			ctx.String(http.StatusAccepted, "done")
 		})
 
-
 		admin.GET("/product/model/sizes", func(ctx *gin.Context) {
 			type Size struct {
 				Id        int    `json:"id"`
@@ -318,6 +319,371 @@ func (*Srever) Run() {
 
 		admin.GET("/shutdown", func(ctx *gin.Context) {
 			httpServer.Shutdown(nil)
+		})
+		// -------------MainApi-------------------
+		app.GET("/product", func(ctx *gin.Context) {
+			kind := ctx.Query("kind")
+			Containter := ctx.Query("container")
+			id, err := strconv.Atoi(ctx.Query("id"))
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "ERROR")
+				return
+			}
+
+			data, err := db.MainDB.InStock.GetModelsInKind(id, 10, Containter, kind)
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "ERROR")
+				return
+			}
+			ctx.JSON(http.StatusAccepted, data)
+
+		})
+
+		app.GET("/AllContainerAndKind", func(ctx *gin.Context) {
+			fg := db.MainDB.InStock.GetAllContainerAndKind()
+			if len(fg) == 0 {
+				ctx.String(http.StatusNoContent, "")
+			} else {
+				ctx.JSON(http.StatusOK, &fg)
+			}
+
+		})
+
+		//------------USER----------
+		user := app.Group("user")
+
+		user.Use(func(ctx *gin.Context) {
+			if ctx.FullPath() == "/user/login" {
+				ctx.Next()
+				return
+			}
+			if ctx.FullPath() == "/user/logout" {
+				ctx.Next()
+				return
+			}
+
+			if ctx.FullPath() == "/user/register" {
+				ctx.Next()
+				return
+			}
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				ctx.Abort()
+				return
+			}
+			_, m, d := time.Now().Date()
+
+			infoUser := strings.Split(v, ",")
+			if len(infoUser) != 2 {
+				ctx.String(http.StatusBadRequest, "error")
+				ctx.Abort()
+				return
+			}
+
+			user := structs.User{}
+			if err := db.MainDB.Users.GetUser(infoUser[0], &user); err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				ctx.Abort()
+				return
+			}
+			if err = bcrypt.CompareHashAndPassword([]byte(infoUser[1]), []byte(user.Password+m.String()+strconv.Itoa(d))); err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				ctx.Abort()
+				return
+			}
+			ctx.Next()
+		})
+		user.POST("/register", func(ctx *gin.Context) {
+			type User1 struct {
+				Username string `json:"username"`
+				Password string `json:"password"`
+				Email    string `json:"email"`
+			}
+			var useradd User1
+			newuser := structs.User{}
+
+			if err := ctx.ShouldBindJSON(&useradd); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+
+			newuser.Username = useradd.Username
+			newuser.Password = useradd.Password
+			newuser.UserEmail.EmailName = useradd.Email
+
+			if err := db.MainDB.Users.AddNew(newuser); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.String(http.StatusAccepted, "create")
+
+		})
+		user.POST("/login", func(ctx *gin.Context) {
+			type loginUser struct {
+				Username string `json:"username"`
+				Password string `json:"password"`
+			}
+			userlogin := loginUser{}
+			if err := ctx.ShouldBindJSON(&userlogin); err != nil {
+				ctx.String(http.StatusBadRequest, "check json")
+				return
+			}
+			user := structs.User{}
+			if err := db.MainDB.Users.GetUser(userlogin.Username, &user); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			_, m, d := time.Now().Date()
+			pasHash, _ := bcrypt.GenerateFromPassword([]byte(userlogin.Password+m.String()+strconv.Itoa(d)), 12)
+			ctx.SetCookie("session", userlogin.Username+","+string(pasHash), 0, "/user", "", false, true)
+			ctx.String(http.StatusAccepted, "ok")
+
+		})
+		user.POST("/logout", func(ctx *gin.Context) {
+			ctx.SetCookie("session", "", -1, "/user", "", false, true)
+			ctx.HTML(http.StatusOK, "adminLogin.html", nil)
+
+		})
+		user.POST("/phone", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			phone := ctx.PostForm("phone")
+			if err := db.MainDB.Users.UpdataPhone(username, phone); err != nil {
+				ctx.String(http.StatusNotAcceptable, err.Error())
+				return
+			}
+			ctx.String(http.StatusAccepted, "update")
+		})
+
+		user.GET("/phone", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			user := structs.User{}
+			if err := db.MainDB.Users.GetUser(username, &user); err != nil {
+				ctx.String(http.StatusNotAcceptable, err.Error())
+				return
+			}
+			if user.Phone == "" {
+				ctx.String(http.StatusNoContent, "")
+			} else {
+				ctx.String(http.StatusFound, user.Phone)
+			}
+
+		})
+		user.POST("/visa", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			visa := structs.Visa{}
+			if err := ctx.ShouldBindJSON(&visa); err != nil {
+				ctx.String(http.StatusBadRequest, "check the json")
+				return
+			}
+			if err := db.MainDB.Users.AddVisa(username, visa); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.String(http.StatusAccepted, "add visa")
+		})
+
+		user.GET("/visa", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			user := structs.User{}
+
+			if err := db.MainDB.Users.GetUser(username, &user); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+
+			if len(user.UserVisa) == 0 {
+				ctx.String(http.StatusNoContent, "")
+				return
+			}
+			visa := []string{}
+			for _, v := range user.UserVisa {
+				toWebVias := ""
+				toWebVias += v.Number[:3]
+				for i := 0; i < 4; i++ {
+					toWebVias += "*"
+				}
+				toWebVias += v.Number[len(v.Number)-3:]
+				visa = append(visa, toWebVias)
+			}
+			ctx.JSON(http.StatusFound, visa)
+		})
+
+		user.POST("/addr", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			addr := structs.Addr{}
+
+			if err := ctx.ShouldBindJSON(&addr); err != nil {
+				ctx.String(http.StatusBadRequest, "check the json plz")
+				return
+			}
+			if err := db.MainDB.Users.UpdataAddr(username, addr); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.String(http.StatusAccepted, "update")
+
+		})
+
+		user.GET("/addr", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			user := structs.User{}
+
+			if err := db.MainDB.Users.GetUser(username, &user); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.JSON(http.StatusFound, user.UserAddr)
+
+		})
+		user.GET("/lastName", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			user := structs.User{}
+
+			if err := db.MainDB.Users.GetUser(username, &user); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.String(http.StatusOK, user.LastName)
+		})
+
+		user.POST("/lastName", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			lastName := ctx.PostForm("lastName")
+			if err := db.MainDB.Users.UpdataLastName(username, lastName); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.String(http.StatusAccepted, "update")
+
+		})
+		user.GET("/firstName", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			user := structs.User{}
+
+			if err := db.MainDB.Users.GetUser(username, &user); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.String(http.StatusOK, user.FirstName)
+		})
+
+		user.POST("/firstName", func(ctx *gin.Context) {
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			firstName := ctx.PostForm("firstName")
+			if err := db.MainDB.Users.UpdataFirstName(username, firstName); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+			ctx.String(http.StatusAccepted, "update")
+
+		})
+		user.POST("/password", func(ctx *gin.Context) {
+
+			v, err := ctx.Cookie("session")
+			if err != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			type _password struct {
+				NewPassowrd string `json:"newPassowrd"`
+				OldPassowrd string `json:"oldPassowrd"`
+			}
+			password := _password{}
+			if err := ctx.ShouldBindJSON(&password); err != nil {
+				ctx.String(http.StatusBadRequest, "check json")
+				return
+			}
+
+			if err := db.MainDB.Users.UpdataPassword(username, password.OldPassowrd, password.NewPassowrd); err != nil {
+				ctx.String(http.StatusBadRequest, err.Error())
+				return
+			}
+
+			ctx.String(http.StatusAccepted, "update")
+
+		})
+
+		user.POST("/buy", func(ctx *gin.Context) {
+			v, errs := ctx.Cookie("session")
+			if errs != nil {
+				ctx.String(http.StatusBadRequest, "error")
+				return
+			}
+			username := strings.Split(v, ",")[0]
+			orders := []db.Orders{}
+			type Err struct {
+				Id  int    `json:"id"`
+				ERR string `json:"err"`
+			}
+			err := []Err{}
+			if err := ctx.ShouldBindJSON(&orders); err != nil {
+				ctx.String(http.StatusBadRequest, "check json")
+				return
+			}
+			for _, v := range orders {
+				v.Username = username
+				if err_ := db.MainDB.Buy(v); err_ != nil {
+					err = append(err, Err{Id: v.IdModel, ERR: err_.Error()})
+				}
+			}
+			if len(err) == 0 {
+				ctx.AsciiJSON(http.StatusOK, `{"allIsOk":true}`)
+			} else {
+				ctx.JSON(http.StatusNotAcceptable, &err)
+			}
+
 		})
 
 		httpServer.ListenAndServe()

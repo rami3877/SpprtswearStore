@@ -1,27 +1,5 @@
- {
-    "container": "dasdasda",
-    "kind": "dasdasd",
-    "model": {
-        "id": 0,
-        "sizes": {
-            "xl": {
-                "inSotck": true,
-                "colors": [
-                    {
-                        "color": "red",
-                        "qty": 12
-                    },
-                    {
-                        "color": "bule",
-                        "qty": 12
-                    }
-                ]
-            }
-        },
-        "price": 12,
-        "description": "",
-        "discount": 0,
-        "linkesImage": null,
-        "commint": null
-    }
+{
+    "username":"sdasdasds",
+    "password":"dasdasds",
+    "email":"rr@ff.com"
 }
