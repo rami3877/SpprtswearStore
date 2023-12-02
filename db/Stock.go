@@ -212,80 +212,82 @@ func (s *stock) UpatePrice(id int, Price float32, Container, kind string) error 
 
 }
 
-func (s *stock) GetALLSize(id int, Container, kind, sizeName string) (*map[string][]structs.Size, error) {
-	Container = strings.TrimSpace(Container)
-	kind = strings.TrimSpace(kind)
-	v, ok := s.database[Container][kind]
-	if !ok {
-		return nil, errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
+/*
+	func (s *stock) GetALLSize(id int, Container, kind, sizeName string) (*map[string][]map[string]int, error) {
+		Container = strings.TrimSpace(Container)
+		kind = strings.TrimSpace(kind)
+		v, ok := s.database[Container][kind]
+		if !ok {
+			return nil, errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
+		}
+
+		Size := make(map[string][]structs.Size)
+		err := v.View(func(tx *bbolt.Tx) error {
+
+			b := tx.Bucket([]byte(kind))
+			if b == nil {
+				return ErrKindNotFound
+			}
+			return b.ForEach(func(k, v []byte) error {
+				model := structs.Model{}
+				if err := json.Unmarshal(v, &model); err != nil {
+					return err
+				}
+				for k, v := range model.Sizes {
+					Size[k] = append(Size[k], v)
+				}
+
+				return nil
+			})
+		})
+
+		if err != nil {
+			return nil, err
+		}
+
+		return &Size, nil
 	}
 
-	Size := make(map[string][]structs.Size)
-	err := v.View(func(tx *bbolt.Tx) error {
-
-		b := tx.Bucket([]byte(kind))
-		if b == nil {
-			return ErrKindNotFound
+	func (s *stock) GetModleSize(id int, Container, kind, sizeName string) (*structs.Size, error) {
+		Container = strings.TrimSpace(Container)
+		kind = strings.TrimSpace(kind)
+		v, ok := s.database[Container][kind]
+		if !ok {
+			return nil, errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
 		}
-		return b.ForEach(func(k, v []byte) error {
+		var size structs.Size
+		err := v.View(func(tx *bbolt.Tx) error {
+
+			b := tx.Bucket([]byte(kind))
+			if b == nil {
+				return ErrKindNotFound
+			}
+
+			data := b.Get(itob(id))
+			if data == nil {
+				return ErrDataBase
+			}
+
 			model := structs.Model{}
-			if err := json.Unmarshal(v, &model); err != nil {
+
+			err := json.Unmarshal(data, &model)
+			if err != nil {
 				return err
 			}
-			for k, v := range model.Sizes {
-				Size[k] = append(Size[k], v)
+			v, ok := model.Sizes[sizeName]
+			if !ok {
+				return ErrModelSizeNotFound
 			}
-
+			size = v
 			return nil
 		})
-	})
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &Size, nil
-}
-
-func (s *stock) GetModleSize(id int, Container, kind, sizeName string) (*structs.Size, error) {
-	Container = strings.TrimSpace(Container)
-	kind = strings.TrimSpace(kind)
-	v, ok := s.database[Container][kind]
-	if !ok {
-		return nil, errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
-	}
-	var size structs.Size
-	err := v.View(func(tx *bbolt.Tx) error {
-
-		b := tx.Bucket([]byte(kind))
-		if b == nil {
-			return ErrKindNotFound
-		}
-
-		data := b.Get(itob(id))
-		if data == nil {
-			return ErrDataBase
-		}
-
-		model := structs.Model{}
-
-		err := json.Unmarshal(data, &model)
 		if err != nil {
-			return err
+			return nil, err
 		}
-		v, ok := model.Sizes[sizeName]
-		if !ok {
-			return ErrModelSizeNotFound
-		}
-		size = v
-		return nil
-	})
-	if err != nil {
-		return nil, err
-	}
 
-	return &size, nil
-}
+		return &size, nil
+	}
+*/
 func (s *stock) DeleteSizeFromModel(id int, Container, kind, sizeName string) error {
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
@@ -323,7 +325,7 @@ func (s *stock) DeleteSizeFromModel(id int, Container, kind, sizeName string) er
 
 }
 
-func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, size structs.Size) error {
+func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, size map[string]int) error {
 
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
@@ -350,10 +352,11 @@ func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, si
 		if err != nil {
 			return err
 		}
-		if len(model.Sizes) == 0 || model.Sizes == nil {
-			model.Sizes = make(map[string]structs.Size)
+		if model.Sizes[sizeName] == nil {
+			model.Sizes[sizeName] = make(map[string]int)
 		}
 		model.Sizes[sizeName] = size
+
 		dataTodatabase, err := json.Marshal(model)
 		if err != nil {
 			return err
@@ -364,7 +367,7 @@ func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, si
 
 }
 
-func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, OutStock bool) error {
+func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, InStock bool) error {
 
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
@@ -372,16 +375,16 @@ func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, Out
 	if !ok {
 		return errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
 	}
-	if OutStock {
+	if InStock {
 		if len(model.Sizes) == 0 {
 			return ErrModelSize
 		}
 		for _, v := range model.Sizes {
-			if len(v.Colors) == 0 {
+			if len(v) == 0 {
 				return ErrModelSize
 			} else {
-				for _, s := range v.Colors {
-					if len(s.ColorName) == 0 || s.Qty <= 0 {
+				for _, s := range v {
+					if s == 0 {
 						return ErrModelSize
 					}
 				}
@@ -403,7 +406,7 @@ func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, Out
 		if b == nil {
 			return ErrKindNotFound
 		}
-		if OutStock {
+		if InStock {
 
 			c, err := b.NextSequence()
 			if err != nil {

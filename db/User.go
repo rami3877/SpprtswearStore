@@ -3,10 +3,11 @@ package db
 import (
 	"encoding/json"
 	"errors"
-	"go.etcd.io/bbolt"
 	"regexp"
 	"structs"
 	"unicode"
+
+	"go.etcd.io/bbolt"
 )
 
 var (
@@ -29,6 +30,7 @@ var (
 	ErrUservisaInvalidCvv            = errors.New("Cvv is Invalid")
 	ErrUservisaInvalidExpirationDate = errors.New("ExpirationDate is Invalid")
 	ErrUservisaNumberIsExit          = errors.New("visa Number Is Exit")
+	ErrUservisaIsExit                = errors.New("visa  Already added")
 	ErrUserPhoneNumberInvalid        = errors.New("is NOT a valid phone number")
 	ErrUserFirstNameInvalid          = errors.New("First Name  is Invalid")
 	ErrUserLastNameInvalid           = errors.New("Last Name  is Invalid")
@@ -95,18 +97,20 @@ func (u *user) UpdataPassword(username string, oldPassword string, newPassword s
 		b := tx.Bucket([]byte("users"))
 		userdata := b.Get([]byte(username))
 		if userdata == nil {
-			return ErrUserExist
+			return ErrUsereNotFound
 		}
 		if !isStrongPassword(newPassword) {
 			return ErrUserNotStrongPassword
 		}
+
 		usr := structs.User{}
 		if err := json.Unmarshal(userdata, &usr); err != nil {
 			return err
 		}
-		if newPassword == usr.Password {
-			return ErrUserPasswordIsSome
+		if oldPassword != usr.Password {
+			return errors.New("woring password")
 		}
+
 		usr.Password = newPassword
 		data, err := json.Marshal(usr)
 		if err != nil {
@@ -162,7 +166,7 @@ func (u *user) AddVisa(username string, visa structs.Visa) error {
 	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
 		// check if visa valid
 
-		if len(visa.Number) != 8 {
+		if len(visa.Number) != 16 {
 			return ErrUservisaInvalidNumber
 		}
 		if len(visa.Cvv) != 3 {
@@ -198,7 +202,7 @@ func (u *user) AddVisa(username string, visa structs.Visa) error {
 		} else {
 			for _, v := range usr.UserVisa {
 				if v.Number == visa.Number {
-					return ErrUservisaNumberIsExit
+					return ErrUservisaIsExit
 				}
 			}
 			usr.UserVisa = append(usr.UserVisa, visa)

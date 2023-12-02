@@ -4,21 +4,19 @@ import (
 	"errors"
 	"log"
 	"os"
-	"slices"
 	"structs"
+
 	"go.etcd.io/bbolt"
 )
 
 type DataBase struct {
 	NameDataBase string
-	InStock      stock
-	OutStock     stock
+	Stock        stock
 	Orders       order
 	Users        user
 }
 
-
-var MainDB *DataBase 
+var MainDB *DataBase
 
 var (
 	ErrDataBaseOutStock = errors.New("Sorry, out of stock")
@@ -29,71 +27,62 @@ func (db *DataBase) AddCommint(id int, Container, kind string, commint structs.U
 	if err == ErrUsereNotFound {
 		return err
 	}
-	return db.InStock.addCommint(id, Container, kind, commint)
+	return db.Stock.addCommint(id, Container, kind, commint)
 }
 
 func (db *DataBase) Buy(order Orders) error {
-	kinds, err := db.InStock.GetModelsInKind(order.IdModel, 0, order.Container, order.Kind)
+	kinds, err := db.Stock.GetModelsInKind(order.IdModel, 0, order.Container, order.Kind)
 	if err != nil {
 		return err
 	}
-	err = db.Users.GetUser(order.Username, nil)
+	user := structs.User{}
+	err = db.Users.GetUser(order.Username, &user)
+
 	if err == ErrUsereNotFound {
 		return err
 	}
 
-	if len(kinds) == 0 {
-		log.Fatal("[error in code ] Buy database len is  zero")
+	if user.Phone == "" {
+		return errors.New("updata your number")
+	}
+	if user.LastName == "" {
+
+		return errors.New("updata your last name")
+	}
+	if user.FirstName == "" {
+
+		return errors.New("updata your first name")
+	}
+	if user.UserAddr.City == "" {
+
+		return errors.New("updata your address")
+	}
+	if len(user.UserVisa) == 0 {
+		return errors.New("add visa")
 	}
 
-	kind := kinds[0]
-	index := -1
-	for k, color := range kind.Sizes[order.Size].Colors {
-		if color.ColorName == order.Color {
-			index = k
-		}
-	}
-	if index == -1 {
+	if _, ok := kinds[0].Sizes[order.SizeName][order.Color]; !ok {
 		return ErrDataBaseOutStock
 	}
-	kind.Sizes[order.Size].Colors[index].Qty--
-	if kind.Sizes[order.Size].Colors[index].Qty <= 0 {
-		// i dont know if will work
-		news := kind.Sizes[order.Size].Colors
-		news = slices.DeleteFunc(news, func(s structs.Color) bool {
-			return s.ColorName == order.Color
-		})
-		db.InStock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.Size, kind.Sizes[order.Size])
 
-	} else {
-		db.InStock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.Size, kind.Sizes[order.Size])
-
-	}
-
-	if len(kind.Sizes) == 0 {
-		_, err := db.OutStock.ContainerAndKindIsExited(order.Container, order.Kind)
-		if err != nil {
-			db.OutStock.AddNewContainer(order.Container)
-			db.OutStock.NewKindtoContainer(order.Container, order.Kind)
-			db.OutStock.AddModelToKind(order.Container, order.Kind, &kind, false)
-		}
-		db.InStock.DeleteModelFromKind(order.Container, order.Kind, order.IdModel)
-
-	} else if len(kind.Sizes[order.Size].Colors) == 0 {
-		db.InStock.DeleteSizeFromModel(order.IdModel, order.Container, order.Kind, order.Size)
-	}
 	db.Orders.Add(order)
+
+	kinds[0].Sizes[order.SizeName][order.Color]--
+	if kinds[0].Sizes[order.SizeName][order.Color] <= 0 {
+		delete(kinds[0].Sizes[order.SizeName], order.Color)
+		db.Stock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName, kinds[0].Sizes[order.SizeName])
+	} else {
+		db.Stock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName, kinds[0].Sizes[order.SizeName])
+	}
+	if len(kinds[0].Sizes[order.SizeName]) == 0 {
+		db.Stock.DeleteSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName)
+	}
 
 	return nil
 }
 
 func (db *DataBase) Close() {
-	for _, v1 := range db.InStock.database {
-		for _, data := range v1 {
-			data.Close()
-		}
-	}
-	for _, v1 := range db.OutStock.database {
+	for _, v1 := range db.Stock.database {
 		for _, data := range v1 {
 			data.Close()
 		}
@@ -103,32 +92,31 @@ func (db *DataBase) Close() {
 }
 
 func OpenDirDataBase(name string) *DataBase {
+
 	db := DataBase{}
-	db.OutStock.pathStock = name + "/outStock"
-	db.InStock.pathStock = name + "/inStock"
+
+	db.Stock.pathStock = name + "/inStock"
 	err := os.Mkdir(name, 0770)
 	if err != nil && !os.IsExist(err) {
 		log.Fatal("[database] " + err.Error())
 	}
-	err = os.Mkdir(db.InStock.pathStock, 0770)
-	if err != nil && !os.IsExist(err) {
-		log.Fatal("[database] " + err.Error())
-	}
-	err = os.Mkdir(db.OutStock.pathStock, 0770)
+	err = os.Mkdir(db.Stock.pathStock, 0770)
 	if err != nil && !os.IsExist(err) {
 		log.Fatal("[database] " + err.Error())
 	}
 
-	db.InStock.database = make(map[string]map[string]*bbolt.DB)
-	db.OutStock.database = make(map[string]map[string]*bbolt.DB)
+	if err != nil && !os.IsExist(err) {
+		log.Fatal("[database] " + err.Error())
+	}
+
+	db.Stock.database = make(map[string]map[string]*bbolt.DB)
+
 	db.NameDataBase = name
 
-	if err := db.InStock.init(); err != nil {
+	if err := db.Stock.init(); err != nil {
 		log.Fatal(err)
 	}
-	if err := db.OutStock.init(); err != nil {
-		log.Fatal(err)
-	}
+
 	db.Users.dataBase, err = bbolt.Open(name+"/user"+".db", 0600, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -159,5 +147,3 @@ func OpenDirDataBase(name string) *DataBase {
 	MainDB = &db
 	return &db
 }
-
-
