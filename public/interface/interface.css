@@ -107,7 +107,7 @@ header{
 .close-login{
     position: absolute;
     top: 0;
-    left: 0;
+    right: 0;
     width: 40px;
     height: 40px;
     background: #c8805f;
@@ -116,7 +116,7 @@ header{
     display: flex;
     justify-content: center;
     align-items: center;
-    border-bottom-right-radius: 20px;
+    border-bottom-left-radius: 20px;
     cursor: pointer;
     z-index: 1;
 }

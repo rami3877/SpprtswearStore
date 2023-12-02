@@ -247,6 +247,32 @@ header{
 #add-to-cart:hover{
     background: #1e1e2a;
 }
+.color-size ul{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.size{
+    display: flex;
+    gap: 3px;
+}
+.color-size ul li div{
+    cursor: pointer;
+    width: 12px;
+    height: 8.5px;
+    margin: 2px;
+}
+.color-size ul li span{
+    cursor: pointer;
+    text-align: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background: #c8815f;
+}
+.color-size ul li span:hover{
+    background: #1e1e2a;
+}
 .sf-container{
     height: 100vh;
     display: flex;
