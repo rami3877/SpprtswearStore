@@ -22,7 +22,7 @@ type Orders struct {
 	IdModel   int    `json:"idModel"`
 	Username  string `json:"username"`
 	Color     string `json:"color"`
-	Size      string `json:"size"`
+	SizeName  string `json:"size"`
 	Container string `json:"Container"`
 	Kind      string `json:"Kind"`
 }
@@ -44,7 +44,7 @@ func (o *order) Delete(id int) error {
 
 func (o *order) Add(order Orders) error {
 	return o.dataBase.Batch(func(tx *bbolt.Tx) error {
-		if order.Size == "" {
+		if order.SizeName == "" {
 			return ErrOrdersSize
 		}
 		if order.Color == "" {

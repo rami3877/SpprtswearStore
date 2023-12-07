@@ -1,11 +1,14 @@
 package main
 
 import (
-
+	"db"
 	"srever"
 )
 
 func main() {
-	 srever.InitSever().Run()
-	 
+	db.OpenDirDataBase("DataBase")
+	srever.InitSever().Run()
+
+	db.MainDB.Close()
+
 }

@@ -5,7 +5,6 @@ type Email struct {
 	EmailName string `json:"emailName"`
 }
 type Addr struct {
-	Address   bool   `json:"address"`
 	City      string `json:"city"`
 	Street    string `json:"street"`
 	Apartment int    `json:"apartment"`
