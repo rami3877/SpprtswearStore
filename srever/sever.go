@@ -43,7 +43,9 @@ func (*Srever) Run() {
 		Handler: app,
 	}
 
-	app.GET("/", mainPage)
+	app.NoRoute(gin.WrapH(http.FileServer(http.Dir("public"))))
+
+
 	//--------------- $admin$ ---------------------
 	admin := app.Group("/admin")
 	admin.Use(func(ctx *gin.Context) {
