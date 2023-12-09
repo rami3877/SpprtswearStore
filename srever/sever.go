@@ -2,8 +2,10 @@ package srever
 
 import (
 	"db"
+	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"regexp"
@@ -29,10 +31,15 @@ func (s *String) string() string {
 	return string(*s)
 }
 
-var adminUsers map[string]String = make(map[string]String)
+var AdminUsers map[string]String = make(map[string]String)
 
 func (*Srever) Run() {
-	adminUsers[os.Getenv("USER")] = "12345"
+
+	f, _ := os.OpenFile("adminuser.json", os.O_RDONLY|os.O_CREATE, 0660)
+	data, _ := io.ReadAll(f)
+	if err := json.Unmarshal(data, &AdminUsers); err != nil {
+		log.Fatal(err)
+	}
 
 	app = gin.New()
 
@@ -44,7 +51,6 @@ func (*Srever) Run() {
 	}
 
 	app.NoRoute(gin.WrapH(http.FileServer(http.Dir("public"))))
-
 
 	//--------------- $admin$ ---------------------
 	admin := app.Group("/admin")
@@ -92,7 +98,7 @@ func (*Srever) Run() {
 	})
 
 	admin.POST("/login", func(ctx *gin.Context) {
-		password, ok := adminUsers[ctx.PostForm("username")]
+		password, ok := AdminUsers[ctx.PostForm("username")]
 		if !ok || password.string() != ctx.PostForm("password") {
 			ctx.HTML(http.StatusBadRequest, "adminLogin.html", gin.H{
 				"err": "check your password and your username",
@@ -353,7 +359,7 @@ func (*Srever) Run() {
 		}
 		v, err := ctx.Cookie("session")
 		if err != nil {
-			ctx.String(http.StatusBadRequest, "error")
+			ctx.String(http.StatusBadRequest, "error login")
 			ctx.Abort()
 			return
 		}
@@ -379,6 +385,46 @@ func (*Srever) Run() {
 		}
 		ctx.Next()
 	})
+	user.POST("/commint", func(ctx *gin.Context) {
+
+		type UserCommint struct {
+			Username  string `josn:"username"`
+			Commint   string `json:"commint"`
+			Stars     int    `json:"stars"`
+			Container string `json:"container"`
+			Kind      string `json:"kind"`
+			Idmodel   int    `json:"idmodel"`
+		}
+		commint := UserCommint{}
+		if err := ctx.ShouldBindJSON(&commint); err != nil {
+			ctx.String(http.StatusNotAcceptable, "check json")
+			return
+		}
+		if commint.Commint == "" {
+			ctx.String(http.StatusNotAcceptable, "commint empty")
+			return
+		}
+		if commint.Stars <= 0 || commint.Stars > 6 {
+			ctx.String(http.StatusNotAcceptable, "stars invaild")
+			return
+		}
+
+		v, err := ctx.Cookie("session")
+		if err != nil {
+			ctx.String(http.StatusBadRequest, err.Error())
+			return
+		}
+		infoUser := strings.Split(v, ",")
+		commint.Username = infoUser[0]
+
+		if err := db.MainDB.AddCommint(commint.Idmodel, commint.Container, commint.Kind, structs.UserCommint{Username: commint.Username, Commint: commint.Commint, Stars: commint.Stars}); err != nil {
+			ctx.String(http.StatusNotAcceptable,err.Error())
+			return
+		}
+		ctx.String(http.StatusOK, "add")
+
+	})
+
 	user.POST("/register", func(ctx *gin.Context) {
 		type User1 struct {
 			Username string `json:"username"`
@@ -653,7 +699,6 @@ func (*Srever) Run() {
 		ctx.String(http.StatusAccepted, "update")
 
 	})
-
 
 	user.POST("/buy", func(ctx *gin.Context) {
 		v, errs := ctx.Cookie("session")

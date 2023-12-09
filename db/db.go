@@ -25,7 +25,7 @@ var (
 func (db *DataBase) AddCommint(id int, Container, kind string, commint structs.UserCommint) error {
 	err := db.Users.GetUser(commint.Username, nil)
 	if err == ErrUsereNotFound {
-		return err
+		return ErrUsereNotFound
 	}
 	return db.Stock.addCommint(id, Container, kind, commint)
 }

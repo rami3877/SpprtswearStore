@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "fb949aa4-4352-46ba-b7f8-b1eac6aa4730",
+		"name": "main",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30649515"
+	},
+	"item": [
+		{
+			"name": "product",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/product?kind=short&container=newContainer&id=0",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"product"
+					],
+					"query": [
+						{
+							"key": "kind",
+							"value": "short"
+						},
+						{
+							"key": "container",
+							"value": "newContainer"
+						},
+						{
+							"key": "id",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

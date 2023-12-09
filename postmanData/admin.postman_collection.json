@@ -1,0 +1,220 @@
+{
+	"info": {
+		"_postman_id": "b7dca9f2-aedb-44a6-a904-d873751c5dd3",
+		"name": "admin",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30649515"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "username",
+							"value": "admin",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "12345",
+							"type": "text"
+						}
+					]
+				},
+				"url": "localhost:8080/admin/login"
+			},
+			"response": []
+		},
+		{
+			"name": "admin",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/admin/"
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/admin/logout"
+			},
+			"response": []
+		},
+		{
+			"name": "product",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/admin/product"
+			},
+			"response": []
+		},
+		{
+			"name": "product",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "http://localhost:8080/admin/product"
+			},
+			"response": []
+		},
+		{
+			"name": "kind",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"container\" : \"newContainer\" , \n    \"kind\" :\"short\" \n}"
+				},
+				"url": "http://localhost:8080/admin/product/kind"
+			},
+			"response": []
+		},
+		{
+			"name": "kind",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"container\" : \"newContainer\" , \n    \"kind\" :\"short\" \n}"
+				},
+				"url": "http://localhost:8080/admin/product/kind"
+			},
+			"response": []
+		},
+		{
+			"name": "container",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "Container",
+							"value": "newContainer",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/admin/product/container"
+			},
+			"response": []
+		},
+		{
+			"name": "container",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": "http://localhost:8080/admin/product/container"
+			},
+			"response": []
+		},
+		{
+			"name": "container",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "sadsadas",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": "http://localhost:8080/admin/product/container"
+			},
+			"response": []
+		},
+		{
+			"name": "model",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"container\": \"newContainer\",\n    \"kind\": \"short\",\n    \"model\": {\n       \"sizes\":{\"xl\":{\"red\":1}},\n        \"price\": 12,\n        \"description\": \"dswadas\",\n        \"discount\": 0,\n        \"linkesImage\": [\n            \"dasd\"\n        ]\n  \n    }\n}"
+				},
+				"url": "http://localhost:8080/admin/product/model"
+			},
+			"response": []
+		},
+		{
+			"name": "model",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"container\" : \"newContainer\" , \n    \"kind\" :\"short\" \n}"
+				},
+				"url": "http://localhost:8080/admin/product/model"
+			},
+			"response": []
+		},
+		{
+			"name": "model",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"container\":\"newContainer\", \n\"kind\":\"short\", \n\"id\" : 2\n}\n"
+				},
+				"url": "http://localhost:8080/admin/product/model"
+			},
+			"response": []
+		},
+		{
+			"name": "shutdown",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:8080/admin/shutdown"
+			},
+			"response": []
+		},
+		{
+			"name": "orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/admin/orders"
+			},
+			"response": []
+		}
+	]
+}

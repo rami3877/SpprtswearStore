@@ -1,0 +1,243 @@
+{
+	"info": {
+		"_postman_id": "50d44795-4d16-4f4d-a96f-b1ec28db7ec5",
+		"name": "user",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30649515"
+	},
+	"item": [
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sdasdasds\",\n    \"password\":\"123344!A2a774\",\n    \"email\":\"rr@ff.com\"\n}"
+				},
+				"url": "http://localhost:8080/user/register"
+			},
+			"response": []
+		},
+		{
+			"name": "logout",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sdasdasds\",\n    \"password\":\"123344!A2a774\"\n}"
+				},
+				"url": "http://localhost:8080/user/logout"
+			},
+			"response": []
+		},
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\":\"sdasdasds\",\n    \"password\":\"123344!A2a774\"\n}"
+				},
+				"url": "http://localhost:8080/user/login"
+			},
+			"response": []
+		},
+		{
+			"name": "phone",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/user/phone"
+			},
+			"response": []
+		},
+		{
+			"name": "phone",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "phone",
+							"value": "0790707071",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/user/phone"
+			},
+			"response": []
+		},
+		{
+			"name": "buy",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\n{\n    \"idModel\":4,\n    \"color\":\"red\", \n    \"size\":\"xl\",\n    \"Container\":\"newContainer\",\n    \"Kind\":  \"short\"\n}\n]"
+				},
+				"url": "http://localhost:8080/user/buy"
+			},
+			"response": []
+		},
+		{
+			"name": "addr",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"city\":\"string\",\n    \"street\":\"string\",\n    \"apartment\":2,\n    \"building\":1\n}"
+				},
+				"url": "http://localhost:8080/user/addr"
+			},
+			"response": []
+		},
+		{
+			"name": "addr",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"city\": \"dasd\",\n    \"street\": \"dasdasd\",\n    \"apartment\": 1,\n    \"building\": 1\n}"
+				},
+				"url": "http://localhost:8080/user/addr"
+			},
+			"response": []
+		},
+		{
+			"name": "lastName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "http://localhost:8080/user/lastName"
+			},
+			"response": []
+		},
+		{
+			"name": "lastName",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "lastName",
+							"value": "rami",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/user/lastName"
+			},
+			"response": []
+		},
+		{
+			"name": "first Name",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "firstName",
+							"value": "rami",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/user/firstName"
+			},
+			"response": []
+		},
+		{
+			"name": "first Name",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "lastName",
+							"value": "rami",
+							"type": "text"
+						}
+					]
+				},
+				"url": "http://localhost:8080/user/firstName"
+			},
+			"response": []
+		},
+		{
+			"name": "password",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"newPassowrd\":\"12334X!aAdsa2a774\",\n    \"oldPassowrd\":\"123344!A2a774\"\n}"
+				},
+				"url": "http://localhost:8080/user/password"
+			},
+			"response": []
+		},
+		{
+			"name": "visa",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"number\":\"1234567891112347\",\n\t\"cvv\":\"123\",\n\t\"expirationData\":\"01/07\"\n}\n\n"
+				},
+				"url": "http://localhost:8080/user/visa"
+			},
+			"response": []
+		},
+		{
+			"name": "visa",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"number\":\"12345678\",\n\t\"cvv\":\"123\",\n\t\"expirationData\":\"01/07\"\n}\n\n"
+				},
+				"url": "http://localhost:8080/user/visa"
+			},
+			"response": []
+		},
+		{
+			"name": "commint",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"commint\":\"dawsasd\",\n\"stars\":2,\n\"container\":\"newContainer\",\n\"kind\":\"short\",\n\"idmodel\":1\n\n\n}"
+				},
+				"url": "http://localhost:8080/user/commint"
+			},
+			"response": []
+		}
+	]
+}

@@ -73,7 +73,7 @@ func (s *stock) addCommint(id int, Container, kind string, commint structs.UserC
 
 		data := b.Get(itob(id))
 		if data == nil {
-			return ErrDataBase
+			return errors.New("no model has that id")
 		}
 
 		model := structs.Model{}
