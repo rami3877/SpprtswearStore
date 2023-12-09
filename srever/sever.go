@@ -44,7 +44,7 @@ func (*Srever) Run() {
 	app = gin.New()
 
 	app.Use(gin.Logger())
-	app.LoadHTMLGlob("template/*.html")
+
 	httpServer := &http.Server{
 		Addr:    ":8080",
 		Handler: app,
@@ -94,7 +94,7 @@ func (*Srever) Run() {
 			return
 		}
 
-		ctx.HTML(http.StatusOK, "adminLogin.html", nil)
+		ctx.String(http.StatusOK, "ok")
 	})
 
 	admin.POST("/login", func(ctx *gin.Context) {
@@ -110,12 +110,12 @@ func (*Srever) Run() {
 			return
 		}
 		ctx.SetCookie("session", string(hashpassword), 0, "/admin", "", false, true)
-		ctx.Redirect(http.StatusMovedPermanently, "/admin")
+		ctx.String(http.StatusOK, "ok")
 	})
 
 	admin.GET("/logout", func(ctx *gin.Context) {
 		ctx.SetCookie("session", "", -1, "/admin", "", false, true)
-		ctx.HTML(http.StatusOK, "adminLogin.html", nil)
+		ctx.String(http.StatusOK, "ok")
 	})
 	admin.GET("/product", func(ctx *gin.Context) {
 		AllContainer := db.MainDB.Stock.GetAllContainer()
@@ -418,7 +418,7 @@ func (*Srever) Run() {
 		commint.Username = infoUser[0]
 
 		if err := db.MainDB.AddCommint(commint.Idmodel, commint.Container, commint.Kind, structs.UserCommint{Username: commint.Username, Commint: commint.Commint, Stars: commint.Stars}); err != nil {
-			ctx.String(http.StatusNotAcceptable,err.Error())
+			ctx.String(http.StatusNotAcceptable, err.Error())
 			return
 		}
 		ctx.String(http.StatusOK, "add")
@@ -739,25 +739,7 @@ func (*Srever) Run() {
 
 }
 
-func adminMainPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "adminMainPage.html", nil)
-}
-
-func mainPage(c *gin.Context) {
-	c.HTML(http.StatusOK, "index.html", nil)
-}
-
 func InitSever() *Srever {
 	return new(Srever)
 }
 
-func m(ctx *gin.Context) {
-	_, err := ctx.Cookie("d")
-	if err != nil {
-		ctx.AsciiJSON(http.StatusOK, `{"err":"dsadasd"}`)
-		ctx.Abort()
-		return
-	}
-	ctx.Next()
-
-}
