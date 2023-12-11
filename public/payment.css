@@ -1,0 +1,24 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html{font-family: 'Source Sans 3', sans-serif;}
+a{
+    text-decoration: none;
+}
+button{
+    border: none;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+input{
+    font: inherit;
+    width: 100%;
+    border: none;
+}
+i, span{ display: inline-block; }
+label{ display: block; }
+
+input:focus { outline: 2px solid #c8815f;}
