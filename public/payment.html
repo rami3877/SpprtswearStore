@@ -5,45 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="payment.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
     <title>Payment</title>
 </head>
 <body>
     <main class="container">
-        <h1 class="heading">
-            <i class='bx bx-cart'></i> Shopping cart
-        </h1>
+        <header>
+            <h1>
+                <div>
+                    <p class="logo"> SS </p>
+                </div>
+    
+                <div class="header-title">
+                    <i class='bx bx-cart'></i> Shopping cart
+                </div>
+            </h1>
+        </header>
         <div class="item-flex">
             <!-- checkout section -->
             <section class="checkout">
-                <h2 class="section-heading">Payment Details</h2>
+                <h2>Payment Details</h2>
                 <div class="payment-form">
                     <div class="payment-method">
-                        <button class="method1">
-                            <i class='bx bxl-visa'></i>
-                            <span>Visa Card</span>
-                            <i class='bx bxs-check-circle'></i>
+                        <button class="method">
+                            <div>
+                                <i class='bx bxl-visa'></i>
+                                <span>Visa Card</span>
+                            </div>
+                            <div><i class='bx bxs-check-circle' id="checking"></i></div>
                         </button>
 
                         <button class="method2">
-                            <i class='bx bxl-paypal'></i>
-                            <span>PayPal</span>
-                            <i class='bx bx-check-circle'></i>
+                            <a href="https://www.paypal.com/signin" target="_blank" rel="noopener noreferrer">
+                                <div>
+                                    <i class='bx bxl-paypal'></i>
+                                    <span>PayPal</span>
+                                </div>
+                                <div><i class='bx bx-check-circle' id="checking"></i></div>
+                            </a>
                         </button>
                     </div>
                     <form action="#">
 
                         <div class="cardholder-name">
-                            <label for="cardholder-name" class="cardholder-name"> Cardholder name</label>
+                            <label for="cardholder-name" class="label-default"> Cardholder name</label>
                             <input type="text" name="cardholder-name" id="cardholder-name" class="input-default">
                         </div>
 
                         <div class="mobile-number">
-                            <label for="mobile-number" class="mobile-number"> Mobile Number </label>
+                            <label for="mobile-number" class="label-default"> Mobile number </label>
                             <input type="number" name="mobile-number" id="mobile-number" class="input-default">
                         </div>
 
                         <div class="address">
-                            <label for="address" class="address"> Address</label>
+                            <label for="address" class="label-default"> Address</label>
                             <input type="text" name="address" id="address" class="input-default">
                         </div>
 
@@ -52,16 +67,16 @@
                                 <label for="expire-date" class="label-default">Expiration date</label>
                             
                                 <div class="input-flex">
-                                   <input type="number" name="day" id="expire-date"
-                                    placeholder="31" min="1" max="31" class="input-default">
+                                   <input type="number" name="day" placeholder="31"
+                                     min="1" max="31" class="input-default">
                                     /
-                                    <input type="number" name="month" id="expire-date"
-                                    placeholder="12" min="1" max="12" class="input-default">
+                                    <input type="number" name="month" placeholder="12"
+                                     min="1" max="12" class="input-default">
                                 </div>
                             </div>
 
                             <div class="cvv">
-                                <label for="cvv" class="cvv"> CVV</label>
+                                <label for="cvv" class="label-default"> CVV</label>
                                 <input type="number" name="cvv" id="cvv" class="input-default">
                             </div>
                         </div>
@@ -69,10 +84,81 @@
                     </form>
                 </div>
 
-                <button class="btn btn-primary">
-                    <b>Pay</b> $ <span id="payamount">30</span>
-                </button>
+                <div class="pay-btn-width">
+                    <button class="pay-btn">
+                        <b>Pay</b> $<span id="payamount">30</span>
+                    </button>
+                </div>
                 
+            </section>
+
+            <!-- checkout section -->
+            <section class="cart">
+                <div class="cart-item-box">
+                    <h2 class="section-heading">Order Product</h2>
+                    
+                    <div class="product-card">
+                        <div class="card">
+                            <div class="img-box">
+                                <img src="https://th.bing.com/th/id/OIP._fzHbaZBweLph0QE7tJ6FAAAAA?rs=1&pid=ImgDetMain"
+                                 alt="SS Product" width="80px" class="product-img">
+                            </div>
+                            <div class="detail">
+                                <h4 class="product-name">Camiseta Originals</h4>
+                                <div class="wrapper">
+                                    <div class="product-qty">
+                                        <button id="decrement">
+                                            <i class='bx bx-minus'></i>
+                                        </button>
+                                        <span id="quantity">1</span>
+                                        <button id="increment">
+                                            <i class='bx bx-plus'></i>
+                                        </button>
+                                    </div>
+                                    <div class="price">
+                                        $<span id="price">37</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="product-close-btn">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="product-card">
+                        <div class="card">
+                            <div class="img-box">
+                                <img src="https://www.nielsenanimal.com/wp-content/uploads/2018/09/mens-nike-athletic-dry-t-shirt-blue-t-shirts.jpg"
+                                 alt="SS Product" width="80px" class="product-img">
+                            </div>
+                            <div class="detail">
+                                <h4 class="product-name">Nielsen Animal</h4>
+                                <div class="wrapper">
+                                    <div class="product-qty">
+                                        <button id="decrement">
+                                            <i class='bx bx-minus'></i>
+                                        </button>
+                                        <span id="quantity">1</span>
+                                        <button id="increment">
+                                            <i class='bx bx-plus'></i>
+                                        </button>
+                                    </div>
+                                    <div class="price">
+                                        $<span id="price">30</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="product-close-btn">
+                                <i class='bx bx-x'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="total">
+                    <span>Total</span> <span>$<span id="total">67</span></span>
+                </div>
             </section>
         </div>
     </main>
