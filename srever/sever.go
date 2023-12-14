@@ -20,7 +20,7 @@ import (
 
 type Srever int
 
-var app *gin.Engine
+var api *gin.Engine
 
 type String string
 
@@ -41,19 +41,19 @@ func (*Srever) Run() {
 		log.Fatal(err)
 	}
 
-	app = gin.New()
+	api = gin.New()
 
-	app.Use(gin.Logger())
+	api.Use(gin.Logger())
 
 	httpServer := &http.Server{
 		Addr:    ":8080",
-		Handler: app,
+		Handler: api,
 	}
 
-	app.NoRoute(gin.WrapH(http.FileServer(http.Dir("public"))))
+	api.NoRoute(gin.WrapH(http.FileServer(http.Dir("public"))))
 
 	//--------------- $admin$ ---------------------
-	admin := app.Group("/admin")
+	admin := api.Group("/admin")
 	admin.Use(func(ctx *gin.Context) {
 		if ctx.FullPath() == "/admin/login" {
 			ctx.Next()
@@ -119,13 +119,17 @@ func (*Srever) Run() {
 	})
 	admin.GET("/product", func(ctx *gin.Context) {
 		AllContainer := db.MainDB.Stock.GetAllContainer()
-		ctx.HTML(http.StatusOK, "product.html", gin.H{
-			"Container": AllContainer,
-		})
-	})
-	admin.POST("/product", func(ctx *gin.Context) {
-		allPost, _ := io.ReadAll(ctx.Request.Body)
-		fmt.Println(string(allPost))
+		if len(AllContainer) != 0 {
+
+			ctx.HTML(http.StatusOK, "product.html", gin.H{
+				"Container": AllContainer,
+			})
+		} else {
+			ctx.HTML(http.StatusOK, "product.html", gin.H{
+				"Container": "",
+			})
+		}
+
 	})
 	admin.POST("/product/container", func(ctx *gin.Context) {
 		newContainer := ctx.PostForm("Container")
@@ -236,7 +240,7 @@ func (*Srever) Run() {
 			ctx.String(http.StatusOK, "check json ")
 			return
 		}
-		if err := db.MainDB.Stock.AddModelToKind(ki.Container, ki.Kindname, &ki.Model, true); err != nil {
+		if err := db.MainDB.Stock.AddModelToKind(ki.Container, ki.Kindname, &ki.Model); err != nil {
 			ctx.String(http.StatusOK, err.Error())
 			return
 		}
@@ -312,7 +316,7 @@ func (*Srever) Run() {
 		httpServer.Shutdown(nil)
 	})
 	// -------------MainApi-------------------
-	app.GET("/product", func(ctx *gin.Context) {
+	api.GET("/product", func(ctx *gin.Context) {
 		kind := ctx.Query("kind")
 		Containter := ctx.Query("container")
 		id, err := strconv.Atoi(ctx.Query("id"))
@@ -330,7 +334,7 @@ func (*Srever) Run() {
 
 	})
 
-	app.GET("/AllContainerAndKind", func(ctx *gin.Context) {
+	api.GET("/AllContainerAndKind", func(ctx *gin.Context) {
 		fg := db.MainDB.Stock.GetAllContainerAndKind()
 		if len(fg) == 0 {
 			ctx.String(http.StatusNoContent, "")
@@ -341,7 +345,7 @@ func (*Srever) Run() {
 	})
 
 	//------------USER----------
-	user := app.Group("user")
+	user := api.Group("user")
 
 	user.Use(func(ctx *gin.Context) {
 		if ctx.FullPath() == "/user/login" {
@@ -384,6 +388,46 @@ func (*Srever) Run() {
 			return
 		}
 		ctx.Next()
+	})
+
+	user.DELETE("/commint", func(ctx *gin.Context) {
+
+		type UserCommint struct {
+			Username  string `josn:"username"`
+			Commint   string `json:"commint"`
+			Stars     int    `json:"stars"`
+			Container string `json:"container"`
+			Kind      string `json:"kind"`
+			Idmodel   int    `json:"idmodel"`
+		}
+		commint := UserCommint{}
+		if err := ctx.ShouldBindJSON(&commint); err != nil {
+			ctx.String(http.StatusNotAcceptable, "check json")
+			return
+		}
+		if commint.Commint == "" {
+			ctx.String(http.StatusNotAcceptable, "commint empty")
+			return
+		}
+		if commint.Stars <= 0 || commint.Stars > 6 {
+			ctx.String(http.StatusNotAcceptable, "stars invaild")
+			return
+		}
+
+		v, err := ctx.Cookie("session")
+		if err != nil {
+			ctx.String(http.StatusBadRequest, err.Error())
+			return
+		}
+		infoUser := strings.Split(v, ",")
+		commint.Username = infoUser[0]
+
+		if err := db.MainDB.AddCommint(commint.Idmodel, commint.Container, commint.Kind, structs.UserCommint{Username: commint.Username, Commint: commint.Commint, Stars: commint.Stars}); err != nil {
+			ctx.String(http.StatusNotAcceptable, err.Error())
+			return
+		}
+		ctx.String(http.StatusOK, "add")
+
 	})
 	user.POST("/commint", func(ctx *gin.Context) {
 
@@ -441,7 +485,7 @@ func (*Srever) Run() {
 
 		newuser.Username = useradd.Username
 		newuser.Password = useradd.Password
-		newuser.UserEmail.EmailName = useradd.Email
+		newuser.UserEmail= useradd.Email
 
 		if err := db.MainDB.Users.AddNew(newuser); err != nil {
 			ctx.String(http.StatusBadRequest, err.Error())
@@ -742,4 +786,3 @@ func (*Srever) Run() {
 func InitSever() *Srever {
 	return new(Srever)
 }
-

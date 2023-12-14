@@ -64,7 +64,7 @@ func (u *user) AddNew(users structs.User) error {
 			return ErrUserNotStrongPassword
 		}
 
-		if !isValidEmail(users.UserEmail.EmailName) {
+		if !isValidEmail(users.UserEmail) {
 			return ErrUserEmailInvalid
 		}
 

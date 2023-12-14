@@ -1,9 +1,5 @@
 package structs
 
-type Email struct {
-	IsActive  bool   `json:"isActive"`
-	EmailName string `json:"emailName"`
-}
 type Addr struct {
 	City      string `json:"city"`
 	Street    string `json:"street"`
@@ -19,7 +15,7 @@ type Visa struct {
 type User struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
-	UserEmail Email  `json:"email"`
+	UserEmail string `json:"email"`
 	FirstName string `json:"firstName"`
 	LastName  string `json:"lastName"`
 	Phone     string `json:"phone"`
