@@ -3,11 +3,13 @@ package db
 import (
 	"encoding/json"
 	"errors"
-	"go.etcd.io/bbolt"
 	"os"
 	"path"
+	"slices"
 	"strings"
 	"structs"
+
+	"go.etcd.io/bbolt"
 )
 
 var (
@@ -49,6 +51,45 @@ func (s *stock) DeleteKind(container, kind string) error {
 	delete(s.database[container], kind)
 
 	return nil
+}
+
+func (s *stock) DeleteCommint(id int, Container, kind, username, commint string) error {
+
+	v, err := s.ContainerAndKindIsExited(Container, kind)
+	if err != nil {
+		return err
+	}
+
+	return v.Batch(func(tx *bbolt.Tx) error {
+
+		b := tx.Bucket([]byte(kind))
+		if b == nil {
+			return ErrKindNotFound
+		}
+
+		data := b.Get(itob(id))
+		if data == nil {
+			return errors.New("no model has that id")
+		}
+
+		model := structs.Model{}
+
+		err := json.Unmarshal(data, &model)
+		if err != nil {
+			return err
+		}
+		model.Commint = slices.DeleteFunc(model.Commint, func(s structs.UserCommint) bool {
+			return (s.Username == username && s.Commint == commint)
+		})
+
+		dataTodatabase, err := json.Marshal(model)
+		if err != nil {
+			return err
+		}
+
+		return b.Put(itob(model.Id), dataTodatabase)
+	})
+
 }
 
 func (s *stock) addCommint(id int, Container, kind string, commint structs.UserCommint) error {
@@ -367,7 +408,7 @@ func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, si
 
 }
 
-func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, InStock bool) error {
+func (s *stock) AddModelToKind(Container, kind string, model *structs.Model) error {
 
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
@@ -375,46 +416,43 @@ func (s *stock) AddModelToKind(Container, kind string, model *structs.Model, InS
 	if !ok {
 		return errors.Join(ErrKindNotFound, ErrContainerIsNotExistInStock)
 	}
-	if InStock {
-		if len(model.Sizes) == 0 {
+	if len(model.Sizes) == 0 {
+		return ErrModelSize
+	}
+	for _, v := range model.Sizes {
+		if len(v) == 0 {
 			return ErrModelSize
-		}
-		for _, v := range model.Sizes {
-			if len(v) == 0 {
-				return ErrModelSize
-			} else {
-				for _, s := range v {
-					if s == 0 {
-						return ErrModelSize
-					}
+		} else {
+			for _, s := range v {
+				if s == 0 {
+					return ErrModelSize
 				}
 			}
 		}
+	}
 
-		if model.Price <= 0 {
-			return ErrModelPrice
-		}
-		if len(model.Description) == 0 {
-			return ErrModelDescription
-		}
-		if len(model.LinkesImage) == 0 {
-			return ErrModelLinkesImage
-		}
+	if model.Price <= 0 {
+		return ErrModelPrice
+	}
+	if len(model.Description) == 0 {
+		return ErrModelDescription
+	}
+	if len(model.LinkesImage) == 0 {
+		return ErrModelLinkesImage
 	}
 	return v.Batch(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte(kind))
 		if b == nil {
 			return ErrKindNotFound
 		}
-		if InStock {
 
-			c, err := b.NextSequence()
-			if err != nil {
-				// this not to clinc
-				return err
-			}
-			model.Id = int(c)
+		c, err := b.NextSequence()
+		if err != nil {
+			// this not to clinc
+			return err
 		}
+		model.Id = int(c)
+
 		data, err := json.Marshal(&model)
 		if err != nil {
 			// this not to clinc
@@ -517,13 +555,15 @@ func (s *stock) GetModelsInKind(formId, count int, Container, kind string) (mode
 	if !ok {
 		return models, ErrContainerIsNotExistInStock
 	}
+
 	err := v.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte(kind))
-		// check if bucket is exit
+
 		if b == nil {
 			return ErrKindNotFound
 		}
 		c := b.Cursor()
+
 		k, nextVuale := c.Seek(itob(formId))
 		if k == nil {
 			return ErrKindNotFound

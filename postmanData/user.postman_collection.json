@@ -238,6 +238,19 @@
 				"url": "http://localhost:8080/user/commint"
 			},
 			"response": []
+		},
+		{
+			"name": "commint",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\"commint\":\"dawsasd\",\n\"stars\":2,\n\"container\":\"newContainer\",\n\"kind\":\"short\",\n\"idmodel\":1\n\n\n}"
+				},
+				"url": "http://localhost:8080/user/commint"
+			},
+			"response": []
 		}
 	]
 }
