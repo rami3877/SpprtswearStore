@@ -31,9 +31,12 @@ func (db *DataBase) AddCommint(id int, Container, kind string, commint structs.U
 }
 
 func (db *DataBase) Buy(order Orders) error {
-	kinds, err := db.Stock.GetModelsInKind(order.IdModel, 0, order.Container, order.Kind)
+	models, err := db.Stock.GetModelsInKind(order.IdModel, 0, order.Container, order.Kind)
 	if err != nil {
 		return err
+	}
+	if len(models) == 0 {
+		return errors.New("no data")
 	}
 	user := structs.User{}
 	err = db.Users.GetUser(order.Username, &user)
@@ -61,20 +64,16 @@ func (db *DataBase) Buy(order Orders) error {
 		return errors.New("add visa")
 	}
 
-	if _, ok := kinds[0].Sizes[order.SizeName][order.Color]; !ok {
-		return ErrDataBaseOutStock
-	}
-
 	db.Orders.Add(order)
 
-	kinds[0].Sizes[order.SizeName][order.Color]--
-	if kinds[0].Sizes[order.SizeName][order.Color] <= 0 {
-		delete(kinds[0].Sizes[order.SizeName], order.Color)
-		db.Stock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName, kinds[0].Sizes[order.SizeName])
+	models[0].Sizes[order.SizeName][order.Color]--
+	if models[0].Sizes[order.SizeName][order.Color] <= 0 {
+		delete(models[0].Sizes[order.SizeName], order.Color)
+		db.Stock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName, models[0].Sizes[order.SizeName])
 	} else {
-		db.Stock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName, kinds[0].Sizes[order.SizeName])
+		db.Stock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName, models[0].Sizes[order.SizeName])
 	}
-	if len(kinds[0].Sizes[order.SizeName]) == 0 {
+	if len(models[0].Sizes[order.SizeName]) == 0 {
 		db.Stock.DeleteSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName)
 	}
 

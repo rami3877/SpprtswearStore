@@ -555,13 +555,15 @@ func (s *stock) GetModelsInKind(formId, count int, Container, kind string) (mode
 	if !ok {
 		return models, ErrContainerIsNotExistInStock
 	}
+
 	err := v.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte(kind))
-		// check if bucket is exit
+
 		if b == nil {
 			return ErrKindNotFound
 		}
 		c := b.Cursor()
+
 		k, nextVuale := c.Seek(itob(formId))
 		if k == nil {
 			return ErrKindNotFound
