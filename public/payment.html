@@ -24,7 +24,7 @@
         <div class="item-flex">
             <!-- checkout section -->
             <section class="checkout">
-                <h2>Payment Details</h2>
+                <h2 class="section-heading">Payment Details</h2>
                 <div class="payment-form">
                     <div class="payment-method">
                         <button class="method">
@@ -49,22 +49,31 @@
 
                         <div class="cardholder-name">
                             <label for="cardholder-name" class="label-default"> Cardholder name</label>
-                            <input type="text" name="cardholder-name" id="cardholder-name" class="input-default">
+                            <input type="text" name="cardholder-name" id="cardholder-name" class="input-default"
+                            placeholder="Name on card">
                         </div>
 
                         <div class="mobile-number">
                             <label for="mobile-number" class="label-default"> Mobile number </label>
-                            <input type="number" name="mobile-number" id="mobile-number" class="input-default">
+                            <input type="number" name="mobile-number" id="mobile-number" class="input-default"
+                            placeholder="+962**">
                         </div>
 
                         <div class="address">
                             <label for="address" class="label-default"> Address</label>
-                            <input type="text" name="address" id="address" class="input-default">
+                            <input type="text" name="address" id="address" class="input-default"
+                            placeholder="country / city / town / street">
+                        </div>
+
+                        <div class="Visa_number">
+                            <label for="Visa_number" class="label-default"> Visa number </label>
+                            <input type="number" name="Visa_number" id="Visa_number" class="input-default"
+                            placeholder="**** **** **** ****">
                         </div>
 
                         <div class="input-flex">
                             <div class="expire-date">
-                                <label for="expire-date" class="label-default">Expiration date</label>
+                                <span class="label-default">Expiration date</span>
                             
                                 <div class="input-flex">
                                    <input type="number" name="day" placeholder="31"
@@ -86,22 +95,22 @@
 
                 <div class="pay-btn-width">
                     <button class="pay-btn">
-                        <b>Pay</b> $<span id="payamount">30</span>
+                        <b>Pay</b> $<span id="payamount">67</span>
                     </button>
                 </div>
                 
             </section>
 
-            <!-- checkout section -->
+            <!-- cart section -->
             <section class="cart">
-                <div class="cart-item-box">
+                <div class="cart-border">
                     <h2 class="section-heading">Order Product</h2>
                     
                     <div class="product-card">
                         <div class="card">
                             <div class="img-box">
                                 <img src="https://th.bing.com/th/id/OIP._fzHbaZBweLph0QE7tJ6FAAAAA?rs=1&pid=ImgDetMain"
-                                 alt="SS Product" width="80px" class="product-img">
+                                 alt="SS Product" width="90px" class="product-img">
                             </div>
                             <div class="detail">
                                 <h4 class="product-name">Camiseta Originals</h4>
@@ -120,8 +129,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <button id="product-close-btn">
-                                <i class='bx bx-x'></i>
+                            <button id="product-delete-btn">
+                                <i class='bx bxs-trash'></i>
                             </button>
                         </div>
                     </div>
@@ -130,7 +139,7 @@
                         <div class="card">
                             <div class="img-box">
                                 <img src="https://www.nielsenanimal.com/wp-content/uploads/2018/09/mens-nike-athletic-dry-t-shirt-blue-t-shirts.jpg"
-                                 alt="SS Product" width="80px" class="product-img">
+                                 alt="SS Product" width="90px" class="product-img">
                             </div>
                             <div class="detail">
                                 <h4 class="product-name">Nielsen Animal</h4>
@@ -149,15 +158,15 @@
                                     </div>
                                 </div>
                             </div>
-                            <button id="product-close-btn">
-                                <i class='bx bx-x'></i>
+                            <button id="product-delete-btn">
+                                <i class='bx bxs-trash'></i>
                             </button>
                         </div>
                     </div>
                 </div>
 
                 <div class="total">
-                    <span>Total</span> <span>$<span id="total">67</span></span>
+                    <span>Total:</span> <span>$<span id="total">67</span></span>
                 </div>
             </section>
         </div>
