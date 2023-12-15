@@ -207,3 +207,13 @@ header{
     from{ transform: translateX(-765px);}
     to{ transform: translateX(0);}
 }
+
+
+/* responsive */
+@media (max-width: 620px){
+    .navlist{
+        flex-direction: column;
+        text-align: center;
+        margin: 0 24px;
+    }
+}

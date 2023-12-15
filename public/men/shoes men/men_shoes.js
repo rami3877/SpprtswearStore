@@ -10,3 +10,15 @@ cartIcon.onclick = () => {
 closeCart.onclick = () => {
     cart.classList.remove('active');
 }
+
+let com = document.querySelector('#com');
+let comments = document.querySelector('.comments');
+let closeCom = document.querySelector('#close-com');
+// open comments
+com.onclick = () => {
+    comments.classList.add('active');
+}
+// close comments
+closeCom.onclick = () => {
+    comments.classList.remove('active');
+}

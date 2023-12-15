@@ -14,7 +14,7 @@
         <div class="nav_container">
             <p class="logo"> SS </p>
 
-            <i class='bx bx-shopping-bag bx-tada' id="cart-icon" data-quantity="0"></i>
+            <i class='bx bx-shopping-bag bx-tada' id="cart-icon" data-quantity="1"></i>
         
          <div class="cart">
             <h2 class="cart-title">Your Cart</h2>
@@ -40,7 +40,9 @@
                 <div class="total-price">$0</div>
             </div>
 
-            <button type="button" class="btn-buy"> Order Now </button>
+            <a href="/payment.html">
+                <button type="button" class="btn-buy"> Order Now </button>
+            </a>
             
             <i class='bx bx-x' id="close-cart"></i>
         </div>
@@ -255,6 +257,34 @@
         </div>
     </section>
 
+    <!-- comments -->
+    <section class="comment-section">
+        <h3 id="com"> Comments <i class='bx bx-comment-detail bx-flashing' ></i></h3>
+        <br>
+        <div class="comments">
+            <div>
+                <span class="user-name">EliasM :</span>
+                <span class="user-comment"> what an amazing products i just found it here :)</span>
+            </div>
+            <div>
+                <span class="user-name">Rami :</span>
+                <span class="user-comment"> Thank you Sportswear Store for this beautiful website <3</span>
+            </div>
+            <br>
+            <div class="comment-tail">
+                <div>
+                    <span>Add comment</span>
+                    <br>
+                    <textarea name="comment-box" id="comment-box" cols="50" rows="3"></textarea>
+                    <label id="send-comment" for="comment-box"> <i class='bx bx-send'></i> </label>
+                </div>
+
+                <i class='bx bxs-chevrons-up bx-fade-up' id="close-com"></i>
+            </div>
+        </div>
+        
+    </section>
+    
     <!--link to js-->
     <script src="men_shoes.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>

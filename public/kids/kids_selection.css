@@ -22,7 +22,7 @@ header{
     width: 100%;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 1;
     position: fixed;
     display: flex;
     align-items: center;
@@ -70,6 +70,7 @@ header{
 }
 .selections{
     text-align: center;
+    z-index: 1;
 }
 .selections:hover li a{
     opacity: 0;
@@ -205,4 +206,16 @@ header{
 @keyframes runSlider{
     from{ transform: translateX(-765px);}
     to{ transform: translateX(0);}
+}
+
+/* responsive */
+@media (max-width: 620px){
+    .navlist{
+        flex-direction: column;
+        text-align: center;
+        margin: 0 24px;
+    }
+    .pic{
+        transform: scale(.75);
+    }
 }

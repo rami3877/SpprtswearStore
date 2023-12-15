@@ -107,6 +107,9 @@ header{
     font-size: 1.1rem;
     margin: 1rem 0 0 .7rem;
 }
+.cart a{
+    text-decoration: none;
+}
 .btn-buy{
     display: flex;
     justify-content: center;
@@ -115,7 +118,7 @@ header{
     width: 50%;
     text-align: center;
     background: #c8815f;
-    color: var(--bg-color);
+    color: #fff;
     font-size: 1rem;
     font-style: italic;
     font-weight: 500;
