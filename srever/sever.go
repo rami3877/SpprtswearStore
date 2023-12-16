@@ -17,7 +17,7 @@ func (*Srever) Run() {
 	serverEngin.Use(gin.Recovery())
 
 	httpServer := &http.Server{
-		Addr:    ":8080",
+		 Addr:    ":8080",
 		Handler: serverEngin,
 	}
 

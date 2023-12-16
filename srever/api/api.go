@@ -19,14 +19,14 @@ func InitApi ()*Api{
 	 return&Api{}
 }
 
-func (api *Api) Setup(serverEngin *gin.Engine) {
-	api.setUserApi(serverEngin)
-	api.setGuestApi(serverEngin)
-	api.setAdminApi(serverEngin)
+func (api *Api) Setup(server *gin.Engine) {
+	api.setUserApi(server)
+	api.setGuestApi(server)
+	api.setAdminApi(server)
 }
 
-func (api *Api) setUserApi(serverEngin *gin.Engine) {
-	api.user.userGroup = serverEngin.Group("/user")
+func (api *Api) setUserApi(server *gin.Engine) {
+	api.user.userGroup = server.Group("/user")
 	api.user.setLoginApi()
 	api.user.setLogoutApi()
 	api.user.setMiddleware()
@@ -36,8 +36,8 @@ func (api *Api) setUserApi(serverEngin *gin.Engine) {
 	api.user.setInformationApi()
 }
 
-func (api *Api) setAdminApi(serverEngin *gin.Engine) {
-	api.admin.adminGroup = serverEngin.Group("/admin")
+func (api *Api) setAdminApi(server *gin.Engine) {
+	api.admin.adminGroup = server.Group("/admin")
 	api.admin.setLoginApi()
 	api.admin.setOrderApi()
 	api.admin.setLogoutApi()
@@ -46,9 +46,9 @@ func (api *Api) setAdminApi(serverEngin *gin.Engine) {
 	api.admin.GetUsers()
 	// api.admin.setAdminPage()
 }
-func (api *Api) setGuestApi(serverEngin *gin.Engine) {
+func (api *Api) setGuestApi(server *gin.Engine) {
 
-	serverEngin.GET("/product", func(ctx *gin.Context) {
+	server.GET("/product", func(ctx *gin.Context) {
 		kind := ctx.Query("kind")
 		Containter := ctx.Query("container")
 		id, err := strconv.Atoi(ctx.Query("id"))
@@ -66,7 +66,7 @@ func (api *Api) setGuestApi(serverEngin *gin.Engine) {
 
 	})
 
-	serverEngin.GET("/AllContainerAndKind", func(ctx *gin.Context) {
+	server.GET("/AllContainerAndKind", func(ctx *gin.Context) {
 		fg := db.MainDB.Stock.GetAllContainerAndKind()
 		if len(fg) == 0 {
 			ctx.String(http.StatusNoContent, "")
