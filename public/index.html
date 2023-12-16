@@ -28,6 +28,7 @@
 
         <div class="headerlogin-icon">
             <a title="Profile" href="#"><i class='bx bx-user-circle'></i></a>
+            <i id="setting-icon" class='bx bx-cog'></i>
         </div>
 
     </header>
@@ -46,7 +47,7 @@
     <section class="login">
         <span class="close-login"> <ion-icon name="close-outline"></ion-icon> </span>
         
-        <!-- login form -->
+        <!-- login form 
         <div class="form-login">
             <h2>Login</h2>
             <form action="#">
@@ -72,6 +73,7 @@
                 </div>
             </form>
         </div>
+        -->
         <!-- register form -->
         <div class="form-register">
             <h2 id="registerh2">Registration</h2>
@@ -99,6 +101,45 @@
                 <button type="submit" class="login-btn"> Sign Up </button>
                 <div class="login-register">
                     <p> Already have an account? <a href="#" class="login-link">Login</a></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- setting -->
+        <div class="form-setting">
+            <h2>Setting</h2>
+            <form action="#">
+                <div class="first-name">
+                    <label for="first-name" class="label-default"> First name</label>
+                            <input type="text" name="first-name" id="first-name" class="input-default"
+                            placeholder="First name">
+                </div>
+
+                <div class="last-name">
+                    <label for="last-name" class="label-default"> Last name</label>
+                            <input type="text" name="last-name" id="last-name" class="input-default"
+                            placeholder="Last name">
+                </div>
+
+                <div class="change-password">
+                    <h4>Change password</h4>
+                    <div class="current-password">
+                        <label for="current-password" class="label-default"> Current password</label>
+                                <input type="text" name="current-password" id="current-password" class="input-default"
+                                placeholder="current password">
+                    </div>
+                    <div class="new-password">
+                        <label for="new-password" class="label-default"> New password</label>
+                                <input type="text" name="new-password" id="new-password" class="input-default"
+                                placeholder="new password">
+                    </div>
+                </div>
+
+                <div class="visa">
+                    <button>
+                        <i class='bx bxl-visa'></i>
+                        <span>Visa Card</span>
+                    </button>
                 </div>
             </form>
         </div>
