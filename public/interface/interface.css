@@ -77,8 +77,8 @@ header{
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    transition: transform .75s ease , height .2s ease;
-    transform: scale(0); 
+    transition: transform .75s ease;
+    transform: scale(0);
 }
 .login.active-popup{
     transform: scale(1);
@@ -238,30 +238,35 @@ section{
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
 }
+.home-text{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
 .home-text h1{
     font-size: 38px;
     font-weight: 800;
     line-height: 1.2;
     letter-spacing: .6rem;
     margin-bottom: 1.4rem;
-    margin-left: 90px;
 }
 .home-text span{
     font-size: 30px;
-    margin-left: 75px;
 }
 .home-text p{
     font-size: 16px;
     font-weight: 500;
     margin-bottom: 3rem;
     letter-spacing: .2rem;
+    text-align: center;
 }
 .text-btn{
     display: inline-block;
     padding: 13px 25px;
     background: var(--main-color);
     color: var(--bg-color);
-    margin-left: 150px;
     font-size: 15px;
     letter-spacing: 1px;
     font-weight: 600;
@@ -360,4 +365,26 @@ margin-top: 2rem;
     padding: 14px;
     background: var(--main-color);
     border-radius: 2rem;
+}
+
+/* responsive */
+@media (max-width: 850px){
+    .home{
+        display: flex;
+        flex-direction: column-reverse;
+    }
+    .login{
+        width: 0;
+        height: 0;
+    }
+    .login.active-popup{
+        width: 400px;
+        height: 440px;
+        margin: 35px 0;
+    }
+}
+@media (max-width: 500px){
+    .navlist{
+        flex-direction: column;
+    }
 }

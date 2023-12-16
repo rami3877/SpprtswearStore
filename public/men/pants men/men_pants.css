@@ -42,6 +42,7 @@ header{
     box-shadow: 0 1px 4px hsla(0, 0%, 100%, 0.400);
     height: 88px;
     background: #1e1e2a;
+    z-index: 1;
 }
 .nav_container{
     display: flex;
@@ -84,7 +85,6 @@ header{
     padding: 20px;
     box-shadow: -2px 0 4px hsl(0, 4%, 15% / 10%);
     transition: .85s cubic-bezier(.075, .82, .165, 1);
-    z-index: 10;
 }
 .cart.active{
     right: 0;
@@ -113,6 +113,9 @@ header{
     font-size: 1.1rem;
     margin: 1rem 0 0 .7rem;
 }
+.cart a{
+    text-decoration: none;
+}
 .btn-buy{
     display: flex;
     justify-content: center;
@@ -121,7 +124,7 @@ header{
     width: 50%;
     text-align: center;
     background: #c8815f;
-    color: var(--bg-color);
+    color: #fff;
     font-size: 1rem;
     font-style: italic;
     font-weight: 500;
@@ -205,6 +208,7 @@ header{
 .product-box{
     background: #1e1e2aea;
     padding: 10px;
+    border: 3px solid #1e1e2a;
     border-radius: 10px;
     transition: .4s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
@@ -248,7 +252,6 @@ header{
     font-weight: bolder;
     border-radius: 50%;
     cursor: pointer;
-    z-index: 1;
 }
 #add-to-cart:hover{
     background: #1e1e2a;
@@ -281,6 +284,77 @@ header{
 }
 .color-size ul li span:hover{
     background: #1e1e2a;
+}
+.comment-section{
+    width: 94%;
+    padding: 1.5%;
+    margin: 0 0 2% 3%;
+    border-radius: 11px;
+    background: #1e1e2a;
+}
+#com{
+    width: fit-content;
+    cursor: pointer;
+    letter-spacing: 1.5px;
+}
+#com:hover{
+    text-decoration: underline;
+}
+.comments div{
+    margin: 10px;
+    padding-left: 8px;
+    border-radius: 8px;
+    backdrop-filter: blur(1px);
+    box-shadow: 0 0 30px rgba(0, 0, 0, .5);
+}
+.user-name{
+    width: fit-content;
+    cursor: pointer;
+    display: block;
+    letter-spacing: .7px;
+    font-size: large;
+    font-weight: 500;
+}
+.user-name:hover{
+    color: rgb(26, 26, 255);
+}
+.user-comment{
+    padding-left: 8px;
+}
+.comments span{
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+#send-comment{
+    cursor: pointer;
+}
+#send-comment:hover{
+    color: #c8815f;
+}
+#comment-box{
+    background: transparent;
+    color: #fff;
+}
+.comment-tail{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.comment-tail i{
+    cursor: pointer;
+    margin-right: 1.5rem;
+    font-size: large;
+}
+.comment-tail i:hover{
+    scale: 1.2;
+    color: #c8815f;
+}
+.comments{
+    position: fixed;
+}
+.comments.active{
+    position: relative;
+    transition: .85s cubic-bezier(.075, .82, .165, 1);
 }
 .sf-container{
     height: 100vh;
