@@ -20,3 +20,10 @@ closeLogin.addEventListener('click', ()=> {
     login.classList.remove('active-popup');
 });
 
+
+let pass = document.querySelector('#pass');
+let password = document.querySelector('#password');
+// open change password
+pass.onclick = () => {
+    password.classList.add('active');
+}
