@@ -13,10 +13,8 @@ type Api struct {
 	user
 }
 
-
-
-func InitApi ()*Api{
-	 return&Api{}
+func InitApi() *Api {
+	return &Api{}
 }
 
 func (api *Api) Setup(server *gin.Engine) {
@@ -46,6 +44,7 @@ func (api *Api) setAdminApi(server *gin.Engine) {
 	api.admin.GetUsers()
 	// api.admin.setAdminPage()
 }
+
 func (api *Api) setGuestApi(server *gin.Engine) {
 
 	server.GET("/product", func(ctx *gin.Context) {
@@ -75,4 +74,9 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 		}
 
 	})
+
+	server.GET("/", func(ctx *gin.Context) {
+		 ctx.HTML(http.StatusOK, "index.html", gin.H{"guest":false})
+	})
+
 }

@@ -22,6 +22,7 @@ func (*Srever) Run() {
 	}
 
 	serverEngin.NoRoute(gin.WrapH(http.FileServer(http.Dir("public"))))
+	serverEngin.LoadHTMLGlob("templates/*.html")
 	api.InitApi().Setup(serverEngin)
 
 	httpServer.ListenAndServe()
