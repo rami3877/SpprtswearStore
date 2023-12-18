@@ -122,24 +122,32 @@
                 </div>
 
                 <div class="change-password">
-                    <h4>Change password</h4>
-                    <div class="current-password">
-                        <label for="current-password" class="label-default"> Current password</label>
-                                <input type="text" name="current-password" id="current-password" class="input-default"
-                                placeholder="current password">
-                    </div>
-                    <div class="new-password">
-                        <label for="new-password" class="label-default"> New password</label>
-                                <input type="text" name="new-password" id="new-password" class="input-default"
-                                placeholder="new password">
+                    <h4 id="pass">Change password<i class='bx bx-chevron-down'></i></h4>
+                    
+                    <div id="password">
+                        <div class="current-password">
+                            <label for="current-password" class="label-default"> Current password</label>
+                                    <input type="password" name="current-password" id="current-password" class="input-default"
+                                    placeholder="current password">
+                        </div>
+                        <div class="new-password">
+                            <label for="new-password" class="label-default"> New password</label>
+                                    <input type="text" name="new-password" id="new-password" class="input-default"
+                                    placeholder="new password">
+                        </div>
                     </div>
                 </div>
 
                 <div class="visa">
-                    <button>
-                        <i class='bx bxl-visa'></i>
-                        <span>Visa Card</span>
+                    <button class="sub-btn">
+                        <span >Submit</span>
                     </button>
+
+                    <div class="visa-icon">
+                        <a href="visa.html" target="_blank"><i class='bx bxl-visa'></i></a>
+                    </div>
+
+                    <a href="/user/logout"><i class='bx bxs-log-out'></i></a>
                 </div>
             </form>
         </div>

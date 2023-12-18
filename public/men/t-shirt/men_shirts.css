@@ -351,45 +351,7 @@ header{
     position: relative;
     transition: .85s cubic-bezier(.075, .82, .165, 1);
 }
-.sf-container{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.sf-container h1{
-    text-align: center;
-    font-size: 2.8rem;
-    margin-bottom: 10px;
-    letter-spacing: 2.5px;
-}
-.sf-container p{
-    max-width: 660px;
-    text-align: center;
-    font-size: 1.1rem;
-    letter-spacing: 1px;
-    margin-top: 10px;
-}
-.sf-container img{
-    width: 200px;
-    margin: 2rem 0;
-}
-.sf-container a{
-    padding: 12px 20px;
-    border: 1px solid #fff;
-    border-radius: 2rem;
-    background: #c8815f;
-    color: #fff;
-    font-weight: 500;
-    text-decoration: none;
-    letter-spacing: .5px;
-}
-.sf-container a:hover{
-    background: #fff;
-    color: #c8815f;
-    border-color: #c8815f;
-}
+
 /* responsive */
 @media (max-width: 1080px) {
     .nav_container{
