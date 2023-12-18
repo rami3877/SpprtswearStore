@@ -2,6 +2,7 @@ package api
 
 import (
 	"db"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -76,7 +77,17 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 	})
 
 	server.GET("/", func(ctx *gin.Context) {
-		 ctx.HTML(http.StatusOK, "index.html", gin.H{"guest":false})
+		 isGust := false
+		 if _, err := ctx.Cookie("session") ; err != nil {
+			  isGust = true
+
+
+
+		 fmt.Println(err == http.ErrNoCookie)
+		 }
+		 ctx.HTML(http.StatusOK, "index.html", gin.H{"guest":isGust})
 	})
+
+
 
 }

@@ -6,7 +6,7 @@
     <meta name="description" content=" Sportswear Store // Clothes Store // login to Sportswear Store ">
     <meta name="keywords" content="Sportswear Store , SS , login Sportswear Store , Clothes ">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/interface.css">
+    <link rel="stylesheet" href="css/interface.css">
     <link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,10 +25,10 @@
 
         <ul class="navlist" id="navlist">
         </ul>
-        <div class="headerlogin-icon">
 
+        <div class="headerlogin-icon">
             {{if .guest}}
-            <a title="Profile" href="#"><i class='bx bx-user-circle' onclick="show()"></i></a>
+            <a title="Profile" href="#"><i class='bx bx-user-circle'></i></a>
             {{else}}
             <i id="setting-icon" class='bx bx-cog'></i>
             {{end}}
@@ -45,25 +45,23 @@
                 By Famous Brands Exculusively On SPORTSWEAR</p>
             <a href="#" class="text-btn"> View Collection </a>
         </div>
-        <!-- login + registration -->
 
+        <!-- login + registration -->
         <section class="login">
             <span class="close-login"> <ion-icon name="close-outline"></ion-icon> </span>
-
-        {{if .guest}}
+            {{if .guest}}
             <!-- login form -->
-            <div class="form-login" id="login">
-
+            <div class="form-login">
                 <h2>Login</h2>
                 <form action="#">
                     <div class="input-box">
                         <span class="login-icon"> <ion-icon name="mail"></ion-icon> </span>
-                        <input type="text" required>
+                        <input type="text" id="usernameLogin" onclick="ClearErrorSpan()" required>
                         <label> username </label>
                     </div>
                     <div class="input-box">
                         <span class="login-icon"> <ion-icon name="lock-closed"></ion-icon> </span>
-                        <input type="password" required>
+                        <input type="password" id="passwordLogin" onclick="ClearErrorSpan()" required>
                         <label>Password</label>
                     </div>
                     <div class="rememberme">
@@ -72,13 +70,44 @@
                         </label>
                         <a href="#"> Forgot Password? </a>
                     </div>
-                    <button type="submit" class="login-btn"> Login </button>
+                    <button type="submit" class="login-btn" onclick="loginIndex()"> Login </button>
                     <div class="login-register">
                         <p> Don't have an account? <a href="#" class="register-link">Register</a></p>
                     </div>
                 </form>
+                <span id="spanErrorLogin"></span>
             </div>
 
+            <div class="form-register">
+                <h2 id="registerh2">Registration</h2>
+                <form action="#">
+                    <div class="input-box">
+                        <span class="login-icon"> <ion-icon name="person"></ion-icon> </span>
+                        <input type="text" id="usernameResister" onclick="ClearErrorSpan()" required>
+                        <label> Username </label>
+                    </div>
+                    <div class="input-box">
+                        <span class="login-icon"> <ion-icon name="mail"></ion-icon> </span>
+                        <input type="email" id="emailResister" onclick="ClearErrorSpan()" required>
+                        <label> Email </label>
+                    </div>
+                    <div class="input-box">
+                        <span class="login-icon"> <ion-icon name="lock-closed"></ion-icon> </span>
+                        <input type="password" id="passwordResister" onclick="ClearErrorSpan()" required>
+                        <label>Password</label>
+                    </div>
+                    <div class="rememberme">
+                        <label>
+                            <input type="checkbox"> I agree to the terms & conditions
+                        </label>
+                    </div>
+                    <button type="submit" class="login-btn" onclick="Resister()"> Sign Up </button>
+                    <div class="login-register">
+                        <p> Already have an account? <a href="#" class="login-link">Login</a></p>
+                    </div>
+                </form>
+                <span id="spanErrorResister"></span>
+            </div>
             {{else}}
             <!-- register form -->
             <div class="form-register">
@@ -110,9 +139,8 @@
                     </div>
                 </form>
             </div>
+
             <!-- setting -->
-
-
             <div class="form-setting">
                 <h2>Setting</h2>
                 <form action="#" method="post">
@@ -129,30 +157,36 @@
                     </div>
 
                     <div class="change-password">
-                        <h4>Change password</h4>
-                        <div class="current-password">
-                            <label for="current-password" class="label-default"> Current password</label>
-                            <input type="text" name="current-password" id="current-password" class="input-default"
-                                placeholder="current password">
-                        </div>
-                        <div class="new-password">
-                            <label for="new-password" class="label-default"> New password</label>
-                            <input type="text" name="new-password" id="new-password" class="input-default"
-                                placeholder="new password">
+                        <h4 id="pass">Change password<i class='bx bx-chevron-down'></i></h4>
+
+                        <div id="password">
+                            <div class="current-password">
+                                <label for="current-password" class="label-default"> Current password</label>
+                                <input type="password" name="current-password" id="current-password"
+                                    class="input-default" placeholder="current password">
+                            </div>
+                            <div class="new-password">
+                                <label for="new-password" class="label-default"> New password</label>
+                                <input type="text" name="new-password" id="new-password" class="input-default"
+                                    placeholder="new password">
+                            </div>
                         </div>
                     </div>
 
                     <div class="visa">
-                        <button>
-                            <i class='bx bxl-visa'></i>
-                            <span>Visa Card</span>
+                        <button class="sub-btn">
+                            <span>Submit</span>
                         </button>
+
+                        <div class="visa-icon">
+                            <a href="visa.html" target="_blank"><i class='bx bxl-visa'></i></a>
+                        </div>
+
+                        <a href="/user/logout"><i class='bx bxs-log-out'></i></a>
                     </div>
                 </form>
             </div>
-
             {{end}}
-
         </section>
 
 
@@ -203,19 +237,11 @@
 
     <!-- scroll to top -->
     <a href="#" class="home-top"> <i class='bx bx-up-arrow-alt'></i> </a>
-
-
-
-    <script type="module" src="/js/interface.js"></script>
+    <script src="js/interface.js"></script>
+    <script src="js/index.js"></script>
     <script type="module" src="http://unpkg.com/ionicons@5.5.2/dist/ionicons.esm.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
-
-
-
-
-    <!-- <script  src="js/index.js">
-    </script> -->
 </body>
 
 </html>

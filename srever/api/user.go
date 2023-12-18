@@ -286,7 +286,8 @@ func (user *user) setInformationApi() {
 func (user *user) setLogoutApi() {
 	user.userGroup.POST("/logout", func(ctx *gin.Context) {
 		ctx.SetCookie("session", "", -1, "/user", "", false, true)
-		ctx.HTML(http.StatusOK, "adminLogin.html", nil)
+		//ctx.HTML(http.StatusOK, "adminLogin.html", nil)
+		ctx.String(http.StatusOK , "")
 
 	})
 }
@@ -310,7 +311,7 @@ func (user *user) setLoginApi() {
 		}
 		_, m, d := time.Now().Date()
 		pasHash, _ := bcrypt.GenerateFromPassword([]byte(userlogin.Password+m.String()+strconv.Itoa(d)), 12)
-		ctx.SetCookie("session", userlogin.Username+","+string(pasHash), 0, "/user", "", false, true)
+		ctx.SetCookie("session", userlogin.Username+","+string(pasHash), 0, "/", "", false, true)
 		ctx.String(http.StatusAccepted, "ok")
 
 	})
@@ -367,9 +368,8 @@ func (user *user) setCommintApi() {
 			return
 		}
 		infoUser := strings.Split(v, ",")
-		  
 
-		if err := db.MainDB.Stock.DeleteCommint(commint.Idmodel, commint.Container, commint.Kind , infoUser[0] , commint.Commint) ; err!= nil {
+		if err := db.MainDB.Stock.DeleteCommint(commint.Idmodel, commint.Container, commint.Kind, infoUser[0], commint.Commint); err != nil {
 			ctx.String(http.StatusNotAcceptable, err.Error())
 			return
 		}
@@ -432,7 +432,7 @@ func (user *user) setMiddleware() {
 		}
 		v, err := ctx.Cookie("session")
 		if err != nil {
-			ctx.String(http.StatusBadRequest, "error login")
+			ctx.Redirect(http.StatusContinue, "/")
 			ctx.Abort()
 			return
 		}
@@ -440,19 +440,24 @@ func (user *user) setMiddleware() {
 
 		infoUser := strings.Split(v, ",")
 		if len(infoUser) != 2 {
-			ctx.String(http.StatusBadRequest, "error")
+
+			ctx.SetCookie("session", "", -1, "/user", "", false, true)
+			ctx.Redirect(http.StatusContinue, "/")
 			ctx.Abort()
 			return
 		}
 
 		user := structs.User{}
 		if err := db.MainDB.Users.GetUser(infoUser[0], &user); err != nil {
-			ctx.String(http.StatusBadRequest, "error")
+
+			ctx.SetCookie("session", "", -1, "/user", "", false, true)
+			ctx.Redirect(http.StatusContinue, "/")
 			ctx.Abort()
 			return
 		}
 		if err = bcrypt.CompareHashAndPassword([]byte(infoUser[1]), []byte(user.Password+m.String()+strconv.Itoa(d))); err != nil {
-			ctx.String(http.StatusBadRequest, "error")
+			ctx.SetCookie("session", "", -1, "/user", "", false, true)
+			ctx.Redirect(http.StatusContinue, "/")
 			ctx.Abort()
 			return
 		}
