@@ -26,6 +26,18 @@ fetch("/AllContainerAndKind", {
     });
 })
 
+
+function logoutUser() {
+
+    fetch("/user/logout", {
+        method: "GET"
+    }).then(re => re.ok).then(d => {
+        document.location.reload()
+    })
+
+}
+
+
 function loginIndex() {
     const username = document.getElementById("usernameLogin").value
     const password = document.getElementById("passwordLogin").value
@@ -42,10 +54,9 @@ function loginIndex() {
             document.getElementById("spanErrorLogin").innerText = data
 
         } else {
-            document.location("/")
+            document.location.reload()
         }
-    }
-    )
+    })
 
 }
 
@@ -69,10 +80,10 @@ function Resister() {
         },
         body: `{"username":"${username}","password":"${password}","email":"${email}"}`,
     }).then(Response => Response.text()).then(data => {
-        if (data != "Create") {
+        if (data !== "create") {
             document.getElementById("spanErrorResister").innerText = data
         } else {
-            document.location("/")
+            document.location.reload()
         }
 
     }

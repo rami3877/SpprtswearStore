@@ -284,10 +284,8 @@ func (user *user) setInformationApi() {
 }
 
 func (user *user) setLogoutApi() {
-	user.userGroup.POST("/logout", func(ctx *gin.Context) {
-		ctx.SetCookie("session", "", -1, "/user", "", false, true)
-		//ctx.HTML(http.StatusOK, "adminLogin.html", nil)
-		ctx.String(http.StatusOK , "")
+	user.userGroup.GET("/logout", func(ctx *gin.Context) {
+		ctx.SetCookie("session", "", -1, "/", "", false, true)
 
 	})
 }
@@ -340,6 +338,10 @@ func (user *user) setRegisterApi() {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		}
+
+		_, m, d := time.Now().Date()
+		pasHash, _ := bcrypt.GenerateFromPassword([]byte(newuser.Password+m.String()+strconv.Itoa(d)), 12)
+		ctx.SetCookie("session", newuser.Username+","+string(pasHash), 0, "/", "", false, true)
 		ctx.String(http.StatusAccepted, "create")
 
 	})
@@ -430,6 +432,7 @@ func (user *user) setMiddleware() {
 			ctx.Next()
 			return
 		}
+		// check if will work on /user becase you set to be on root path
 		v, err := ctx.Cookie("session")
 		if err != nil {
 			ctx.Redirect(http.StatusContinue, "/")
@@ -441,7 +444,7 @@ func (user *user) setMiddleware() {
 		infoUser := strings.Split(v, ",")
 		if len(infoUser) != 2 {
 
-			ctx.SetCookie("session", "", -1, "/user", "", false, true)
+			ctx.SetCookie("session", "", -1, "/", "", false, true)
 			ctx.Redirect(http.StatusContinue, "/")
 			ctx.Abort()
 			return
@@ -456,7 +459,7 @@ func (user *user) setMiddleware() {
 			return
 		}
 		if err = bcrypt.CompareHashAndPassword([]byte(infoUser[1]), []byte(user.Password+m.String()+strconv.Itoa(d))); err != nil {
-			ctx.SetCookie("session", "", -1, "/user", "", false, true)
+			ctx.SetCookie("session", "", -1, "/", "", false, true)
 			ctx.Redirect(http.StatusContinue, "/")
 			ctx.Abort()
 			return
