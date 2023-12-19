@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/products.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
+    <title>{{.kind}} for {{.container}}</title>
+</head>
+
+<body>
+    <!-- navbar -->
+    <header>
+        <div class="nav_container">
+            <p class="logo"> SS </p>
+
+            <i class='bx bx-shopping-bag bx-tada' id="cart-icon" data-quantity="2"></i>
+
+            <div class="cart">
+                <h2 class="cart-title">Your Cart</h2>
+
+                <div class="cart-contant">
+                    <div class="cart-box">
+                        <img src="https://www.nielsenanimal.com/wp-content/uploads/2018/09/mens-nike-athletic-dry-t-shirt-blue-t-shirts.jpg"
+                            alt="" class="cart-img">
+                        <div class="detail-box">
+                            <div class="cart-product-title">Product Shirt</div>
+                            <div class="cart-price">$30</div>
+                            <input type="number" name="" id="" value="1" min="1" class="cart-quantity" />
+                        </div>
+
+
+                        <i class='bx bx-trash' id="cart-remove"></i>
+                    </div>
+                </div>
+
+                <div class="total">
+                    <div class="total-title">Total</div>
+                    <div class="total-price">$30</div>
+                </div>
+
+                <a href="/payment.html">
+                    <button type="button" class="btn-buy"> Order Now </button>
+                </a>
+
+                <i class='bx bx-x' id="close-cart"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- product container -->
+    <section class="shop-container">
+        <h2 class="section-title">Exclusive {{.kind}} for {{.container}}</h2>
+
+        <div class="shop-content">
+            <!-- box 1 -->
+            {{ range .listModels}}
+            <div class="product-box" id="{{.Id}}">
+                <!-- Id          int                  
+                Sizes       map[string]map[string]int 
+                Price       float32                   
+                Description string                   
+                Discount    int                       
+                LinkesImage []string                
+                Commint     []UserCommint             -->
+
+                {{range .LinkesImage}}
+                <img src="{{.}}" alt="" class="product-img">
+                {{end}}
+
+                <h2 class="product-title">{{.Description}}</h2>
+                <div class="price-cart">
+                    <!-- Discount not work for now becase you need edit the server or use js -->
+                    <span class="price">${{.Price}}</span>
+                    <div class="color-size">
+                        <ul>
+                            <li id="listColor_{{.Id}}">
+                                {{range $key , $e :=.Sizes}}
+                                {{range $key1 , $e1 := $e}}
+                                <div id="{{$key}}" style="background: {{$key1}}"></div>
+                                {{end}}
+                                {{end}}
+                            </li>
+                            <li class="size" id="size_{{.Id}}">
+                                {{range $key , $e :=.Sizes}}
+                                <span> {{$key}} </span>
+                                {{end}}
+                            </li>
+                        </ul>
+
+                    </div>
+                    <ion-icon name="bag-add-outline" id="add-to-cart"></ion-icon>
+                </div>
+
+                <script>
+                    var namefirstElementChild = document.getElementById("size_{{.Id}}").firstElementChild.innerText
+                    var nodes = document.getElementById("size_{{.Id}}").childNodes;
+                    
+                    for (const node of nodes) {
+                        if (node.nodeType != 3){
+                        console.log(node.getAttributeNode("id"))
+                        }
+                    }
+
+                </script>
+            </div>
+            {{end}}
+
+
+        </div>
+    </section>
+
+    <!-- comments -->
+    <!-- <section class="comment-section">
+        <h3 id="com"> Comments <i class='bx bx-comment-detail bx-flashing' ></i></h3>
+        <br>
+        <div class="comments">
+            <div>
+                <span class="user-name">EliasM :</span>
+                <span class="user-comment"> what an amazing products i just found it here :)</span>
+            </div>
+            <div>
+                <span class="user-name">Rami :</span>
+                <span class="user-comment"> Thank you Sportswear Store for this beautiful website <3</span>
+            </div>
+            <br>
+            <div class="comment-tail">
+                <div>
+                    <span>Add comment</span>
+                    <br>
+                    <textarea name="comment-box" id="comment-box" cols="50" rows="3"></textarea>
+                    <label id="send-comment" for="comment-box"> <i class='bx bx-send'></i> </label>
+                </div>
+
+                <i class='bx bxs-chevrons-up bx-fade-up' id="close-com"></i>
+            </div>
+        </div>
+        
+    </section> -->
+
+    <!--link to js-->
+    <script src="/js/products.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</body>
+
+</html>

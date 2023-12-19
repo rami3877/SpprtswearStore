@@ -4,6 +4,7 @@ import (
 	"db"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -75,14 +76,38 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 
 	})
 
+	server.NoRoute(func(ctx *gin.Context) {
+		Path := ctx.Request.URL.Path[1:]
+		if db.MainDB.Stock.IsExist(Path) {
+			containerAndkind := db.MainDB.Stock.GetAllContainerAndKind()
+			ctx.HTML(http.StatusOK, "selection.html", gin.H{
+				"container": ctx.Request.URL.Path[1:],
+				"kinds":     containerAndkind[Path],
+			},
+			)
+			ctx.Abort()
+			return
+		}
+		pathArray := strings.Split(Path, "/")
+		if listModels, err := db.MainDB.Stock.GetModelsInKind(0, 10, pathArray[0], pathArray[1]); err == nil {
+			ctx.HTML(http.StatusOK, "products.html", gin.H{
+				 
+				"container": pathArray[0],
+				"kind":     pathArray[1],
+				"listModels": listModels,
+			})
+
+			ctx.Abort()
+			return
+		}
+
+	}, gin.WrapH(http.FileServer(http.Dir("public"))))
 	server.GET("/", func(ctx *gin.Context) {
-		 isGust := false
-		 if _, err := ctx.Cookie("session") ; err != nil {
-			  isGust = true
-		 }
-		 ctx.HTML(http.StatusOK, "index.html", gin.H{"guest":isGust})
+		isGust := false
+		if _, err := ctx.Cookie("session"); err != nil {
+			isGust = true
+		}
+		ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": isGust})
 	})
-
-
 
 }
