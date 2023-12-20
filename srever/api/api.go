@@ -89,11 +89,15 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 			return
 		}
 		pathArray := strings.Split(Path, "/")
+		if len(pathArray) < 2 {
+			ctx.Next()
+			return
+		}
 		if listModels, err := db.MainDB.Stock.GetModelsInKind(0, 10, pathArray[0], pathArray[1]); err == nil {
 			ctx.HTML(http.StatusOK, "products.html", gin.H{
-				 
-				"container": pathArray[0],
-				"kind":     pathArray[1],
+
+				"container":  pathArray[0],
+				"kind":       pathArray[1],
 				"listModels": listModels,
 			})
 
