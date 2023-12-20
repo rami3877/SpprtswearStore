@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
+    <link rel="stylesheet" href="admin.css">
+    <title>Manage</title>
+</head>
+<body>
+    
+    <header>
+        <p class="logo"> SS </p>
+
+        <div class="title">
+            <h1>Sportswear <br>Store</h1>
+        </div>
+    </header>
+
+    <!-- manager section -->
+    <section class="manager-section">
+        <!--container + kind-->
+        <section class="main-section">
+            <h2 class="header">Main pages management</h2>
+
+            <div class="main">
+                <div class="add-del">
+                    <h3>Editing pages</h3>
+                    <div>
+                        <label for="container" class="label-default"> Container</label>
+                        <input type="text" name="container" id="container" class="input-default"
+                        placeholder="Container name">
+                        <i class='bx bx-plus-circle' ></i>
+                        <i class='bx bx-trash'></i>
+                    </div>
+                    <div>
+                        <label for="kind" class="label-default"> Kind</label>
+                        <input type="text" name="kind" id="kind" class="input-default"
+                        placeholder="Kind name">
+                        <i class='bx bx-plus-circle' ></i>
+                        <i class='bx bx-trash'></i>
+                    </div>
+                </div>
+                <div class="main-view">
+                    <h3>Currently pages</h3>
+                    <div class="view-list">
+                        <div>Men</div>
+                        <div>Women</div>
+                        <div>Kids</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- products things -->
+        <h2 class="header">Products management</h2>
+
+        <div class="products">
+
+            <div class="colomn-items">
+                <div class="discount">
+                    <label for="discount" class="label-default">Discount</label><br>
+                    <input type="text" name="discount" id="discount" class="input-default"
+                    placeholder="Discount Value">
+                </div>
+                <div class="product-name"> <!--describtion-->
+                    <label for="product-name" class="label-default">Product name</label><br>
+                    <input type="text" name="product-name" id="product-name" class="input-default"
+                    placeholder="Product name">
+                </div>
+                <div class="price">
+                    <label for="price" class="label-default">Price</label><br>
+                    <input type="text" name="price" id="price" class="input-default"
+                    placeholder="Price value">
+                </div>
+            </div>
+
+            <div class="image-box">
+                <div class="add-image">
+                    <label for="image" class="label-default">Image</label><br>
+                    <input type="text" name="image" id="image" class="input-default"
+                    placeholder="Image URL">
+                </div>
+                <div class="delete-image">
+                    <select name="image-url" id="image-url">
+                        <option value="0">Select URL</option>
+                        <option value="image1">https://www.sportsdirect.com/images/imgzoom/51/51199003_xxl.jpg</option>
+                        <option value="image2">https://m.media-amazon.com/images/I/71E9cr3vZAL._AC_SY550_.jpg</option>
+                        <option value="image3">https://m.media-amazon.com/images/I/717J7-vD2fL._AC_SY550_.jpg</option>
+                        <option value="image4">https://m.media-amazon.com/images/I/7197QFMmT7L._AC_SY550_.jpg</option>
+                        <option value="image5">https://m.media-amazon.com/images/I/81PRymTOItL._AC_SY550_.jpg</option>
+                    </select>
+                    <i class='bx bx-trash'></i>
+                </div>
+            </div>
+
+            <div class="details">
+                <div class="add-details">
+                    <label for="size" class="label-default">details</label><br>
+                    <input type="text" name="size" id="size" class="input-default"
+                    placeholder="Size"> /
+                    <input type="text" name="color" id="color" class="input-default"
+                    placeholder="Color"> /
+                    <input type="number" min="1" name="quantity" id="quantity" class="input-default"
+                    placeholder="Quantity">
+                    <i class='bx bx-plus-circle' ></i>
+                </div>
+                <div class="delete-details">
+                    <select name="details-info" id="details-info">
+                        <option value="0">Select details info</option>
+                        <option value="detail1">XL / Blue / 3</option>
+                        <option value="detail2">S / Red / 1</option>
+                        <option value="detail3">L / Blue / 4</option>
+                        <option value="detail4">M / Green / 2</option>
+                    </select>
+                    <i class='bx bx-trash'></i>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <a href="/adminPage/manage+order.html"><i id="back-btn" class='bx bx-arrow-back' ></i></a>
+</body>
+</html>
