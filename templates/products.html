@@ -104,38 +104,21 @@
 
                     document.getElementById("total-price").textContent = total
                     this.qty = Number(e.target.value)
-                    if (getCoookie("cart").length == 0) {
-                        let map = new Map()
-                        map[`${document.location.pathname}`] = Order
-                        let json = JSON.stringify(map)
-                        setCookie("cart", json, 344, "/")
-                    } else {
-                        let o = JSON.parse(getCoookie("cart"))
-                        o[`${document.location.pathname}`] = Order
-                        let json = JSON.stringify(o)
-                        setCookie("cart", json, 344, "/")
-                    }
+
+                    let json = JSON.stringify(Order)
+                    setCookie("cart", json, 344, "/")
                 })
                 this.elementHtml.querySelector("#cart-remove").addEventListener("click", e => {
                     var total = Number(document.getElementById("total-price").textContent) - (this.qty * this.price)
                     document.getElementById("total-price").textContent = total
                     this.elementHtml.remove()
-                    for (let i = 0; i < Order[document.location.pathname].length; i++) {
+                    for (let i = 0; i < Order[this.whereIform].length; i++) {
                         if (Order[this.whereIform][i] == this) {
                             Order[this.whereIform].splice(i, 1)
                         }
                     }
-                    if (getCoookie("cart").length == 0) {
-                        let map = new Map()
-                        map[`${document.location.pathname}`] = Order
-                        let json = JSON.stringify(map)
-                        setCookie("cart", json, 344, "/")
-                    } else {
-                        let o = JSON.parse(getCoookie("cart"))
-                        o[`${document.location.pathname}`] = Order
-                        let json = JSON.stringify(o)
-                        setCookie("cart", json, 344, "/")
-                    }
+                    let json = JSON.stringify(Order)
+                    setCookie("cart", json, 344, "/")
                 })
                 document.getElementById("cart-contant").appendChild(this.elementHtml)
                 document.getElementById("total-price").textContent = Number(document.getElementById("total-price").textContent) + this.price * this.qty
@@ -144,18 +127,8 @@
                 this.qty++
                 document.getElementById("total-price").textContent = Number(document.getElementById("total-price").textContent) + this.price
                 this.elementHtml.querySelector("#input").value = Number(this.elementHtml.querySelector("#input").value) + 1
-
-                if (getCoookie("cart").length == 0) {
-                    let map = new Map()
-                    map[`${document.location.pathname}`] = Order
-                    let json = JSON.stringify(map)
-                    setCookie("cart", json, 344, "/")
-                } else {
-                    let o = JSON.parse(getCoookie("cart"))
-                    o[`${document.location.pathname}`] = Order
-                    let json = JSON.stringify(o)
-                    setCookie("cart", json, 344, "/")
-                }
+                let json = JSON.stringify(Order)
+                setCookie("cart", json, 344, "/")
             }
 
         }
@@ -209,18 +182,8 @@
 
                         document.getElementById("total-price").textContent = total
                         this.qty = Number(e.target.value)
-
-                        if (getCoookie("cart").length == 0) {
-                            let map = new Map()
-                            map[`${document.location.pathname}`] = Order
-                            let json = JSON.stringify(map)
-                            setCookie("cart", json, 344, "/")
-                        } else {
-                            let o = JSON.parse(getCoookie("cart"))
-                            o[`${document.location.pathname}`] = Order
-                            let json = JSON.stringify(o)
-                            setCookie("cart", json, 344, "/")
-                        }
+                        let json = JSON.stringify(Order)
+                        setCookie("cart", json, 344, "/")
                     })
                     this.elementHtml.querySelector("#cart-remove").addEventListener("click", e => {
                         var total = Number(document.getElementById("total-price").textContent) - (this.qty * this.price)
@@ -232,17 +195,9 @@
                             }
                         }
 
-                        if (getCoookie("cart").length == 0) {
-                            let map = new Map()
-                            map[`${document.location.pathname}`] = Order
-                            let json = JSON.stringify(map)
-                            setCookie("cart", json, 344, "/")
-                        } else {
-                            let o = JSON.parse(getCoookie("cart"))
-                            o[`${document.location.pathname}`] = Order
-                            let json = JSON.stringify(o)
-                            setCookie("cart", json, 344, "/")
-                        }
+                        let json = JSON.stringify(Order)
+                        setCookie("cart", json, 344, "/")
+
                     })
 
                 }
@@ -251,17 +206,8 @@
                 this.qty++
                 document.getElementById("total-price").textContent = Number(document.getElementById("total-price").textContent) + this.price
                 this.elementHtml.querySelector("#input").value = Number(this.elementHtml.querySelector("#input").value) + 1
-                if (getCoookie("cart").length == 0) {
-                    let map = new Map()
-                    map[`${document.location.pathname}`] = Order
-                    let json = JSON.stringify(map)
-                    setCookie("cart", json, 344, "/")
-                } else {
-                    let o = JSON.parse(getCoookie("cart"))
-                    o[`${document.location.pathname}`] = Order
-                    let json = JSON.stringify(o)
-                    setCookie("cart", json, 344, "/")
-                }
+                let json = JSON.stringify(Order)
+                setCookie("cart", json, 344, "/")
             }
 
         }
@@ -273,13 +219,12 @@
             for (const cartC in cookieCart) {
                 let NewArry = [];
                 for (const f of Object.values(cookieCart[cartC])) {
-                    for (const h of Object.values(f)) {
-                        NewArry[NewArry.length] = new ProductCookie(h);
-                    }
-
+                    NewArry[NewArry.length] = new ProductCookie(f);
                 }
                 Order[cartC] = NewArry;
+
             }
+
 
         }
 
@@ -293,6 +238,9 @@
             if (p.size == null || p.color == null) {
                 return
             }
+            if (Order[document.location.pathname] == undefined) {
+                Order[document.location.pathname] = new Array()
+            }
             for (const order of Order[document.location.pathname]) {
                 let element = order;
                 if (p.color == element.color && p.id == element.id && element.size == p.size) {
@@ -300,10 +248,7 @@
                     return
                 }
             }
-            if (Order[document.location.pathname] == undefined) {
-                Order[document.location.pathname] = new Array()
-                Order[document.location.pathname][Order[document.location.pathname].length] = p
-            }
+
             Order[document.location.pathname][Order[document.location.pathname].length] = p
             document.getElementById("cart-contant").appendChild(p.elementHtml)
             document.getElementById("total-price").textContent = Number(document.getElementById("total-price").textContent) + p.price
@@ -343,42 +288,12 @@
             }
         }
         document.getElementById("orderNow").addEventListener("click", e => {
-
-            if (Order.length == 0) {
+            if (!HasItem()) {
                 return
             }
-            class toServer {
-                constructor(id, color, size) {
-                    this.idModel = Number(id.replace("p", ""))
-                    this.color = color
-                    this.size = size
-                    let path = document.location.pathname.replace("/", "").split("/")
-                    this.Container = path[0]
-                    this.Kind = path[1]
-                }
-            }
-            OrdersToServer = []
-            Order.forEach(e => {
-                for (i = 0; i < e.qty; i++) {
-                    let d = new toServer(e.id, e.color, e.size)
-                    OrdersToServer[OrdersToServer.length] = d
-                }
-
-            })
-            if (getCoookie("cart").length == 0) {
-                let map = new Map()
-                map[`${document.location.pathname}`] = Order
-                let json = JSON.stringify(map)
-                setCookie("cart", json, 344, "/")
-            } else {
-                let o = JSON.parse(getCoookie("cart"))
-                o[`${document.location.pathname}`] = Order
-                let json = JSON.stringify(o)
-                setCookie("cart", json, 344, "/")
-            }
-            return
+            let json = JSON.stringify(Order)
+            setCookie("cart", json, 344, "/")
             window.location = window.location.origin + "/user/checkout"
-
         })
 
 
@@ -408,6 +323,17 @@
             const cookie = decodeURIComponent(document.cookie).replace(`${name}=`, "")
             return cookie
         }
+        function HasItem() {
+            for (const d in Order) {
+                for (const f in Order[d]) {
+                    if (f.length > 0) {
+                        return true
+                    }
+                }
+            }
+            return false
+        }
+
     </script>
     <!--link to js-->
     <!-- <script src="/js/products.js"></script> -->

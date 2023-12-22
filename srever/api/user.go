@@ -195,12 +195,7 @@ func (user *user) setInformationApi() {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		}
-		if user.LastName != "" {
-			ctx.String(http.StatusOK, user.LastName)
-		} else {
-
-			ctx.String(http.StatusNoContent, "")
-		}
+		ctx.JSON(http.StatusOK , user.LastName)
 	})
 
 	user.userGroup.POST("/lastName", func(ctx *gin.Context) {
@@ -231,12 +226,7 @@ func (user *user) setInformationApi() {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		}
-		if user.FirstName != "" {
-			ctx.String(http.StatusOK, user.FirstName)
-		} else {
-
-			ctx.String(http.StatusNoContent, "")
-		}
+		ctx.JSON(http.StatusOK , user.FirstName)
 	})
 
 	user.userGroup.POST("/firstName", func(ctx *gin.Context) {

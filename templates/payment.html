@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
     <title>Payment</title>
 </head>
+
 <body>
     <main class="container">
         <header>
@@ -15,7 +17,7 @@
                 <div>
                     <p class="logo"> SS </p>
                 </div>
-    
+
                 <div class="header-title">
                     <i class='bx bx-cart'></i> Shopping cart
                 </div>
@@ -46,68 +48,240 @@
                         </button>
                     </div>
                     <form action="#">
-
                         <div class="cardholder-name">
                             <label for="cardholder-name" class="label-default">Name</label>
                             <input type="text" name="cardholder-name" id="cardholder-name" class="input-default"
-                            placeholder="First Name / Last Name"
-                            >
+                                placeholder="First Name / Last Name">
                         </div>
-
                         <div class="mobile-number">
                             <label for="mobile-number" class="label-default"> Mobile number </label>
                             <input type="number" name="mobile-number" min="0" id="mobile-number" class="input-default"
-                            placeholder="07**">
+                                placeholder="07**">
                         </div>
-
                         <div class="address">
                             <label for="address" class="label-default"> Address</label>
                             <input type="text" name="address" id="address" class="input-default"
-                            placeholder="country / city / town / street">
+                                placeholder="country / city / town / street">
                         </div>
-
                         <div class="Visa_number">
                             <label for="Visa_number" class="label-default"> Visa number </label>
                             <input type="number" min="0" name="Visa_number" id="Visa_number" class="input-default"
-                            placeholder="**** **** **** ****">
+                                placeholder="**** **** **** ****">
                         </div>
-
                         <div class="input-flex">
                             <div class="expire-date">
                                 <span class="label-default">Expiration date</span>
-                            
+
                                 <div class="input-flex">
-                                   <input type="number" name="day" placeholder="31"
-                                     min="1" max="31" class="input-default">
+                                    <input type="number" name="day" placeholder="31" min="1" max="31"
+                                        class="input-default">
                                     /
-                                    <input type="number" name="month" placeholder="12"
-                                     min="1" max="12" class="input-default">
+                                    <input type="number" name="month" placeholder="12" min="1" max="12"
+                                        class="input-default">
                                 </div>
                             </div>
 
                             <div class="cvv">
                                 <label for="cvv" class="label-default"> CVV</label>
-                                <input type="number" name="cvv" id="cvv" min="0" class="input-default" placeholder="* * *">
+                                <input type="number" name="cvv" id="cvv" min="0" class="input-default"
+                                    placeholder="* * *">
                             </div>
                         </div>
 
                     </form>
+                    <script>
+                        class apiFecth {
+                            static json(method_, path, callback, stringdata) {
+                                fetch(path, {
+                                    method: method_,
+                                    body: stringdata,
+                                    headers: {
+                                        "Content-Type": "application/json",
+                                    },
+                                }).then(re => re.json()).then((data) => {
+                                    callback(data)
+                                })
+                            }
+                            static Get(path, callback) {
+                                fetch(path, { method: "GET" }).then(re => re.json()).then((data) => { callback(data) })
+                            }
+                            static From(method_, path, callback, stringdata) {
+                                fetch(path, {
+                                    method: method_, body: stringdata, headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                }).then(re => re.json()).then((data) => { callback(data) })
+                            }
+                        }
+
+                      class username {
+                        constructor(){
+                            this.lastName = undefined 
+                            this.FirstName = undefined 
+                        }
+                      }
+                        apiFecth.Get("/user/lastName", (data) => {
+                            if (data.length != 0) {
+                                lastName = data
+                            }
+                        })
+                        apiFecth.Get("/user/firstName", (data) => {
+                            if (data.length != 0) {
+                                FirstName = data
+                            }
+                        })
+
+                        if (lastName != undefined  && FirstName != undefined){
+                                document.getElementById("cardholder-name").value = FirstName+"/"+lastName
+                        }
+
+
+
+                    </script>
                 </div>
 
                 <div class="pay-btn-width">
                     <button class="pay-btn">
-                        <b>Pay</b> $<span id="payamount">67</span>
+                        <b>Pay</b> $<span id="payamount">0</span>
                     </button>
                 </div>
-                
-            </section>
 
+            </section>
             <!-- cart section -->
             <section class="cart">
-                <div class="cart-border">
+                <div class="cart-border" id="cart-border">
                     <h2 class="section-heading">Order Product</h2>
-                    
-                    <div class="product-card">
+                    <div class="total" id="totalBefor">
+                        <span>Total:</span> <span>$<span id="total">0</span></span>
+                    </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        var Order = new Map()
+        class ProductCookie {
+            constructor(product) {
+                this.id = product.id
+                this.whereIform = product.whereIform
+                this.price = product.price
+                this.Description = product.Description
+                this.color = product.color
+                this.size = product.size
+                this.img = product.img
+                this.qty = product.qty
+                this.elementHtml = document.createElement("div")
+                this.elementHtml.setAttribute("class", "product-card")
+                this.elementHtml.innerHTML = ` 
+                        <div class="card">
+                            <div class="img-box">
+                                <img src="${this.img}"alt="SS Product" width="90px" class="product-img">
+                            </div>
+                            <div class="detail">
+                                <h4 class="product-name">${this.Description}</h4>
+                                <div class="wrapper">
+                                    <div class="product-qty">
+                                        <button id="decrement">
+                                            <i class='bx bx-minus' id="bx-minus" ></i>
+                                        </button>
+                                        <span id="quantity">${this.qty}</span>
+                                        <button id="increment">
+                                            <i class='bx bx-plus' id="bx-plus"></i>
+                                        </button>
+                                    </div>
+                                    <div class="price">
+                                        $<span id="price">${this.price}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button id="product-delete-btn">
+                                <i class='bx bxs-trash'></i>
+                            </button>
+                        </div>
+                  
+                            `
+                this.elementHtml.querySelector("#bx-minus").addEventListener("click", e => {
+                    if (this.qty == 1) {
+                        return
+                    }
+                    this.qty--
+                    var total = Number(document.getElementById("total").textContent) - this.price
+                    document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) - this.price
+                    document.getElementById("quantity").textContent = this.qty
+                    document.getElementById("total").textContent = total
+
+                })
+                this.elementHtml.querySelector("#bx-plus").addEventListener("click", e => {
+                    document.getElementById("total").textContent = Number(document.getElementById("total").textContent) + this.price
+                    document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) + this.price
+                    this.qty++
+                    document.getElementById("quantity").textContent = this.qty
+                })
+                this.elementHtml.querySelector("#product-delete-btn").addEventListener("click", e => {
+                    var total = Number(document.getElementById("total").textContent) - (this.qty * this.price)
+                    document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) - this.price * this.qty
+                    document.getElementById("total").textContent = total
+                    this.elementHtml.remove()
+                    for (let i = 0; i < Order[this.whereIform].length; i++) {
+                        if (Order[this.whereIform][i] == this) {
+                            Order[this.whereIform].splice(i, 1)
+                        }
+                    }
+                    let json = JSON.stringify(Order)
+                    setCookie("cart", json, 344, "/")
+                })
+
+                document.getElementById("cart-border").insertBefore(this.elementHtml, document.getElementById("totalBefor"))
+                document.getElementById("total").textContent = Number(document.getElementById("total").textContent) + this.price * this.qty
+                document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) + this.price * this.qty
+            }
+            qtyChange() {
+                this.qty++
+                document.getElementById("total").textContent = Number(document.getElementById("total").textContent) + this.price
+                document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) + this.price * this.qty
+                this.elementHtml.querySelector("#input").value = Number(this.elementHtml.querySelector("#input").value) + 1
+                let json = JSON.stringify(Order)
+                setCookie("cart", json, 344, "/")
+
+            }
+
+        }
+
+        if (getCoookie("cart").length != 0) {
+            let cookieCart = JSON.parse(getCoookie("cart"))
+            let cart = document.getElementById("cart-contant")
+            for (const cartC in cookieCart) {
+                let NewArry = [];
+                for (const f of Object.values(cookieCart[cartC])) {
+                    NewArry[NewArry.length] = new ProductCookie(f);
+                }
+                Order[cartC] = NewArry;
+            }
+
+        }
+        function setCookie(name, value, days, path) {
+            const data = new Date();
+            data.setTime(data.getTime() + (days * 24 * 60 * 60 * 1000))
+            let expires = "expires=" + data.toUTCString();
+            document.cookie = `${name}=${value};${expires};path=${path}`
+        }
+
+        function deleteCookie(name) {
+            setCookie(name, null, null)
+        }
+        function getCoookie(name) {
+            const cookie = decodeURIComponent(document.cookie).replace(`${name}=`, "")
+            return cookie
+        }
+
+
+
+
+    </script>
+</body>
+
+</html>
+
+
+<!-- <div class="product-card">
                         <div class="card">
                             <div class="img-box">
                                 <img src="https://th.bing.com/th/id/OIP._fzHbaZBweLph0QE7tJ6FAAAAA?rs=1&pid=ImgDetMain"
@@ -134,45 +308,4 @@
                                 <i class='bx bxs-trash'></i>
                             </button>
                         </div>
-                    </div>
-
-                    <div class="product-card">
-                        <div class="card">
-                            <div class="img-box">
-                                <img src="https://www.nielsenanimal.com/wp-content/uploads/2018/09/mens-nike-athletic-dry-t-shirt-blue-t-shirts.jpg"
-                                 alt="SS Product" width="90px" class="product-img">
-                            </div>
-                            <div class="detail">
-                                <h4 class="product-name">Nielsen Animal</h4>
-                                <div class="wrapper">
-                                    <div class="product-qty">
-                                        <button id="decrement">
-                                            <i class='bx bx-minus'></i>
-                                        </button>
-                                        <span id="quantity">1</span>
-                                        <button id="increment">
-                                            <i class='bx bx-plus'></i>
-                                        </button>
-                                    </div>
-                                    <div class="price">
-                                        $<span id="price">30</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <button id="product-delete-btn">
-                                <i class='bx bxs-trash'></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="total">
-                    <span>Total:</span> <span>$<span id="total">67</span></span>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <script src="payment.js"></script>
-</body>
-</html>
+                    </div> -->
