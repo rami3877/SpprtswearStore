@@ -1,10 +1,3 @@
-
-// Object.getOwnPropertyNames(data).forEach((val, idx, array) => {
-//     console.log(`${val} -> ${data[val]}`);
-// });
-// console.log(data["men"])
-
-
 fetch("/AllContainerAndKind", {
     method: "GET"
 }).then(res => res.json()).then(data => {
@@ -32,7 +25,7 @@ function logoutUser() {
     fetch("/user/logout", {
         method: "GET"
     }).then(re => re.ok).then(d => {
-        document.location.reload()
+            window.location.reload()
     })
 
 }
@@ -41,8 +34,6 @@ function logoutUser() {
 function loginIndex() {
     const username = document.getElementById("usernameLogin").value
     const password = document.getElementById("passwordLogin").value
-    console.log(username)
-    console.log(password)
     fetch("/user/login", {
         method: "POST",
         headers: {
@@ -54,7 +45,7 @@ function loginIndex() {
             document.getElementById("spanErrorLogin").innerText = data
 
         } else {
-            document.location.reload()
+            window.location.reload()
         }
     })
 
@@ -70,9 +61,6 @@ function Resister() {
     const username = document.getElementById("usernameResister").value
     const email = document.getElementById("emailResister").value
     const password = document.getElementById("passwordResister").value
-    console.log(username)
-    console.log(email)
-    console.log(password)
     fetch("/user/register", {
         method: "POST",
         headers: {
@@ -83,7 +71,7 @@ function Resister() {
         if (data !== "create") {
             document.getElementById("spanErrorResister").innerText = data
         } else {
-            document.location.reload()
+            window.location.reload()
         }
 
     }

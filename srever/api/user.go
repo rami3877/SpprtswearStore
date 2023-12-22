@@ -19,12 +19,12 @@ type user struct {
 
 func (user *user) setCheckoutApi() {
 
+	user.userGroup.GET("/checkout", func(ctx *gin.Context) {
+		 ctx.HTML(http.StatusOK , "payment.html", gin.H{})
+	})
 	user.userGroup.POST("/buy", func(ctx *gin.Context) {
-		v, errs := ctx.Cookie("session")
-		if errs != nil {
-			ctx.String(http.StatusBadRequest, "error")
-			return
-		}
+		v, _ := ctx.Cookie("session")
+
 		username := strings.Split(v, ",")[0]
 		orders := []db.Orders{}
 		type Err struct {
@@ -292,6 +292,9 @@ func (user *user) setLogoutApi() {
 
 func (user *user) setLoginApi() {
 
+	user.userGroup.GET("/login", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "loginAndRegister.html", gin.H{})
+	})
 	user.userGroup.POST("/login", func(ctx *gin.Context) {
 		type loginUser struct {
 			Username string `json:"username"`
@@ -316,6 +319,9 @@ func (user *user) setLoginApi() {
 }
 func (user *user) setRegisterApi() {
 
+	user.userGroup.GET("/register", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "loginAndRegister.html", gin.H{})
+	})
 	user.userGroup.POST("/register", func(ctx *gin.Context) {
 		type User1 struct {
 			Username string `json:"username"`
@@ -420,22 +426,23 @@ func (user *user) setMiddleware() {
 
 	user.userGroup.Use(func(ctx *gin.Context) {
 		if ctx.FullPath() == "/user/login" {
-			ctx.Next()
+
+			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			return
 		}
 		if ctx.FullPath() == "/user/logout" {
-			ctx.Next()
+			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			return
 		}
 
 		if ctx.FullPath() == "/user/register" {
-			ctx.Next()
+			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			return
 		}
 		// check if will work on /user becase you set to be on root path
 		v, err := ctx.Cookie("session")
 		if err != nil {
-			ctx.Redirect(http.StatusContinue, "/")
+			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			ctx.Abort()
 			return
 		}
@@ -443,24 +450,22 @@ func (user *user) setMiddleware() {
 
 		infoUser := strings.Split(v, ",")
 		if len(infoUser) != 2 {
-
 			ctx.SetCookie("session", "", -1, "/", "", false, true)
-			ctx.Redirect(http.StatusContinue, "/")
+			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			ctx.Abort()
 			return
 		}
 
 		user := structs.User{}
 		if err := db.MainDB.Users.GetUser(infoUser[0], &user); err != nil {
-
 			ctx.SetCookie("session", "", -1, "/user", "", false, true)
-			ctx.Redirect(http.StatusContinue, "/")
+			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			ctx.Abort()
 			return
 		}
 		if err = bcrypt.CompareHashAndPassword([]byte(infoUser[1]), []byte(user.Password+m.String()+strconv.Itoa(d))); err != nil {
 			ctx.SetCookie("session", "", -1, "/", "", false, true)
-			ctx.Redirect(http.StatusContinue, "/")
+			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			ctx.Abort()
 			return
 		}

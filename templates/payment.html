@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="payment.css">
+    <link rel="stylesheet" href="/css/payment.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
     <title>Payment</title>
@@ -48,15 +48,16 @@
                     <form action="#">
 
                         <div class="cardholder-name">
-                            <label for="cardholder-name" class="label-default"> Cardholder name</label>
+                            <label for="cardholder-name" class="label-default">Name</label>
                             <input type="text" name="cardholder-name" id="cardholder-name" class="input-default"
-                            placeholder="Name on card">
+                            placeholder="First Name / Last Name"
+                            >
                         </div>
 
                         <div class="mobile-number">
                             <label for="mobile-number" class="label-default"> Mobile number </label>
-                            <input type="number" name="mobile-number" id="mobile-number" class="input-default"
-                            placeholder="+962**">
+                            <input type="number" name="mobile-number" min="0" id="mobile-number" class="input-default"
+                            placeholder="07**">
                         </div>
 
                         <div class="address">
@@ -67,7 +68,7 @@
 
                         <div class="Visa_number">
                             <label for="Visa_number" class="label-default"> Visa number </label>
-                            <input type="number" name="Visa_number" id="Visa_number" class="input-default"
+                            <input type="number" min="0" name="Visa_number" id="Visa_number" class="input-default"
                             placeholder="**** **** **** ****">
                         </div>
 
@@ -86,7 +87,7 @@
 
                             <div class="cvv">
                                 <label for="cvv" class="label-default"> CVV</label>
-                                <input type="number" name="cvv" id="cvv" class="input-default" placeholder="* * *">
+                                <input type="number" name="cvv" id="cvv" min="0" class="input-default" placeholder="* * *">
                             </div>
                         </div>
 
