@@ -40,10 +40,9 @@ function loginIndex() {
             "Content-Type": "application/json",
         },
         body: `{"username":"${username}","password":"${password}"}`,
-    }).then(Response => Response.text()).then(data => {
-        if (data != "ok") {
+    }).then(Response => Response.json()).then(data => {
+        if ( data != "ok" ) {
             document.getElementById("spanErrorLogin").innerText = data
-
         } else {
             window.location.reload()
         }
@@ -68,10 +67,13 @@ function Resister() {
         },
         body: `{"username":"${username}","password":"${password}","email":"${email}"}`,
     }).then(Response => Response.text()).then(data => {
-        if (data !== "create") {
+        if (data.length != 0 && data != "create" ) {
             document.getElementById("spanErrorResister").innerText = data
         } else {
+            document.getElementById("spanErrorResister").innerText = data
+            setTimeout(()=>{
             window.location.reload()
+            }, 2000)
         }
 
     }

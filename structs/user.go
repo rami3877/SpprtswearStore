@@ -16,8 +16,7 @@ type User struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	UserEmail string `json:"email"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	Name      string `json:"Name"`
 	Phone     string `json:"phone"`
 	UserAddr  Addr   `json:"addr"`
 	UserVisa  []Visa `json:"visa"`

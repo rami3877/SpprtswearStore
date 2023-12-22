@@ -289,10 +289,10 @@ func (u *user) UpdataPhone(username string, phone string) error {
 
 }
 
-func (u *user) UpdataLastName(username string, LastName string) error {
+func (u *user) UpdateName(username string,Name string) error {
 	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("users"))
-		if len(LastName) == 0 {
+		if len(Name) == 0 {
 			return ErrUserLastNameInvalid
 		}
 
@@ -301,7 +301,7 @@ func (u *user) UpdataLastName(username string, LastName string) error {
 			return err
 		}
 
-		usr.LastName = LastName
+		usr.Name = Name
 
 		data, err := json.Marshal(usr)
 		if err != nil {
@@ -314,31 +314,7 @@ func (u *user) UpdataLastName(username string, LastName string) error {
 
 }
 
-func (u *user) UpdataFirstName(username string, FirstName string) error {
-	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
-		b := tx.Bucket([]byte("users"))
 
-		if len(FirstName) == 0 {
-			return ErrUserFirstNameInvalid
-		}
-
-		usr := structs.User{}
-		if err := u.GetUser(username, &usr); err != nil {
-			return err
-		}
-
-		usr.FirstName = FirstName
-
-		data, err := json.Marshal(usr)
-		if err != nil {
-			return err
-		}
-		b.Put([]byte(usr.Username), data)
-
-		return nil
-	})
-
-}
 
 func isStrongPassword(password string) bool {
 	// Check minimum length

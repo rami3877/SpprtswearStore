@@ -85,9 +85,9 @@ func (user *user) setInformationApi() {
 			return
 		}
 		if user.Phone == "" {
-			ctx.String(http.StatusNoContent, "")
+			ctx.JSON(http.StatusOK, "")
 		} else {
-			ctx.String(http.StatusFound, user.Phone)
+			ctx.JSON(http.StatusOK, user.Phone)
 		}
 
 	})
@@ -124,10 +124,6 @@ func (user *user) setInformationApi() {
 			return
 		}
 
-		if len(user.UserVisa) == 0 {
-			ctx.String(http.StatusNoContent, "")
-			return
-		}
 		visa := []string{}
 		for _, v := range user.UserVisa {
 			toWebVisa := ""
@@ -182,10 +178,10 @@ func (user *user) setInformationApi() {
 		}
 
 	})
-	user.userGroup.GET("/lastName", func(ctx *gin.Context) {
+	user.userGroup.GET("/name", func(ctx *gin.Context) {
 		v, err := ctx.Cookie("session")
 		if err != nil {
-			ctx.String(http.StatusBadRequest, "error")
+			ctx.JSON(http.StatusBadRequest, "error")
 			return
 		}
 		username := strings.Split(v, ",")[0]
@@ -195,55 +191,25 @@ func (user *user) setInformationApi() {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		}
-		ctx.JSON(http.StatusOK , user.LastName)
+		ctx.JSON(http.StatusOK , user.Name)
 	})
 
-	user.userGroup.POST("/lastName", func(ctx *gin.Context) {
+	user.userGroup.POST("/name", func(ctx *gin.Context) {
 		v, err := ctx.Cookie("session")
 		if err != nil {
 			ctx.String(http.StatusBadRequest, "error")
 			return
 		}
 		username := strings.Split(v, ",")[0]
-		lastName := ctx.PostForm("lastName")
-		if err := db.MainDB.Users.UpdataLastName(username, lastName); err != nil {
+		Name:= ctx.PostForm("Name")
+		if err := db.MainDB.Users.UpdateName(username, Name); err != nil {
 			ctx.String(http.StatusBadRequest, err.Error())
 			return
 		}
 		ctx.String(http.StatusAccepted, "update")
 
 	})
-	user.userGroup.GET("/firstName", func(ctx *gin.Context) {
-		v, err := ctx.Cookie("session")
-		if err != nil {
-			ctx.String(http.StatusBadRequest, "error")
-			return
-		}
-		username := strings.Split(v, ",")[0]
-		user := structs.User{}
 
-		if err := db.MainDB.Users.GetUser(username, &user); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
-			return
-		}
-		ctx.JSON(http.StatusOK , user.FirstName)
-	})
-
-	user.userGroup.POST("/firstName", func(ctx *gin.Context) {
-		v, err := ctx.Cookie("session")
-		if err != nil {
-			ctx.String(http.StatusBadRequest, "error")
-			return
-		}
-		username := strings.Split(v, ",")[0]
-		firstName := ctx.PostForm("firstName")
-		if err := db.MainDB.Users.UpdataFirstName(username, firstName); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
-			return
-		}
-		ctx.String(http.StatusAccepted, "update")
-
-	})
 	user.userGroup.POST("/password", func(ctx *gin.Context) {
 
 		v, err := ctx.Cookie("session")
@@ -292,18 +258,24 @@ func (user *user) setLoginApi() {
 		}
 		userlogin := loginUser{}
 		if err := ctx.ShouldBindJSON(&userlogin); err != nil {
-			ctx.String(http.StatusBadRequest, "check json")
+			ctx.JSON(http.StatusOK, "check json")
 			return
 		}
 		user := structs.User{}
 		if err := db.MainDB.Users.GetUser(userlogin.Username, &user); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
+		} 
+		if user.Password !=userlogin.Password {
+			ctx.JSON(http.StatusOK, "check your username or password")
+			return
+
 		}
+
 		_, m, d := time.Now().Date()
 		pasHash, _ := bcrypt.GenerateFromPassword([]byte(userlogin.Password+m.String()+strconv.Itoa(d)), 12)
 		ctx.SetCookie("session", userlogin.Username+","+string(pasHash), 0, "/", "", false, true)
-		ctx.String(http.StatusAccepted, "ok")
+		ctx.JSON(http.StatusAccepted, "ok")
 
 	})
 }

@@ -48,13 +48,8 @@ func (db *DataBase) Buy(order Orders) error {
 	if user.Phone == "" {
 		return errors.New("updata your number")
 	}
-	if user.LastName == "" {
-
-		return errors.New("updata your last name")
-	}
-	if user.FirstName == "" {
-
-		return errors.New("updata your first name")
+	if user.Name == "" {
+		return errors.New("updata your Name")
 	}
 	if user.UserAddr.City == "" {
 
