@@ -56,23 +56,23 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 		Containter := ctx.Query("container")
 		id, err := strconv.Atoi(ctx.Query("id"))
 		if err != nil {
-			ctx.String(http.StatusBadRequest, "ERROR")
+			ctx.JSON(http.StatusOK, "ERROR")
 			return
 		}
 
 		data, err := db.MainDB.Stock.GetModelsInKind(id, 10, Containter, kind)
 		if err != nil {
-			ctx.String(http.StatusBadRequest, "ERROR")
+			ctx.JSON(http.StatusOK, "ERROR")
 			return
 		}
-		ctx.JSON(http.StatusAccepted, data)
+		ctx.JSON(http.StatusOK, data)
 
 	})
 
 	server.GET("/AllContainerAndKind", func(ctx *gin.Context) {
 		fg := db.MainDB.Stock.GetAllContainerAndKind()
 		if len(fg) == 0 {
-			ctx.String(http.StatusNoContent, "")
+			ctx.JSON(http.StatusOK, "no data")
 		} else {
 			ctx.JSON(http.StatusOK, &fg)
 		}

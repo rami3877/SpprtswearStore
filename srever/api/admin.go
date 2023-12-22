@@ -36,7 +36,7 @@ func (admin *admin) setOrderApi() {
 	admin.adminGroup.GET("/orders", func(ctx *gin.Context) {
 		orders := db.MainDB.Orders.Get()
 		if orders == nil {
-			ctx.String(http.StatusNoContent, "")
+			ctx.JSON(http.StatusOK, "")
 		}
 		ctx.JSON(http.StatusOK, orders)
 	})
@@ -55,15 +55,15 @@ func (admin *admin) setProductApi() {
 		linkImage := LinkImage{}
 
 		if err := ctx.ShouldBindJSON(&linkImage); err != nil {
-			ctx.String(http.StatusBadRequest, "check json")
+			ctx.JSON(http.StatusOK, "check json")
 			return
 		}
 		if err := db.MainDB.Stock.UpateLinkesImage(linkImage.Id, linkImage.Container, linkImage.Kind, linkImage.Image); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 
 		}
-		ctx.String(http.StatusAccepted, "UPDATA")
+		ctx.JSON(http.StatusOK, "UPDATA")
 
 	})
 
@@ -77,10 +77,10 @@ func (admin *admin) setProductApi() {
 		}
 		newSize := Size{}
 		if err := db.MainDB.Stock.UpdataSizeFromModel(newSize.Id, newSize.Container, newSize.Kind, newSize.SizeName, newSize.C[newSize.SizeName]); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
-		ctx.String(http.StatusAccepted, "done")
+		ctx.JSON(http.StatusOK, "done")
 	})
 
 	admin.adminGroup.GET("/product", func(ctx *gin.Context) {
@@ -100,20 +100,20 @@ func (admin *admin) setProductApi() {
 	admin.adminGroup.POST("/product/container", func(ctx *gin.Context) {
 		newContainer := ctx.PostForm("Container")
 		if len(newContainer) == 0 {
-			ctx.String(http.StatusNotAcceptable, "name container is empty")
+			ctx.JSON(http.StatusOK, "name container is empty")
 		} else if regexp.MustCompile(`\s`).Match([]byte(newContainer)) {
-			ctx.String(http.StatusNotAcceptable, "has space")
+			ctx.JSON(http.StatusOK, "has space")
 		} else if err := db.MainDB.Stock.AddNewContainer(newContainer); err != nil {
-			ctx.String(http.StatusNotAcceptable, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 		} else {
-			ctx.String(http.StatusCreated, "Created")
+			ctx.JSON(http.StatusOK, "Created")
 		}
 
 	})
 
 	admin.adminGroup.GET("/product/container", func(ctx *gin.Context) {
 		Containers := db.MainDB.Stock.GetAllContainerAndKind()
-		ctx.JSON(http.StatusFound, &Containers)
+		ctx.JSON(http.StatusOK, &Containers)
 
 	})
 
@@ -124,14 +124,14 @@ func (admin *admin) setProductApi() {
 		}
 		var newKind kind
 		if err := ctx.ShouldBindJSON(&newKind); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
 		if err := db.MainDB.Stock.NewKindtoContainer(newKind.Container, newKind.Kindname); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
-		ctx.String(http.StatusCreated, "Created")
+		ctx.JSON(http.StatusOK, "Created")
 
 	})
 
@@ -142,30 +142,30 @@ func (admin *admin) setProductApi() {
 		}
 		var deleteKind kind
 		if err := ctx.ShouldBindJSON(&deleteKind); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
 		if err := db.MainDB.Stock.DeleteKind(deleteKind.Container, deleteKind.Kindname); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
-		ctx.String(http.StatusAccepted, "delete")
+		ctx.JSON(http.StatusOK, "delete")
 
 	})
 	admin.adminGroup.DELETE("/product/container", func(ctx *gin.Context) {
 		Container, err := io.ReadAll(ctx.Request.Body)
 		if err != nil {
-			ctx.String(http.StatusNotAcceptable, "try agein")
+			ctx.JSON(http.StatusOK, "try agein")
 		}
 		newContainer := string(Container)
 		if len(newContainer) == 0 {
-			ctx.String(http.StatusNotAcceptable, "name container is empty")
+			ctx.JSON(http.StatusOK, "name container is empty")
 		} else if regexp.MustCompile(`\s`).Match([]byte(newContainer)) {
-			ctx.String(http.StatusNotAcceptable, "has space")
+			ctx.JSON(http.StatusOK, "has space")
 		} else if err := db.MainDB.Stock.DeleteContainer(newContainer); err != nil {
-			ctx.String(http.StatusNotAcceptable, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 		} else {
-			ctx.String(http.StatusCreated, "delete")
+			ctx.JSON(http.StatusOK, "delete")
 		}
 
 	})
@@ -178,21 +178,21 @@ func (admin *admin) setProductApi() {
 		var ki kind
 		if err := ctx.ShouldBindJSON(&ki); err != nil {
 			if io.EOF == err {
-				ctx.String(http.StatusBadRequest, "empty Body")
+				ctx.JSON(http.StatusOK, "empty Body")
 			} else {
-				ctx.String(http.StatusBadRequest, err.Error())
+				ctx.JSON(http.StatusOK, err.Error())
 			}
 			return
 		}
 		fg, err := db.MainDB.Stock.GetAllModelsInKind(ki.Container, ki.Kindname)
 		if err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
 		if fg == nil {
-			ctx.String(http.StatusNoContent, "no data ")
+			ctx.JSON(http.StatusOK, "no data ")
 		}
-		ctx.JSON(http.StatusFound, &fg)
+		ctx.JSON(http.StatusOK, &fg)
 	})
 	admin.adminGroup.POST("/product/model", func(ctx *gin.Context) {
 		type kind struct {
@@ -203,14 +203,14 @@ func (admin *admin) setProductApi() {
 		var ki kind
 		err := ctx.ShouldBindJSON(&ki)
 		if err != nil {
-			ctx.String(http.StatusOK, "check json ")
+			ctx.JSON(http.StatusOK, "check json ")
 			return
 		}
 		if err := db.MainDB.Stock.AddModelToKind(ki.Container, ki.Kindname, &ki.Model); err != nil {
-			ctx.String(http.StatusOK, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
-		ctx.String(http.StatusOK, "create")
+		ctx.JSON(http.StatusOK, "create")
 
 	})
 	admin.adminGroup.DELETE("/product/model", func(ctx *gin.Context) {
@@ -221,14 +221,14 @@ func (admin *admin) setProductApi() {
 		}
 		deleteModel := kind{}
 		if err := ctx.ShouldBindJSON(&deleteModel); err != nil {
-			ctx.String(http.StatusBadRequest, "check json")
+			ctx.JSON(http.StatusOK, "check json")
 			return
 		}
 		if err := db.MainDB.Stock.DeleteModelFromKind(deleteModel.Container, deleteModel.Kindname, deleteModel.Id); err != nil {
-			ctx.String(http.StatusBadRequest, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
-		ctx.String(http.StatusAccepted, "delete %d", deleteModel.Id)
+		ctx.JSON(http.StatusOK, deleteModel.Id)
 	})
 
 }
@@ -237,7 +237,7 @@ func (admin *admin) setLogoutApi() {
 
 	admin.adminGroup.GET("/logout", func(ctx *gin.Context) {
 		ctx.SetCookie("session", "", -1, "/admin", "", false, true)
-		ctx.String(http.StatusOK, "ok")
+		ctx.JSON(http.StatusOK, "ok")
 	})
 }
 
@@ -248,15 +248,15 @@ func (admin *admin) setLoginApi() {
 	//		infoUserAdmin := strings.Split(v, ",")
 	//		if err == nil || len(infoUserAdmin) < 2 {
 	//			//ctx.Redirect(http.StatusMovedPermanently, "/admin/")
-	//			ctx.String(http.StatusBadRequest, "ERROR")
+	//			ctx.JSON(http.StatusOK, "ERROR")
 	//			return
 	//		} else if err = bcrypt.CompareHashAndPassword([]byte(infoUserAdmin[1]), []byte(admin.adminUsers[infoUserAdmin[0]])); err == nil {
 	//			//ctx.Redirect(http.StatusMovedPermanently, "/admin/")
-	//			ctx.String(http.StatusBadRequest, "ERROR")
+	//			ctx.JSON(http.StatusOK, "ERROR")
 	//			return
 	//		}
 	//
-	//		ctx.String(http.StatusOK, "ok")
+	//		ctx.JSON(http.StatusOK, "ok")
 	//	})
 
 	admin.adminGroup.POST("/login", func(ctx *gin.Context) {
@@ -266,13 +266,13 @@ func (admin *admin) setLoginApi() {
 			//	ctx.HTML(http.StatusBadRequest, "adminLogin.html", gin.H{
 			//		"err": "check your password and your username",
 			//	})
-			ctx.String(http.StatusBadRequest, "check your password and your username")
+			ctx.JSON(http.StatusOK, "check your password and your username")
 			return
 		}
 		hashpassword, _ := bcrypt.GenerateFromPassword([]byte(password), 12)
 
 		ctx.SetCookie("session", username+","+string(hashpassword), 0, "/admin", "", false, true)
-		ctx.String(http.StatusOK, "ok")
+		ctx.JSON(http.StatusOK, "ok")
 	})
 
 }
@@ -296,7 +296,7 @@ func (admin *admin) setMiddleware() {
 			ctx.Abort()
 			return
 		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
-			ctx.String(http.StatusOK, err.Error())
+			ctx.JSON(http.StatusOK, err.Error())
 			ctx.Abort()
 			return
 		}
