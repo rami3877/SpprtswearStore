@@ -60,8 +60,8 @@ func (u *user) AddNew(users structs.User) error {
 			return err
 		}
 
-		if !isStrongPassword(users.Password) {
-			return ErrUserNotStrongPassword
+		if err := isStrongPassword(users.Password); err != nil {
+			return err
 		}
 
 		if !isValidEmail(users.UserEmail) {
@@ -99,8 +99,8 @@ func (u *user) UpdataPassword(username string, oldPassword string, newPassword s
 		if userdata == nil {
 			return ErrUsereNotFound
 		}
-		if !isStrongPassword(newPassword) {
-			return ErrUserNotStrongPassword
+		if err := isStrongPassword(newPassword); err != nil {
+			return err
 		}
 
 		usr := structs.User{}
@@ -289,7 +289,7 @@ func (u *user) UpdataPhone(username string, phone string) error {
 
 }
 
-func (u *user) UpdateName(username string,Name string) error {
+func (u *user) UpdateName(username string, Name string) error {
 	return u.dataBase.Batch(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte("users"))
 		if len(Name) == 0 {
@@ -314,12 +314,10 @@ func (u *user) UpdateName(username string,Name string) error {
 
 }
 
-
-
-func isStrongPassword(password string) bool {
+func isStrongPassword(password string) error {
 	// Check minimum length
 	if len(password) < 8 {
-		return false
+		return errors.New("pasword is short")
 	}
 
 	// Check for at least one uppercase letter
@@ -332,7 +330,7 @@ func isStrongPassword(password string) bool {
 	}
 
 	if !hasUpperCase {
-		return false
+		return errors.New("Password least one uppercase letter")
 	}
 
 	// Check for at least one lowercase letter
@@ -345,10 +343,9 @@ func isStrongPassword(password string) bool {
 	}
 
 	if !hasLowerCase {
-		return false
+		return errors.New(" Password least one lowercase letter")
 	}
 
-	// Check for at least one digit
 	hasDigit := false
 	for _, char := range password {
 		if unicode.IsDigit(char) {
@@ -358,17 +355,17 @@ func isStrongPassword(password string) bool {
 	}
 
 	if !hasDigit {
-		return false
+		return errors.New("Password at least one digit")
 	}
 
 	// Check for at least one special character
-	hasSpecialChar := false
+	hasSpecialChar := true
 	specialChars := "!@#$%^&*()-=_+[]{}|;:'\",.<>?/"
 	for _, char := range password {
 		if unicode.IsSymbol(char) || unicode.IsPunct(char) {
 			for _, special := range specialChars {
 				if char == special {
-					hasSpecialChar = true
+					hasSpecialChar = false
 					break
 				}
 			}
@@ -377,8 +374,10 @@ func isStrongPassword(password string) bool {
 			break
 		}
 	}
-
-	return hasSpecialChar
+	if hasSpecialChar {
+		return errors.New("Password least one special character")
+	}
+	return nil
 }
 
 func isAcceptableUsername(username string) error {

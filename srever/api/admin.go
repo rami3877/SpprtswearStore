@@ -83,20 +83,20 @@ func (admin *admin) setProductApi() {
 		ctx.JSON(http.StatusOK, "done")
 	})
 
-	admin.adminGroup.GET("/product", func(ctx *gin.Context) {
-		AllContainer := db.MainDB.Stock.GetAllContainer()
-		if len(AllContainer) != 0 {
+	// admin.adminGroup.GET("/product", func(ctx *gin.Context) {
+	// 		AllContainer := db.MainDB.Stock.GetAllContainer()
+	// 	if len(AllContainer) != 0 {
 
-			ctx.HTML(http.StatusOK, "product.html", gin.H{
-				"Container": AllContainer,
-			})
-		} else {
-			ctx.HTML(http.StatusOK, "product.html", gin.H{
-				"Container": "",
-			})
-		}
+	// 		ctx.HTML(http.StatusOK, "product.html", gin.H{
+	// 			"Container": AllContainer,
+	// 		})
+	// 	} else {
+	// 		ctx.HTML(http.StatusOK, "product.html", gin.H{
+	// 			"Container": "",
+	// 		})
+	// 	}
 
-	})
+	// })
 	admin.adminGroup.POST("/product/container", func(ctx *gin.Context) {
 		newContainer := ctx.PostForm("Container")
 		if len(newContainer) == 0 {
@@ -243,30 +243,15 @@ func (admin *admin) setLogoutApi() {
 
 func (admin *admin) setLoginApi() {
 
-	//	admin.adminGroup.GET("/login", func(ctx *gin.Context) {
-	//		v, err := ctx.Cookie("session")
-	//		infoUserAdmin := strings.Split(v, ",")
-	//		if err == nil || len(infoUserAdmin) < 2 {
-	//			//ctx.Redirect(http.StatusMovedPermanently, "/admin/")
-	//			ctx.JSON(http.StatusOK, "ERROR")
-	//			return
-	//		} else if err = bcrypt.CompareHashAndPassword([]byte(infoUserAdmin[1]), []byte(admin.adminUsers[infoUserAdmin[0]])); err == nil {
-	//			//ctx.Redirect(http.StatusMovedPermanently, "/admin/")
-	//			ctx.JSON(http.StatusOK, "ERROR")
-	//			return
-	//		}
-	//
-	//		ctx.JSON(http.StatusOK, "ok")
-	//	})
+	admin.adminGroup.GET("/login", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "loginadmin.html", nil)
+	})
 
 	admin.adminGroup.POST("/login", func(ctx *gin.Context) {
 		username := ctx.PostForm("username")
 		password, ok := admin.adminUsers[username]
 		if !ok || string(password) != ctx.PostForm("password") {
-			//	ctx.HTML(http.StatusBadRequest, "adminLogin.html", gin.H{
-			//		"err": "check your password and your username",
-			//	})
-			ctx.JSON(http.StatusOK, "check your password and your username")
+			ctx.JSON(http.StatusOK, gin.H{"err": "check your password and your username"})
 			return
 		}
 		hashpassword, _ := bcrypt.GenerateFromPassword([]byte(password), 12)
@@ -296,8 +281,8 @@ func (admin *admin) setMiddleware() {
 			ctx.Abort()
 			return
 		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
-			ctx.JSON(http.StatusOK, err.Error())
-			ctx.Abort()
+			ctx.SetCookie("session", "", -1, "/admin", "", false, true)
+			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
 			return
 		}
 
@@ -307,7 +292,7 @@ func (admin *admin) setMiddleware() {
 }
 
 func (admin *admin) setAdminPage() {
-	admin.adminGroup.GET("/", func(ctx *gin.Context) {
+	admin.adminGroup.GET("/main", func(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
 
 	})

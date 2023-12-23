@@ -46,7 +46,7 @@ func (api *Api) setAdminApi(server *gin.Engine) {
 	api.admin.setMiddleware()
 	api.admin.setProductApi()
 	api.admin.GetUsers()
-	// api.admin.setAdminPage()
+	api.admin.setAdminPage()
 }
 
 func (api *Api) setGuestApi(server *gin.Engine) {
@@ -113,7 +113,7 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 
 		v, err := ctx.Cookie("session")
 		if err != nil {
-		    ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
+			ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
 			return
 		}
 		_, m, d := time.Now().Date()
@@ -121,19 +121,19 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 		infoUser := strings.Split(v, ",")
 		if len(infoUser) != 2 {
 			ctx.SetCookie("session", "", -1, "/", "", false, true)
-		    ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
+			ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
 			return
 		}
 
 		user := structs.User{}
 		if err := db.MainDB.Users.GetUser(infoUser[0], &user); err != nil {
 			ctx.SetCookie("session", "", -1, "/user", "", false, true)
-		    ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
+			ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
 			return
 		}
 		if err = bcrypt.CompareHashAndPassword([]byte(infoUser[1]), []byte(user.Password+m.String()+strconv.Itoa(d))); err != nil {
 			ctx.SetCookie("session", "", -1, "/", "", false, true)
-		    ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
+			ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": true})
 			return
 		}
 		ctx.HTML(http.StatusOK, "index.html", gin.H{"guest": false})

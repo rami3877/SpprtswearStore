@@ -1,7 +1,6 @@
 package srever
 
 import (
-	"net/http"
 	"srever/api"
 
 	"github.com/gin-gonic/gin"
@@ -15,18 +14,10 @@ func (*Srever) Run() {
 	serverEngin := gin.New()
 	serverEngin.Use(gin.Logger())
 	serverEngin.Use(gin.Recovery())
-
-	httpServer := &http.Server{
-		 Addr:    ":8080",
-		Handler: serverEngin,
-	}
-
-
-
 	serverEngin.LoadHTMLGlob("templates/*.html")
 	api.InitApi().Setup(serverEngin)
 
-	httpServer.ListenAndServe()
+	serverEngin.Run(":8080")
 
 }
 
