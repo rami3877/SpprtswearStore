@@ -7,6 +7,7 @@ import (
 	"strings"
 	"structs"
 	"time"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -18,7 +19,7 @@ type user struct {
 func (user *user) setCheckoutApi() {
 
 	user.userGroup.GET("/checkout", func(ctx *gin.Context) {
-		 ctx.HTML(http.StatusOK , "payment.html", gin.H{})
+		ctx.HTML(http.StatusOK, "payment.html", gin.H{})
 	})
 	user.userGroup.POST("/buy", func(ctx *gin.Context) {
 		v, _ := ctx.Cookie("session")
@@ -107,7 +108,9 @@ func (user *user) setInformationApi() {
 		}
 		ctx.JSON(http.StatusOK, "add visa")
 	})
-
+	user.userGroup.GET("/settingvais", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "visa.html", nil)
+	})
 	user.userGroup.GET("/visa", func(ctx *gin.Context) {
 		v, err := ctx.Cookie("session")
 		if err != nil {
@@ -188,7 +191,7 @@ func (user *user) setInformationApi() {
 			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
-		ctx.JSON(http.StatusOK , user.Name)
+		ctx.JSON(http.StatusOK, user.Name)
 	})
 
 	user.userGroup.POST("/name", func(ctx *gin.Context) {
@@ -198,7 +201,7 @@ func (user *user) setInformationApi() {
 			return
 		}
 		username := strings.Split(v, ",")[0]
-		Name:= ctx.PostForm("Name")
+		Name := ctx.PostForm("Name")
 		if err := db.MainDB.Users.UpdateName(username, Name); err != nil {
 			ctx.JSON(http.StatusOK, err.Error())
 			return
@@ -262,8 +265,8 @@ func (user *user) setLoginApi() {
 		if err := db.MainDB.Users.GetUser(userlogin.Username, &user); err != nil {
 			ctx.JSON(http.StatusOK, err.Error())
 			return
-		} 
-		if user.Password !=userlogin.Password {
+		}
+		if user.Password != userlogin.Password {
 			ctx.JSON(http.StatusOK, "check your username or password")
 			return
 
