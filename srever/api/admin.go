@@ -34,6 +34,10 @@ func (admin *admin) GetUsers() {
 func (admin *admin) setOrderApi() {
 
 	admin.adminGroup.GET("/orders", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "order.html", nil)
+	})
+
+	admin.adminGroup.POST("/orders", func(ctx *gin.Context) {
 		orders := db.MainDB.Orders.Get()
 		if orders == nil {
 			ctx.JSON(http.StatusOK, "")
@@ -83,20 +87,21 @@ func (admin *admin) setProductApi() {
 		ctx.JSON(http.StatusOK, "done")
 	})
 
-	// admin.adminGroup.GET("/product", func(ctx *gin.Context) {
-	// 		AllContainer := db.MainDB.Stock.GetAllContainer()
-	// 	if len(AllContainer) != 0 {
+	admin.adminGroup.GET("/product", func(ctx *gin.Context) {
+		// AllContainer := db.MainDB.Stock.GetAllContainer()
+		// if len(AllContainer) != 0 {
 
-	// 		ctx.HTML(http.StatusOK, "product.html", gin.H{
-	// 			"Container": AllContainer,
-	// 		})
-	// 	} else {
-	// 		ctx.HTML(http.StatusOK, "product.html", gin.H{
-	// 			"Container": "",
-	// 		})
-	// 	}
+		// 	ctx.HTML(http.StatusOK, "product.html", gin.H{
+		// 		"Container": AllContainer,
+		// 	})
+		// } else {
+		// 	ctx.HTML(http.StatusOK, "product.html", gin.H{
+		// 		"Container": "",
+		// 	})
+		// }
 
-	// })
+		ctx.HTML(http.StatusOK, "manage.html", nil)
+	})
 	admin.adminGroup.POST("/product/container", func(ctx *gin.Context) {
 		newContainer := ctx.PostForm("Container")
 		if len(newContainer) == 0 {
@@ -237,7 +242,7 @@ func (admin *admin) setLogoutApi() {
 
 	admin.adminGroup.GET("/logout", func(ctx *gin.Context) {
 		ctx.SetCookie("session", "", -1, "/admin", "", false, true)
-		ctx.JSON(http.StatusOK, "ok")
+		ctx.HTML(http.StatusOK, "loginadmin.html", nil)
 	})
 }
 
