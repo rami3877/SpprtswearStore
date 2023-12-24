@@ -56,13 +56,31 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 		Containter := ctx.Query("container")
 		id, err := strconv.Atoi(ctx.Query("id"))
 		if err != nil {
-			ctx.JSON(http.StatusOK, "ERROR")
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
 
 		data, err := db.MainDB.Stock.GetModelsInKind(id, 10, Containter, kind)
 		if err != nil {
-			ctx.JSON(http.StatusOK, "ERROR")
+			ctx.JSON(http.StatusOK, err.Error())
+			return
+		}
+		ctx.JSON(http.StatusOK, data)
+
+	})
+
+	server.GET("/NumberProduct", func(ctx *gin.Context) {
+		type InputHTTP struct {
+			Container string `json:"container"`
+			Kind      string `json:"kind"`
+		}
+		inputHTTP := InputHTTP{}
+		if err := ctx.ShouldBindJSON(inputHTTP); err != nil {
+			ctx.JSON(http.StatusOK, "check json")
+		}
+		data, err := db.MainDB.Stock.GetNumberModelsInKind(inputHTTP.Container, inputHTTP.Kind)
+		if err != nil {
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
 		ctx.JSON(http.StatusOK, data)
@@ -96,7 +114,8 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 			ctx.Next()
 			return
 		}
-		if listModels, err := db.MainDB.Stock.GetModelsInKind(0, 10, pathArray[0], pathArray[1]); err == nil {
+		Number , _ := db.MainDB.Stock.GetNumberModelsInKind(pathArray[0] , pathArray[1])
+		if listModels, err := db.MainDB.Stock.GetModelsInKind(Number, 12, pathArray[0], pathArray[1]); err == nil {
 			ctx.HTML(http.StatusOK, "products.html", gin.H{
 
 				"container":  pathArray[0],
