@@ -56,13 +56,13 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 		Containter := ctx.Query("container")
 		id, err := strconv.Atoi(ctx.Query("id"))
 		if err != nil {
-			ctx.JSON(http.StatusOK, "ERROR")
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
 
 		data, err := db.MainDB.Stock.GetModelsInKind(id, 10, Containter, kind)
 		if err != nil {
-			ctx.JSON(http.StatusOK, "ERROR")
+			ctx.JSON(http.StatusOK, err.Error())
 			return
 		}
 		ctx.JSON(http.StatusOK, data)

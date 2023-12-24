@@ -378,6 +378,7 @@ func (s *stock) UpdataSizeFromModel(id int, Container, kind, sizeName string, si
 	return v.Batch(func(tx *bbolt.Tx) error {
 
 		b := tx.Bucket([]byte(kind))
+
 		if b == nil {
 			return ErrKindNotFound
 		}
@@ -558,7 +559,6 @@ func (s *stock) GetModelsInKind(formId, count int, Container, kind string) (mode
 
 	err := v.View(func(tx *bbolt.Tx) error {
 		b := tx.Bucket([]byte(kind))
-
 		if b == nil {
 			return ErrKindNotFound
 		}
