@@ -549,6 +549,28 @@ func (s *stock) GetAllModelsInKind(Container, kind string) (models []structs.Mod
 	return models, nil
 }
 
+func (s *stock) GetNumberModelsInKind(Container, kind string) (int, error) {
+	Container = strings.TrimSpace(Container)
+	kind = strings.TrimSpace(kind)
+	v, ok := s.database[Container][kind]
+	if !ok {
+		return 0, ErrContainerIsNotExistInStock
+	}
+	number := 0 
+
+	err := v.View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte(kind))
+		if b == nil {
+			return ErrKindNotFound
+		}
+		number = b.Stats().KeyN
+
+		return nil
+	})
+	return number, err
+
+}
+
 func (s *stock) GetModelsInKind(formId, count int, Container, kind string) (models []structs.Model, _ error) {
 	Container = strings.TrimSpace(Container)
 	kind = strings.TrimSpace(kind)
@@ -575,7 +597,7 @@ func (s *stock) GetModelsInKind(formId, count int, Container, kind string) (mode
 		}
 		models = append(models, model)
 
-		k, nextVuale = c.Next()
+		k, nextVuale = c.Prev()
 		i := 0
 
 		for k != nil && i < count {
@@ -587,7 +609,7 @@ func (s *stock) GetModelsInKind(formId, count int, Container, kind string) (mode
 
 			models = append(models, model)
 
-			k, nextVuale = c.Next()
+			k, nextVuale = c.Prev()
 			i++
 		}
 
