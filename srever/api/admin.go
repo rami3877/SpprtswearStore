@@ -3,6 +3,7 @@ package api
 import (
 	"db"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -39,6 +40,20 @@ func (admin *admin) setOrderApi() {
 			ctx.JSON(http.StatusOK, "")
 		}
 		ctx.JSON(http.StatusOK, orders)
+	})
+	admin.adminGroup.GET("/outstock", func(ctx *gin.Context) {
+		dataOfoutStock := db.MainDB.OutStock.Get()
+		if dataOfoutStock == nil {
+			ctx.JSON(http.StatusOK, "no date")
+		} else {
+			ctx.JSON(http.StatusOK, dataOfoutStock)
+		}
+	})
+
+	admin.adminGroup.DELETE("/outstock", func(ctx *gin.Context) {
+		Id := ctx.GetInt("id")
+		db.MainDB.OutStock.Delete(Id)
+		ctx.JSON(http.StatusOK ,fmt.Sprintf("delete %d" , Id))
 	})
 }
 

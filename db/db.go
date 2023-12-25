@@ -14,6 +14,7 @@ type DataBase struct {
 	Stock        stock
 	Orders       order
 	Users        user
+	OutStock     OutStock
 }
 
 var MainDB *DataBase
@@ -63,6 +64,7 @@ func (db *DataBase) Buy(order Orders) error {
 
 	models[0].Sizes[order.SizeName][order.Color]--
 	if models[0].Sizes[order.SizeName][order.Color] <= 0 {
+		db.OutStock.add(&modelsOutStock{IdModel: order.IdModel, Container: order.Container, Kind: order.Kind, Size: order.SizeName, Color: order.Color})
 		delete(models[0].Sizes[order.SizeName], order.Color)
 		db.Stock.UpdataSizeFromModel(order.IdModel, order.Container, order.Kind, order.SizeName, models[0].Sizes[order.SizeName])
 	} else {
@@ -89,7 +91,7 @@ func OpenDirDataBase(name string) *DataBase {
 
 	db := DataBase{}
 
-	db.Stock.pathStock = name + "/inStock"
+	db.Stock.pathStock = name + "/Stock"
 	err := os.Mkdir(name, 0770)
 	if err != nil && !os.IsExist(err) {
 		log.Fatal("[database] " + err.Error())
@@ -115,6 +117,18 @@ func OpenDirDataBase(name string) *DataBase {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	db.OutStock.dataBase, err = bbolt.Open(name+"/outstock"+".db", 0600, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := db.OutStock.dataBase.Batch(func(tx *bbolt.Tx) error {
+		_, err := tx.CreateBucket([]byte("outstock"))
+		return err
+	}); err != nil {
+		log.Fatal(err)
+	}
+	//db.OutStock.dataBase,.name = ""
 	db.Users.dataBase.Update(func(tx *bbolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("users"))
 		if err != nil {
