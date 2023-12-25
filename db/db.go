@@ -123,7 +123,7 @@ func OpenDirDataBase(name string) *DataBase {
 		log.Fatal(err)
 	}
 	if err := db.OutStock.dataBase.Batch(func(tx *bbolt.Tx) error {
-		_, err := tx.CreateBucket([]byte("outstock"))
+		_, err := tx.CreateBucketIfNotExists([]byte("outstock"))
 		return err
 	}); err != nil {
 		log.Fatal(err)

@@ -312,7 +312,7 @@ func (admin *admin) setMiddleware() {
 }
 
 func (admin *admin) setAdminPage() {
-	admin.adminGroup.GET("/main", func(ctx *gin.Context) {
+	admin.adminGroup.GET("/mains", func(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
 
 	})
