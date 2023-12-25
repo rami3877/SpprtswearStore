@@ -7,7 +7,6 @@ import (
 	"strings"
 	"structs"
 	"time"
-
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -75,7 +74,7 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 			Kind      string `json:"kind"`
 		}
 		inputHTTP := InputHTTP{}
-		if err := ctx.ShouldBindJSON(inputHTTP); err != nil {
+		if err := ctx.ShouldBindJSON(&inputHTTP); err != nil {
 			ctx.JSON(http.StatusOK, "check json")
 		}
 		data, err := db.MainDB.Stock.GetNumberModelsInKind(inputHTTP.Container, inputHTTP.Kind)
