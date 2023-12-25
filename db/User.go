@@ -374,7 +374,7 @@ func isStrongPassword(password string) error {
 			break
 		}
 	}
-	if hasSpecialChar {
+	if !hasSpecialChar {
 		return errors.New("Password least one special character")
 	}
 	return nil

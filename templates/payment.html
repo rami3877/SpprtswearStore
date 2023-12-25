@@ -60,10 +60,28 @@
                         </div>
 
                         <div class="address">
-                            <label for="address" class="label-default"> Address</label>
-                            <input type="text" name="address" id="address" class="input-default"
-                                placeholder="city / street / apartment number / building number">
-                        </div>
+                            <div class="input-group">
+                                <div class="input-item">
+                                    <label for="city" class="label-default">City</label>
+                                    <input type="text" name="city" id="city" class="input-default" placeholder="City">
+                                </div>
+                        
+                                <div class="input-item">
+                                    <label for="street" class="label-default">Street</label>
+                                    <input type="text" name="street" id="street" class="input-default" placeholder="Street">
+                                </div>
+                            </div>
+                        
+                            <div class="input-group">
+                                <div class="input-item">
+                                    <label for="apartment" class="label-default">Apartment Number</label>
+                                    <input type="text" name="apartment" id="apartment" class="input-default" placeholder="Apartment Number">
+                                </div>
+                                <div class="input-item">
+                                    <label for="building" class="label-default">Building Number</label>
+                                    <input type="text" name="building" id="building" class="input-default" placeholder="Building Number">
+                                </div>
+
                         <div class="Visa_number">
                             <label for="Visa_number" class="label-default"> Visa number </label>
                             <input type="number" min="0" name="Visa_number" id="Visa_number" class="input-default"
@@ -135,7 +153,7 @@
                 </div>
 
                 <div class="pay-btn-width">
-                    <button class="pay-btn">
+                    <button class="pay-btn" onclick="PostVisa() ;  postbuy()">
                         <b>Pay</b> $<span id="payamount">0</span>
                     </button>
                 </div>

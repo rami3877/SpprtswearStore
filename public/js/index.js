@@ -79,3 +79,42 @@ function Resister() {
     }
     )
 }
+function PostSettings() {
+
+    const firstname = document.getElementById("firstname").value +" " + document.getElementById("lastname").value
+    console.log(firstname)
+    fetch("/user/name", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `firstName=${firstname}`,
+    }).then(Response => Response.text()).then(data => {
+        console.log(data)
+    })
+
+    
+    const oldPassowrd = document.getElementById("currentpassword").value
+    console.log(oldPassowrd)
+    const newpassword = document.getElementById("newpassword").value
+    console.log(newpassword)
+    fetch("/user/password", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/text",
+        },
+        body: `{"oldPassowrd":"${oldPassowrd}","newpassword":"${newpassword}"}`,
+    }).then(Response => Response.json()).then(data => {
+    })
+}
+
+function GetSetting() {
+    
+    fetch("/user/name", {
+        method: "GET"
+    }).then(Response => Response.text()).then(data => {
+        let name =  data.split(" ")   
+        document.getElementById("lastname").value = name[1]
+        document.getElementById("firstname").value = name[0]
+    })
+}
