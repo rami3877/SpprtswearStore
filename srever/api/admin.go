@@ -256,7 +256,7 @@ func (admin *admin) setProductApi() {
 func (admin *admin) setLogoutApi() {
 
 	admin.adminGroup.GET("/logout", func(ctx *gin.Context) {
-		ctx.SetCookie("session", "", -1, "/", "", false, true)
+		ctx.SetCookie("session", "", -1, "/admin", "", false, true)
 		ctx.HTML(http.StatusOK, "loginadmin.html", nil)
 	})
 }
@@ -276,7 +276,7 @@ func (admin *admin) setLoginApi() {
 		}
 		hashpassword, _ := bcrypt.GenerateFromPassword([]byte(password), 12)
 
-		ctx.SetCookie("session", username+","+string(hashpassword), 0, "/", "", false, true)
+		ctx.SetCookie("session", username+","+string(hashpassword), 0, "/admin", "", false, true)
 		ctx.JSON(http.StatusOK, "ok")
 	})
 
@@ -297,12 +297,13 @@ func (admin *admin) setMiddleware() {
 		v, err := ctx.Cookie("session")
 		infoAdmin := strings.Split(v, ",")
 		if err != nil {
-			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			ctx.JSON(http.StatusOK, err)
 			ctx.Abort()
 			return
 		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
-			ctx.SetCookie("session", "", -1, "/", "", false, true)
-			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			ctx.SetCookie("session", "", -1, "/admin", "", false, true)
+			ctx.JSON(http.StatusOK, err)
+			ctx.Abort()
 			return
 		}
 

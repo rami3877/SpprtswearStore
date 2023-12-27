@@ -359,13 +359,13 @@ func isStrongPassword(password string) error {
 	}
 
 	// Check for at least one special character
-	hasSpecialChar := true
+	hasSpecialChar := false
 	specialChars := "!@#$%^&*()-=_+[]{}|;:'\",.<>?/"
 	for _, char := range password {
 		if unicode.IsSymbol(char) || unicode.IsPunct(char) {
 			for _, special := range specialChars {
 				if char == special {
-					hasSpecialChar = false
+					hasSpecialChar = true
 					break
 				}
 			}
