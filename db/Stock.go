@@ -640,6 +640,7 @@ func (S *stock) GetAllContainerAndKind() (ContainerAndKind map[string][]string) 
 	return ContainerAndKind
 }
 
+
 func (db *stock) IsExist(name string) bool {
 	name = strings.TrimSpace(name)
 	_, ok := db.database[name]
