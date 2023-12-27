@@ -214,6 +214,10 @@ select{
 #size, #color, #quantity{
     max-width: 71px;
 }
+.flex1{
+    display: flex;
+    justify-content: space-between;
+}
 /* responsive manage page */
 @media (max-width: 900px){
     .main{
@@ -243,7 +247,7 @@ select{
 
 /* back button */
 #back-btn{
-    position: absolute;
+    position: fixed;
     left: 6%;
     bottom: 7.5%;
     font-size: 2rem;

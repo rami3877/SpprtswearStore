@@ -3,6 +3,7 @@ package api
 import (
 	"db"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -43,6 +44,20 @@ func (admin *admin) setOrderApi() {
 			ctx.JSON(http.StatusOK, "")
 		}
 		ctx.JSON(http.StatusOK, orders)
+	})
+	admin.adminGroup.GET("/outstock", func(ctx *gin.Context) {
+		dataOfoutStock := db.MainDB.OutStock.Get()
+		if dataOfoutStock == nil {
+			ctx.JSON(http.StatusOK, "no date")
+		} else {
+			ctx.JSON(http.StatusOK, dataOfoutStock)
+		}
+	})
+
+	admin.adminGroup.DELETE("/outstock", func(ctx *gin.Context) {
+		Id := ctx.GetInt("id")
+		db.MainDB.OutStock.Delete(Id)
+		ctx.JSON(http.StatusOK ,fmt.Sprintf("delete %d" , Id))
 	})
 }
 
@@ -282,12 +297,13 @@ func (admin *admin) setMiddleware() {
 		v, err := ctx.Cookie("session")
 		infoAdmin := strings.Split(v, ",")
 		if err != nil {
-			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			ctx.JSON(http.StatusOK, err)
 			ctx.Abort()
 			return
 		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
 			ctx.SetCookie("session", "", -1, "/admin", "", false, true)
-			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			ctx.JSON(http.StatusOK, err)
+			ctx.Abort()
 			return
 		}
 
@@ -299,5 +315,6 @@ func (admin *admin) setMiddleware() {
 func (admin *admin) setAdminPage() {
 	admin.adminGroup.GET("/mains", func(ctx *gin.Context) {
 		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
+
 	})
 }

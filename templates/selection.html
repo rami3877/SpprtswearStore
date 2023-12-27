@@ -23,7 +23,7 @@
     </header>
 
     <!-- home selections -->
-    <section class="list">
+    <section class="list" onclick="Getproducts()">
         <ul class="selections" id="kinds">
             {{range .kinds}}
             <li data-text="{{.}}" class="pants"><a href="{{$container}}/{{.}}">{{.}}</a></li>

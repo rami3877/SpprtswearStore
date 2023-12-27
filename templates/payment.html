@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/css/payment.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
+    
     <title>Payment</title>
 </head>
 
@@ -88,15 +89,15 @@
                                 placeholder="**** **** **** ****">
                         </div>
                         <div class="input-flex">
-                            <div class="expire-date">
+                            <div class="expire-date" id="expirydate">
                                 <span class="label-default">Expiration date</span>
 
                                 <div class="input-flex">
                                     <input type="number" name="day" placeholder="31" min="1" max="31"
-                                        class="input-default">
+                                        class="input-default" id="day">
                                     /
                                     <input type="number" name="month" placeholder="12" min="1" max="12"
-                                        class="input-default">
+                                        class="input-default" id="month">
                                 </div>
                             </div>
 
@@ -153,12 +154,12 @@
                 </div>
 
                 <div class="pay-btn-width">
-                    <button class="pay-btn" onclick="PostVisa() ;  postbuy()">
+                    <button class="pay-btn" onclick="PostVisa()">
                         <b>Pay</b> $<span id="payamount">0</span>
-                    </button>
+                    </button >
                 </div>
 
-            </section>
+            
             <!-- cart section -->
             <section class="cart">
                 <div class="cart-border" id="cart-border">
@@ -290,6 +291,7 @@
 
 
     </script>
+    <script src="/js/payment.js"></script>
 </body>
 
 </html>

@@ -39,10 +39,11 @@
                 </label>
                 <input type="reset" value="Clear">
             </div>
-            <div class="btn">
+        </form>
+
+            <div >
                 <button onclick="login()"> Login </button>
             </div>
-        </form>
     </div>
     <script>
        class apiFecth {
@@ -72,12 +73,13 @@
                 "password": document.getElementById("password").value
             }
             apiFecth.From("POST", "/admin/login",  (data) => {
+                console.log(data)
                 if (data.err != undefined) {
                     let span = document.createElement("span")
                     span.textContent = data.err
                     document.getElementById("login").appendChild(span)
                 }else {
-                    window.location = "/admin/main"
+                    window.location = "/admin/mains"
                 }
             }, `username=${admin.username}&password=${admin.password}`)
 

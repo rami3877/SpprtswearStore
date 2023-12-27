@@ -1,21 +1,23 @@
 function PostVisa() {
-    
-    const Visanumber = document.getElementById("Visanumber").value
+    const Visanumber = document.getElementById("Visa_number").value
     console.log(Visanumber)
     const cvv = document.getElementById("cvv").value
     console.log(cvv)
-    const expirydate = document.getElementById("expirydate").value
-    console.log(expirydate)
+    const day = document.getElementById("day").value
+    console.log(day)
+    const month = document.getElementById("month").value
+    console.log(month)
+    const cardholdername = document.getElementById("cardholder-name").value
     fetch("/user/visa", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: `{"Visanumber":"${Visanumber}","cvv":"${cvv}","expirydate":"${expirydate}"}`,
+        body: `{"Visanumber":"${Visanumber}","cvv":"${cvv}","day":"${day}" , month":"${month}"}`,
     }).then(Response => Response.text()).then(data => {
 
     })
-    const mobilenumber = document.getElementById("mobilenumber").value = Number
+    const mobilenumber = document.getElementById("mobile-number").value
     console.log(mobilenumber)
     fetch("/user/phone", {
         method: "POST",
@@ -26,7 +28,7 @@ function PostVisa() {
     }).then(Response => Response.text()).then(data => {
 
     })
-    const cardholdername = document.getElementById("cardholdername").value
+    
     console.log(cardholdername)
     fetch("/user/name", {
         method: "POST",
@@ -47,26 +49,17 @@ const building = document.getElementById('building').value;
 const requestBody = `city=${encodeURIComponent(city)}&street=${encodeURIComponent(street)}&apartment=${encodeURIComponent(apartment)}&building=${encodeURIComponent(building)}`;
 
 // Use the fetch function to make a POST request
-fetch("/user/address", {
+fetch("/user/addr", {
     method: "POST",
     headers: {
         "Content-Type": "application/x-www-form-urlencoded",
     },
     body: requestBody,
+
+}).then(Response => Response.text()).then(data => {
+
 })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.text();
-    })
-    .then(data => {
-        // Handle the response from the server
-        console.log(data);
-    })
-    .catch(error => {
-        // Handle errors that occurred during the fetch
-        console.error('Fetch error:', error);
-    }); 
+    
+    
 
 }
