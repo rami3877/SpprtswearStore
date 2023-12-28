@@ -30,7 +30,7 @@
             {{if .guest}}
             <a title="Profile" href="#"><i class='bx bx-user-circle'></i></a>
             {{else}}
-            <i id="setting-icon" class='bx bx-cog'></i>
+            <i id="setting-icon" class='bx bx-cog' onclick="GetSetting()"></i>
             {{end}}
         </div>
 
@@ -53,6 +53,7 @@
             <!-- login form -->
             <div class="form-login">
                 <h2>Login</h2>
+                <span id="spanErrorLogin"></span>
                 <form action="#">
                     <div class="input-box">
                         <span class="login-icon"> <ion-icon name="mail"></ion-icon> </span>
@@ -75,7 +76,7 @@
                         <p> Don't have an account? <a href="#" class="register-link">Register</a></p>
                     </div>
                 </form>
-                <span id="spanErrorLogin"></span>
+                
             </div>
 
             <div class="form-register">
@@ -104,7 +105,7 @@
                     <button type="submit" class="login-btn" onclick="Resister()"> Sign Up </button>
                     <div class="login-register">
                         <p> Already have an account? <a href="#" class="login-link">Login</a></p>
-                    </div>
+                    </div> 
                 </form>
                 <span id="spanErrorResister"></span>
             </div>
@@ -133,7 +134,7 @@
                             <input type="checkbox"> I agree to the terms & conditions
                         </label>
                     </div>
-                    <button type="submit" class="login-btn"> Sign Up </button>
+                    <button type="submit" class="login-btn" onclick="Resister()"> Sign Up </button>
                     <div class="login-register">
                         <p> Already have an account? <a href="#" class="login-link">Login</a></p>
                     </div>
@@ -174,7 +175,7 @@
                     </div>
 
                     <div class="visa">
-                        <button class="sub-btn">
+                        <button class="sub-btn"  onclick="PostSettings()">
                             <span>Submit</span>
                         </button>
 
@@ -238,7 +239,7 @@
     <a href="#" class="home-top"> <i class='bx bx-up-arrow-alt'></i> </a>
     <script src="js/interface.js"></script>
     <script src="js/index.js"></script>
-    <script type="module" src="http://unpkg.com/ionicons@5.5.2/dist/ionicons.esm.js"></script>
+    
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
