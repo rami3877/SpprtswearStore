@@ -256,6 +256,9 @@ header{
     margin-top: 22px;
     transform: scale(1.3);
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 35px;
 }
 .visa button{
     box-shadow: 1px 1px 2px 1px var(--main-color);

@@ -119,17 +119,22 @@ button:active{
     color: #000;
 }
 .order{
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     text-align: center;
+    flex-wrap: wrap;
+    gap: 20px 45px;
     padding: 8px;
     border: 3px solid #323232;
 }
 .order li{
+    text-align: center;
     font-size: 1.4rem;
     font-weight: 600;
     color: #323232;
+    margin-bottom: 10px;
 }
 
 /* manage page */
@@ -243,6 +248,17 @@ select{
     }
 
 }
+@media (max-width: 500px){
+    *{
+            scale: .99;
+        }
+    }
+@media (max-width: 350px){
+        *{
+                scale: .95;
+            }
+        }
+
 
 
 /* back button */

@@ -38,7 +38,10 @@
                 {{range .LinkesImage}}
                 <img id="imgProduct" src="{{.}}" alt="" class="product-img">
                 {{end}}
-                <h2 class="product-title" id="Description">{{.Description}}</h2>
+                <div class="box-title">
+                    <h2 class="product-title">Nielsen Animal</h2>
+                    <a id="com" href="#close-com"><i class='bx bxs-comment-detail'></i></a>
+                 </div>
                 <div class="price-cart">
                     <!-- Discount not work for now becase you need edit the server or use js -->
                     <span class="price"><span>$</span><span id="price">{{.Price}}</span></span>
@@ -66,6 +69,34 @@
             {{end}}
         </div>
     </section>
+
+        <!-- comments -->
+        <!-- <section class="comment-section">
+            <h3 id="com-title"> Comments <i class='bx bx-comment-detail bx-flashing' ></i></h3>
+            <br>
+            <div class="comments">
+                <div>
+                    <span class="user-name">EliasM :</span>
+                    <span class="user-comment"> what an amazing products i just found it here :)</span>
+                </div>
+                <div>
+                    <span class="user-name">Rami :</span>
+                    <span class="user-comment"> Thank you Sportswear Store for this beautiful website <3</span>
+                </div>
+                <br>
+                <div class="comment-tail">
+                    <div>
+                        <span>Add comment</span>
+                        <br>
+                        <textarea name="comment-box" id="comment-box" cols="50" rows="3"></textarea>
+                        <label id="send-comment" for="comment-box"> <i class='bx bx-send'></i> </label>
+                    </div>
+    
+                    <i class='bx bxs-chevrons-up bx-fade-up' id="close-com"></i>
+                </div>
+            </div>
+        </section> -->
+
     <script>
         var Order = new Map()
 
