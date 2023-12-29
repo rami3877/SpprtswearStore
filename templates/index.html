@@ -173,6 +173,15 @@
                             </div>
                         </div>
                     </div>
+                    <script>
+                        // open change password
+let pass1 = document.querySelector('#pass');
+let password1 = document.querySelector('#password');
+
+pass1.onclick = () => {
+    password1.classList.add('active');
+}
+                    </script>
 
                     <div class="visa">
                         <button class="sub-btn"  onclick="PostSettings()">
@@ -182,7 +191,7 @@
                         <button>
                             <a href="/user/settingvais" target="_blank">Visa</a>
                         </button>
-                        
+
                         <a href="#" onclick="logoutUser()"><i class='bx bxs-log-out'></i></a>
                     </div>
                 </form>
@@ -238,9 +247,10 @@
 
     <!-- scroll to top -->
     <a href="#" class="home-top"> <i class='bx bx-up-arrow-alt'></i> </a>
+
+
     <script src="js/interface.js"></script>
     <script src="js/index.js"></script>
-    
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
