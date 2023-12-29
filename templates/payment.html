@@ -191,15 +191,13 @@
                             <button id="product-delete-btn">
                                 <i class='bx bxs-trash'></i>
                             </button>
-                        </div>
-                  
-                            `
+                        </div> `
                 this.elementHtml.querySelector("#bx-minus").addEventListener("click", e => {
                     if (this.qty == 1) {
                         return
                     }
                     this.qty--
-                    var total = Number(document.getElementById("total").textContent) - this.price
+                    let total = Number(document.getElementById("total").textContent) - this.price
                     document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) - this.price
                     document.getElementById("quantity").textContent = this.qty
                     document.getElementById("total").textContent = total
@@ -212,7 +210,7 @@
                     document.getElementById("quantity").textContent = this.qty
                 })
                 this.elementHtml.querySelector("#product-delete-btn").addEventListener("click", e => {
-                    var total = Number(document.getElementById("total").textContent) - (this.qty * this.price)
+                    let total = Number(document.getElementById("total").textContent) - (this.qty * this.price)
                     document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) - this.price * this.qty
                     document.getElementById("total").textContent = total
                     this.elementHtml.remove()
