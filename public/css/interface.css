@@ -226,6 +226,9 @@ header{
     text-align: center;
     letter-spacing: 1.5px;
 }
+#setting-icon{
+    cursor: pointer;
+}
 .form-setting{
     display: flex;
     flex-direction: column;
@@ -250,21 +253,38 @@ header{
     margin-top: 16px;
     font-size: large;
     letter-spacing: 1.2px;
+    cursor: pointer;
+}
+#password{
+    opacity: 0;
+}
+#password.active{
+    opacity: 1;
 }
 .visa{
     text-align: center;
     margin-top: 22px;
     transform: scale(1.3);
     cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 35px;
 }
 .visa button{
     box-shadow: 1px 1px 2px 1px var(--main-color);
+    padding: 0 4px;
 }
 .visa button:active{
     scale: .95;
 }
 .visa i {
     font-size: 1.5rem;
+}
+.visa a{
+    color: #000;
+}
+.visa a:hover{
+    color: blue;
 }
 section{
     padding: 100px 14%;

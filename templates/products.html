@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<div id="productList"></div>
 
 <head>
     <meta charset="UTF-8">
@@ -38,7 +39,10 @@
                 {{range .LinkesImage}}
                 <img id="imgProduct" src="{{.}}" alt="" class="product-img">
                 {{end}}
-                <h2 class="product-title" id="Description">{{.Description}}</h2>
+                <div class="box-title">
+                    <h2 class="product-title">Nielsen Animal</h2>
+                    <a id="com" href="#close-com"><i class='bx bxs-comment-detail'></i></a>
+                 </div>
                 <div class="price-cart">
                     <!-- Discount not work for now becase you need edit the server or use js -->
                     <span class="price"><span>$</span><span id="price">{{.Price}}</span></span>
@@ -66,10 +70,37 @@
             {{end}}
         </div>
     </section>
+
+        <!-- comments -->
+        <!-- <section class="comment-section">
+            <h3 id="com-title"> Comments <i class='bx bx-comment-detail bx-flashing' ></i></h3>
+            <br>
+            <div class="comments">
+                <div>
+                    <span class="user-name">EliasM :</span>
+                    <span class="user-comment"> what an amazing products i just found it here :)</span>
+                </div>
+                <div>
+                    <span class="user-name">Rami :</span>
+                    <span class="user-comment"> Thank you Sportswear Store for this beautiful website <3</span>
+                </div>
+                <br>
+                <div class="comment-tail">
+                    <div>
+                        <span>Add comment</span>
+                        <br>
+                        <textarea name="comment-box" id="comment-box" cols="50" rows="3"></textarea>
+                        <label id="send-comment" for="comment-box"> <i class='bx bx-send'></i> </label>
+                    </div>
+    
+                    <i class='bx bxs-chevrons-up bx-fade-up' id="close-com"></i>
+                </div>
+            </div>
+        </section> -->
+
     <script>
         var Order = new Map()
-
-
+        // let pc = new ProductCookie();
         class ProductCookie {
             constructor(product) {
                 this.id = product.id
@@ -336,9 +367,52 @@
 
     </script>
     <!--link to js-->
-    <!-- <script src="/js/products.js"></script> -->
+
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+
+    <script>
+        function Getproducts(kind, container, id, callfunction) {
+            fetch(`/product?kind=${kind}&container=${container}&id=${id}`, {
+                method: "GET",
+            }).then(Response => Response.json()).then(data => {
+                callfunction(data)
+            })
+        }
+
+// Function to check if the user has reached the bottom of the page
+function isNearBottom() {
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  const documentHeight = Math.max(
+    document.body.scrollHeight,
+    document.body.offsetHeight,
+    document.documentElement.clientHeight,
+    document.documentElement.scrollHeight,
+    document.documentElement.offsetHeight
+  );
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+  return documentHeight - scrollTop - windowHeight < 100; // Adjust the threshold as needed
+}
+
+// Function to load new products
+function loadNewProducts() {
+  // Your code to fetch and append new products goes here
+//   let m = document.location.pathname
+//   m = m.split('/')
+//   console.log(m)
+//   Getproducts(m[2], m[1] , );
+}
+
+// Event listener for the scroll event
+window.addEventListener('scroll', function() {
+  if (isNearBottom()) {
+    loadNewProducts();
+  }
+});
+
+        </script>
 </body>
 
 </html>

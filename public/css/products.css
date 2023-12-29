@@ -267,6 +267,26 @@ header {
     text-transform: uppercase;
 }
 
+.box-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+    margin-bottom: 2px;
+}
+
+#com{
+    padding: 6px 8px;
+    background: #c8815f;
+    color: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#com:hover{
+    background: #1e1e2a;
+}
+
 .price-cart {
     display: flex;
     align-items: center;
@@ -335,14 +355,8 @@ header {
     background: #1e1e2a;
 }
 
-#com {
-    width: fit-content;
-    cursor: pointer;
+#com-title {
     letter-spacing: 1.5px;
-}
-
-#com:hover {
-    text-decoration: underline;
 }
 
 .comments div {
@@ -503,16 +517,4 @@ header {
     .cart {
         width: 100%;
     }
-}
-
-.flex-details {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.colortest {
-
-    width: 11px;
-    height: 11px;
 }

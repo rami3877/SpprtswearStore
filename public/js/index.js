@@ -79,3 +79,68 @@ function Resister() {
     }
     )
 }
+function PostSettings() {
+
+    const firstname = document.getElementById("firstname").value +" " + document.getElementById("lastname").value
+    console.log(firstname)
+    fetch("/user/name", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: `firstName=${firstname}`,
+    }).then(Response => Response.text()).then(data => {
+        console.log(data)
+    })
+
+    
+    const oldPassowrd = document.getElementById("currentpassword").value
+    console.log(oldPassowrd)
+    const newpassword = document.getElementById("newpassword").value
+    console.log(newpassword)
+    fetch("/user/password", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/text",
+        },
+        body: `{"oldPassowrd":"${oldPassowrd}","newpassword":"${newpassword}"}`,
+    }).then(Response => Response.json()).then(data => {
+    })
+}
+
+function GetSetting() {
+    
+    fetch("/user/name", {
+        method: "GET"
+    }).then(Response => Response.json()).then(data => {
+        if (data.length != 0 ) {
+        let name =  data.split(" ")   
+       document.getElementById("last-name").value = name[1]
+       document.getElementById("first-name").value = name[0]
+       console.log(name.length)
+        }
+    })
+}
+function postcomment() {
+
+    const commentData = {
+        comment: "dawsasd",
+        stars: 2,
+        container: "newContainer",
+        kind: "short",
+        idmodel: 1
+      };
+      
+      fetch("/user/commint", {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(commentData),
+      })
+        .then(response => response.json())
+        .then(result => {
+          // Handle the response result
+          console.log(result);
+        })
+}

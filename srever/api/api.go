@@ -76,6 +76,7 @@ func (api *Api) setGuestApi(server *gin.Engine) {
 		inputHTTP := InputHTTP{}
 		if err := ctx.ShouldBindJSON(&inputHTTP); err != nil {
 			ctx.JSON(http.StatusOK, "check json")
+			return
 		}
 		data, err := db.MainDB.Stock.GetNumberModelsInKind(inputHTTP.Container, inputHTTP.Kind)
 		if err != nil {

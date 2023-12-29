@@ -15,10 +15,7 @@ fetch("/AllContainerAndKind", {
         a.setAttribute("href", "/" + element)
         li.appendChild(a)
         document.getElementById("navlist").appendChild(li)
-
-
-
-        
     });
 })
+
 
