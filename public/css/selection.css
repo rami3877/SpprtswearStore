@@ -165,6 +165,9 @@ header{
         text-align: center;
         margin: 0 24px;
     }
+    .pic{
+        scale: 0;
+    }
 }
 
 
