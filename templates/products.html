@@ -33,7 +33,7 @@
     <section class="shop-container">
         <h2 class="section-title">Exclusive {{.kind}} for {{.container}}</h2>
         <div class="shop-content">
-            <!-- box 1 -->
+            <!-- product box -->
             {{ range .listModels}}
             <div class="product-box" id="p{{.Id}}">
                 {{range .LinkesImage}}
@@ -41,8 +41,7 @@
                 {{end}}
                 <div class="box-title">
                     <h2 class="product-title" id="Description">Nielsen Animal</h2>
-                    <a id="com" href="#close-com"><i class='bx bxs-comment-detail'></i></a>
-                 </div>
+                </div>
                 <div class="price-cart">
                     <!-- Discount not work for now becase you need edit the server or use js -->
                     <span class="price"><span>$</span><span id="price">{{.Price}}</span></span>
@@ -72,8 +71,8 @@
     </section>
 
         <!-- comments -->
-        <!-- <section class="comment-section">
-            <h3 id="com-title"> Comments <i class='bx bx-comment-detail bx-flashing' ></i></h3>
+        <section class="comment-section">
+            <h3 id="com"> Comments <i class='bx bx-comment-detail bx-flashing' ></i></h3>
             <br>
             <div class="comments">
                 <div>
@@ -96,7 +95,7 @@
                     <i class='bx bxs-chevrons-up bx-fade-up' id="close-com"></i>
                 </div>
             </div>
-        </section> -->
+        </section>
 
     <script>
         var Order = new Map()
@@ -242,10 +241,16 @@
             }
 
         }
-
-
-        if (getCoookie("cart").length != 0) {
-            let cookieCart = JSON.parse(getCoookie("cart"))
+        function getCookieValue(name) {
+            const regex = new RegExp(`(^| )${name}=([^;]+)`)
+            const match = document.cookie.match(regex)
+            if (match) {
+                return match[2]
+            }
+        }
+        
+        if (getCookieValue("cart").length != 0) {
+            let cookieCart = JSON.parse(getCookieValue("cart"))
             let cart = document.getElementById("cart-contant")
             for (const cartC in cookieCart) {
                 let NewArry = [];
@@ -350,10 +355,7 @@
         function deleteCookie(name) {
             setCookie(name, null, null)
         }
-        function getCoookie(name) {
-            const cookie = decodeURIComponent(document.cookie).replace(`${name}=`, "")
-            return cookie
-        }
+
         function HasItem() {
             for (const d in Order) {
                 for (const f in Order[d]) {
@@ -367,7 +369,7 @@
 
     </script>
     <!--link to js-->
-
+    <!-- <script src="/public/js/products.js"></script> -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
@@ -381,38 +383,38 @@
             })
         }
 
-// Function to check if the user has reached the bottom of the page
-function isNearBottom() {
-  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-  const documentHeight = Math.max(
-    document.body.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.clientHeight,
-    document.documentElement.scrollHeight,
-    document.documentElement.offsetHeight
-  );
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        // Function to check if the user has reached the bottom of the page
+        function isNearBottom() {
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            const documentHeight = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.clientHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            );
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-  return documentHeight - scrollTop - windowHeight < 100; // Adjust the threshold as needed
-}
+            return documentHeight - scrollTop - windowHeight < 100; // Adjust the threshold as needed
+        }
 
-// Function to load new products
-function loadNewProducts() {
-  // Your code to fetch and append new products goes here
-//   let m = document.location.pathname
-//   m = m.split('/')
-//   console.log(m)
-//   Getproducts(m[2], m[1] , );
-}
+        // Function to load new products
+        function loadNewProducts() {
+            // Your code to fetch and append new products goes here
+            //   let m = document.location.pathname
+            //   m = m.split('/')
+            //   console.log(m)
+            //   Getproducts(m[2], m[1] , );
+        }
 
-// Event listener for the scroll event
-window.addEventListener('scroll', function() {
-  if (isNearBottom()) {
-    loadNewProducts();
-  }
-});
+        // Event listener for the scroll event
+        window.addEventListener('scroll', function () {
+            if (isNearBottom()) {
+                loadNewProducts();
+            }
+        });
 
-        </script>
+    </script>
 </body>
 
 </html>

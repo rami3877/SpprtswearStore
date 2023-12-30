@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 let cartIcon = document.querySelector('#cart-icon');
 let cart = document.querySelector('.cart');
 let closeCart = document.querySelector('#close-cart');
@@ -22,7 +21,8 @@ com.onclick = () => {
 // close comments
 closeCom.onclick = () => {
     comments.classList.remove('active');
-=======
+}
+
 function Getproducts(kind , container , id , callfunction){
   
     fetch(`/product?kind=${kind}&container=${container}&id=${id}`, {
@@ -30,5 +30,4 @@ function Getproducts(kind , container , id , callfunction){
     }).then(Response => Response.json()).then(data => {
       callfunction(data)
     })
->>>>>>> 2a9cab98b27d4fce8b9ac28605acdbf09362c2a8
 }
