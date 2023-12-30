@@ -261,10 +261,10 @@
                 },
                 body: `{"username":"${username}","password":"${password}","email":"${email}"}`,
             }).then(Response => Response.json()).then(data => {
-                if ( data != "create") {
+                if (data != "create") {
                     document.getElementById("spanErrorResister").innerText = data
                 } else {
-                 window.location.reload()
+                    window.location.reload()
                 }
 
             })
@@ -275,6 +275,37 @@
     <script src="js/index.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <script>
+        let goto = getCookieValue("preURL")
+
+        if (goto.length != 0) {
+            let toweblink = ""
+            while (true) {
+                goto = goto.replace("%2F", "/")
+                if (-1 == goto.indexOf("%2F")) break;
+            }
+            window.location = goto
+            window.cookie = getCookieValue("cart")
+        } else {
+            window.cookie = getCookieValue("cart")
+        }
+        function deleteCookie(name) {
+            setCookie(name, null, null)
+        }
+        function getCookieValue(name) {
+            const regex = new RegExp(`(^| )${name}=([^;]+)`)
+            const match = document.cookie.match(regex)
+            if (match) {
+                return match[2]
+            }
+        }
+        function setCookie(name, value, days, path) {
+            const data = new Date();
+            data.setTime(data.getTime() + (days * 24 * 60 * 60 * 1000))
+            let expires = "expires=" + data.toUTCString();
+            document.cookie = `${name}=${value};${expires};path=${path}`
+        }
+    </script>
 </body>
 
 </html>

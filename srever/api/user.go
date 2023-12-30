@@ -46,7 +46,7 @@ func (user *user) setCheckoutApi() {
 			}
 		}
 		if len(err) == 0 {
-			ctx.AsciiJSON(http.StatusOK, `{"allIsOk":true}`)
+			ctx.JSON(http.StatusOK, "OK")
 		} else {
 			ctx.JSON(http.StatusOK, &err)
 		}
@@ -249,9 +249,11 @@ func (user *user) setLogoutApi() {
 func (user *user) setLoginApi() {
 
 	user.userGroup.GET("/login", func(ctx *gin.Context) {
+
 		ctx.HTML(http.StatusOK, "loginAndRegister.html", gin.H{})
 	})
 	user.userGroup.POST("/login", func(ctx *gin.Context) {
+
 		type loginUser struct {
 			Username string `json:"username"`
 			Password string `json:"password"`
@@ -400,9 +402,16 @@ func (user *user) setMiddleware() {
 			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			return
 		}
-		// check if will work on /user becase you set to be on root path
+
+		if ctx.FullPath() == "/user/checkout" {
+
+			ctx.SetCookie("preURL", ctx.FullPath(), 0, "/", "", false, false)
+		}
+
 		v, err := ctx.Cookie("session")
+
 		if err != nil {
+
 			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			ctx.Abort()
 			return
@@ -419,6 +428,7 @@ func (user *user) setMiddleware() {
 
 		user := structs.User{}
 		if err := db.MainDB.Users.GetUser(infoUser[0], &user); err != nil {
+
 			ctx.SetCookie("session", "", -1, "/user", "", false, true)
 			ctx.Redirect(http.StatusSeeOther, "/user/login")
 			ctx.Abort()
@@ -430,6 +440,8 @@ func (user *user) setMiddleware() {
 			ctx.Abort()
 			return
 		}
+
+		ctx.SetCookie("preURL", ctx.FullPath(), -1, "/", "", false, false)
 		ctx.Next()
 	})
 
