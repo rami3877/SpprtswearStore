@@ -263,19 +263,6 @@ func (admin *admin) setLogoutApi() {
 
 func (admin *admin) setLoginApi() {
 
-	admin.adminGroup.GET("/", func(ctx *gin.Context) {
-		v, err := ctx.Cookie("session")
-		infoAdmin := strings.Split(v, ",")
-		if err != nil {
-			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
-			return
-		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
-			ctx.SetCookie("session", "", -1, "/admin", "", false, true)
-			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
-			return
-		}
-		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
-	})
 	admin.adminGroup.GET("/login", func(ctx *gin.Context) {
 		v, err := ctx.Cookie("session")
 		infoAdmin := strings.Split(v, ",")
@@ -336,8 +323,17 @@ func (admin *admin) setMiddleware() {
 }
 
 func (admin *admin) setAdminPage() {
-	admin.adminGroup.GET("/mains", func(ctx *gin.Context) {
-
+	admin.adminGroup.GET("/", func(ctx *gin.Context) {
+		v, err := ctx.Cookie("session")
+		infoAdmin := strings.Split(v, ",")
+		if err != nil {
+			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			return
+		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
+			ctx.SetCookie("session", "", -1, "/admin", "", false, true)
+			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			return
+		}
 		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
 	})
 }
