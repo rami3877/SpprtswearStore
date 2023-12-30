@@ -178,7 +178,12 @@
                         let password1 = document.querySelector('#password');
 
                         pass1.onclick = () => {
-                            password1.classList.add('active');
+                            if (password1.classList[0] == 'active') {
+                                password1.classList.remove('active')
+                            } else {
+                                password1.classList.add('active');
+                            }
+
                         }
                     </script>
 
@@ -278,7 +283,7 @@
     <script>
         let goto = getCookieValue("preURL")
 
-        if (goto.length != 0) {
+        if (goto != undefined && goto.length != 0) {
             let toweblink = ""
             while (true) {
                 goto = goto.replace("%2F", "/")
