@@ -103,18 +103,6 @@ func (admin *admin) setProductApi() {
 	})
 
 	admin.adminGroup.GET("/product", func(ctx *gin.Context) {
-		// AllContainer := db.MainDB.Stock.GetAllContainer()
-		// if len(AllContainer) != 0 {
-
-		// 	ctx.HTML(http.StatusOK, "product.html", gin.H{
-		// 		"Container": AllContainer,
-		// 	})
-		// } else {
-		// 	ctx.HTML(http.StatusOK, "product.html", gin.H{
-		// 		"Container": "",
-		// 	})
-		// }
-
 		ctx.HTML(http.StatusOK, "manage.html", nil)
 	})
 	admin.adminGroup.POST("/product/container", func(ctx *gin.Context) {
