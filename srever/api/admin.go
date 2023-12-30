@@ -57,7 +57,7 @@ func (admin *admin) setOrderApi() {
 	admin.adminGroup.DELETE("/outstock", func(ctx *gin.Context) {
 		Id := ctx.GetInt("id")
 		db.MainDB.OutStock.Delete(Id)
-		ctx.JSON(http.StatusOK ,fmt.Sprintf("delete %d" , Id))
+		ctx.JSON(http.StatusOK, fmt.Sprintf("delete %d", Id))
 	})
 }
 
@@ -263,8 +263,31 @@ func (admin *admin) setLogoutApi() {
 
 func (admin *admin) setLoginApi() {
 
+	admin.adminGroup.GET("/", func(ctx *gin.Context) {
+		v, err := ctx.Cookie("session")
+		infoAdmin := strings.Split(v, ",")
+		if err != nil {
+			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			return
+		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
+			ctx.SetCookie("session", "", -1, "/admin", "", false, true)
+			ctx.Redirect(http.StatusMovedPermanently, "/admin/login")
+			return
+		}
+		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
+	})
 	admin.adminGroup.GET("/login", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "loginadmin.html", nil)
+		v, err := ctx.Cookie("session")
+		infoAdmin := strings.Split(v, ",")
+		if err != nil {
+			ctx.HTML(http.StatusOK, "loginadmin.html", nil)
+			return
+		} else if err = bcrypt.CompareHashAndPassword([]byte(infoAdmin[1]), []byte(admin.adminUsers[infoAdmin[0]])); err != nil {
+			ctx.SetCookie("session", "", -1, "/admin", "", false, true)
+			ctx.HTML(http.StatusOK, "loginadmin.html", nil)
+			return
+		}
+		ctx.Redirect(http.StatusMovedPermanently, "/admin")
 	})
 
 	admin.adminGroup.POST("/login", func(ctx *gin.Context) {
@@ -314,7 +337,7 @@ func (admin *admin) setMiddleware() {
 
 func (admin *admin) setAdminPage() {
 	admin.adminGroup.GET("/mains", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
 
+		ctx.HTML(http.StatusOK, "adminMainPage.html", nil)
 	})
 }

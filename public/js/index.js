@@ -25,7 +25,7 @@ function logoutUser() {
     fetch("/user/logout", {
         method: "GET"
     }).then(re => re.ok).then(d => {
-            window.location.reload()
+        window.location.reload()
     })
 
 }
@@ -41,10 +41,11 @@ function loginIndex() {
         },
         body: `{"username":"${username}","password":"${password}"}`,
     }).then(Response => Response.json()).then(data => {
-        if ( data != "ok" ) {
+
+        if (data != "ok") {
             document.getElementById("spanErrorLogin").innerText = data
         } else {
-            window.location.reload()
+                window.location.reload()
         }
     })
 
@@ -56,32 +57,10 @@ function ClearErrorSpan() {
 }
 
 
-function Resister() {
-    const username = document.getElementById("usernameResister").value
-    const email = document.getElementById("emailResister").value
-    const password = document.getElementById("passwordResister").value
-    fetch("/user/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: `{"username":"${username}","password":"${password}","email":"${email}"}`,
-    }).then(Response => Response.text()).then(data => {
-        if (data.length != 0 && data != "create" ) {
-            document.getElementById("spanErrorResister").innerText = data
-        } else {
-            document.getElementById("spanErrorResister").innerText = data
-            setTimeout(()=>{
-            window.location.reload()
-            }, 2000)
-        }
 
-    }
-    )
-}
 function PostSettings() {
 
-    const firstname = document.getElementById("firstname").value +" " + document.getElementById("lastname").value
+    const firstname = document.getElementById("firstname").value + " " + document.getElementById("lastname").value
     console.log(firstname)
     fetch("/user/name", {
         method: "POST",
@@ -93,7 +72,7 @@ function PostSettings() {
         console.log(data)
     })
 
-    
+
     const oldPassowrd = document.getElementById("currentpassword").value
     console.log(oldPassowrd)
     const newpassword = document.getElementById("newpassword").value
@@ -109,15 +88,15 @@ function PostSettings() {
 }
 
 function GetSetting() {
-    
+
     fetch("/user/name", {
         method: "GET"
     }).then(Response => Response.json()).then(data => {
-        if (data.length != 0 ) {
-        let name =  data.split(" ")   
-       document.getElementById("last-name").value = name[1]
-       document.getElementById("first-name").value = name[0]
-       console.log(name.length)
+        if (data.length != 0) {
+            let name = data.split(" ")
+            document.getElementById("last-name").value = name[1]
+            document.getElementById("first-name").value = name[0]
+            console.log(name.length)
         }
     })
 }
@@ -129,18 +108,18 @@ function postcomment() {
         container: "newContainer",
         kind: "short",
         idmodel: 1
-      };
-      
-      fetch("/user/commint", {
+    };
+
+    fetch("/user/commint", {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(commentData),
-      })
+    })
         .then(response => response.json())
         .then(result => {
-          // Handle the response result
-          console.log(result);
+            // Handle the response result
+            console.log(result);
         })
 }

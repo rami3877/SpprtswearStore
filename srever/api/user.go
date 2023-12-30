@@ -311,7 +311,6 @@ func (user *user) setRegisterApi() {
 		pasHash, _ := bcrypt.GenerateFromPassword([]byte(newuser.Password+m.String()+strconv.Itoa(d)), 12)
 		ctx.SetCookie("session", newuser.Username+","+string(pasHash), 0, "/", "", false, true)
 		ctx.JSON(http.StatusOK, "create")
-
 	})
 }
 

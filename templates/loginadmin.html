@@ -22,7 +22,7 @@
     <!-- login form -->
     <div class="form-login" id="login">
         <h2>administrator Login</h2>
-        <form action="#">
+        <div>
             <div class="input-box">
                 <label for="username"> username </label>
                 <input id="username" type="text" required>
@@ -39,14 +39,13 @@
                 </label>
                 <input type="reset" value="Clear">
             </div>
-        </form>
-
-            <div >
-                <button onclick="login()"> Login </button>
-            </div>
+        </div>
+        <div>
+            <button onclick="login()"> Login </button>
+        </div>
     </div>
     <script>
-       class apiFecth {
+        class apiFecth {
             static json(method_, path, callback, stringdata) {
                 fetch(path, {
                     method: method_,
@@ -72,13 +71,12 @@
                 "username": document.getElementById("username").value,
                 "password": document.getElementById("password").value
             }
-            apiFecth.From("POST", "/admin/login",  (data) => {
-                console.log(data)
+            apiFecth.From("POST", "/admin/login", (data) => {
                 if (data.err != undefined) {
                     let span = document.createElement("span")
                     span.textContent = data.err
                     document.getElementById("login").appendChild(span)
-                }else {
+                } else {
                     window.location = "/admin/mains"
                 }
             }, `username=${admin.username}&password=${admin.password}`)

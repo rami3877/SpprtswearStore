@@ -28,7 +28,7 @@
 
         <div class="headerlogin-icon">
             {{if .guest}}
-            <a title="Profile" href="#"><i class='bx bx-user-circle'></i></a>
+            <a title="Profile"><i class='bx bx-user-circle'></i></a>
             {{else}}
             <i id="setting-icon" class='bx bx-cog' onclick="GetSetting()"></i>
             {{end}}
@@ -54,7 +54,7 @@
             <div class="form-login">
                 <h2>Login</h2>
                 <span id="spanErrorLogin"></span>
-                <form action="#">
+                <form>
                     <div class="input-box">
                         <span class="login-icon"> <ion-icon name="mail"></ion-icon> </span>
                         <input type="text" id="usernameLogin" onclick="ClearErrorSpan()" required>
@@ -69,19 +69,18 @@
                         <label>
                             <input type="checkbox"> Remember me
                         </label>
-                        <a href="#"> Forgot Password? </a>
+                        <a> Forgot Password? </a>
                     </div>
-                    <button type="submit" class="login-btn" onclick="loginIndex()"> Login </button>
-                    <div class="login-register">
-                        <p> Don't have an account? <a href="#" class="register-link">Register</a></p>
-                    </div>
-                </form>
-                
-            </div>
 
+                </form>
+                <button type="submit" class="login-btn" onclick="loginIndex()"> Login </button>
+                <div class="login-register">
+                    <p> Don't have an account? <a class="register-link">Register</a></p>
+                </div>
+            </div>
             <div class="form-register">
                 <h2 id="registerh2">Registration</h2>
-                <form action="#">
+                <form>
                     <div class="input-box">
                         <span class="login-icon"> <ion-icon name="person"></ion-icon> </span>
                         <input type="text" id="usernameResister" onclick="ClearErrorSpan()" required>
@@ -102,18 +101,18 @@
                             <input type="checkbox"> I agree to the terms & conditions
                         </label>
                     </div>
-                    <button type="submit" class="login-btn" onclick="Resister()"> Sign Up </button>
-                    <div class="login-register">
-                        <p> Already have an account? <a href="#" class="login-link">Login</a></p>
-                    </div> 
                 </form>
+                <button type="submit" class="login-btn" onclick="Resister()"> Sign Up </button>
+                <div class="login-register">
+                    <p> Already have an account? <a class="login-link">Login</a></p>
+                </div>
                 <span id="spanErrorResister"></span>
             </div>
             {{else}}
             <!-- register form -->
             <div class="form-register">
-                <h2 id="registerh2">Registration</h2>
-                <form action="#">
+                <h2>Registration</h2>
+                <form>
                     <div class="input-box">
                         <span class="login-icon"> <ion-icon name="person"></ion-icon> </span>
                         <input type="text" required>
@@ -134,17 +133,17 @@
                             <input type="checkbox"> I agree to the terms & conditions
                         </label>
                     </div>
-                    <button type="submit" class="login-btn" onclick="Resister()"> Sign Up </button>
-                    <div class="login-register">
-                        <p> Already have an account? <a href="#" class="login-link">Login</a></p>
-                    </div>
                 </form>
+                <button type="submit" class="login-btn"> Sign Up </button>
+                <div class="login-register">
+                    <p> Already have an account? <a class="login-link">Login</a></p>
+                </div>
             </div>
 
             <!-- setting -->
             <div class="form-setting">
                 <h2>Setting</h2>
-                <form action="#" method="post">
+                <form method="post">
                     <div class="first-name">
                         <label for="first-name" class="label-default"> First name</label>
                         <input type="text" name="first-name" id="first-name" class="input-default"
@@ -175,16 +174,16 @@
                     </div>
                     <script>
                         // open change password
-let pass1 = document.querySelector('#pass');
-let password1 = document.querySelector('#password');
+                        let pass1 = document.querySelector('#pass');
+                        let password1 = document.querySelector('#password');
 
-pass1.onclick = () => {
-    password1.classList.add('active');
-}
+                        pass1.onclick = () => {
+                            password1.classList.add('active');
+                        }
                     </script>
 
                     <div class="visa">
-                        <button class="sub-btn"  onclick="PostSettings()">
+                        <button class="sub-btn" onclick="PostSettings()">
                             <span>Submit</span>
                         </button>
 
@@ -192,7 +191,7 @@ pass1.onclick = () => {
                             <a href="/user/settingvais" target="_blank">Visa</a>
                         </button>
 
-                        <a href="#" onclick="logoutUser()"><i class='bx bxs-log-out'></i></a>
+                        <a onclick="logoutUser()"><i class='bx bxs-log-out'></i></a>
                     </div>
                 </form>
             </div>
@@ -250,6 +249,29 @@ pass1.onclick = () => {
 
 
     <script src="js/interface.js"></script>
+    <script>
+        function Resister() {
+            const username = document.getElementById("usernameResister").value
+            const email = document.getElementById("emailResister").value
+            const password = document.getElementById("passwordResister").value
+            fetch("/user/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: `{"username":"${username}","password":"${password}","email":"${email}"}`,
+            }).then(Response => Response.json()).then(data => {
+                if ( data != "create") {
+                    document.getElementById("spanErrorResister").innerText = data
+                } else {
+                 window.location.reload()
+                }
+
+            })
+        }
+
+    </script>
+
     <script src="js/index.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
