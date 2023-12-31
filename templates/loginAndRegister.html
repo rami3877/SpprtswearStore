@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Slide Navbar</title>
+    <title>Login Check</title>
     <link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
 </head>
 
@@ -17,7 +17,7 @@
                 <input type="email" id="emailResister" name="email" placeholder="Email" required="">
                 <input type="password" id="passwordResister" placeholder="Password" required="">
             </form>
-            <button onclick="Resister()">Sign up</button>
+            <button id="signup-btn" onclick="Resister()">Sign up</button>
         </div>
 
         <div class="login">
@@ -26,7 +26,7 @@
                 <input type="text" id="usernameLogin" placeholder="User name" required="">
                 <input type="password" id="passwordLogin" placeholder="Password" required="">
             </form>
-            <button onclick="login()">Login</button>
+            <button id="login-btn" onclick="login()">Login</button>
         </div>
         <span id="spanErrorLogin"></span>
     </div>
@@ -83,15 +83,13 @@
             align-items: center;
             min-height: 100vh;
             font-family: 'Jost', sans-serif;
-            background: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+            background: linear-gradient(to top, #79442c, #c8815f, #ecc3af);
         }
 
         .main {
             width: 350px;
             height: 500px;
-            background: red;
             overflow: hidden;
-            background: url("https://doc-08-2c-docs.googleusercontent.com/docs/securesc/68c90smiglihng9534mvqmq1946dmis5/fo0picsp1nhiucmc0l25s29respgpr4j/1631524275000/03522360960922298374/03522360960922298374/1Sx0jhdpEpnNIydS4rnN4kHSJtU1EyWka?e=view&authuser=0&nonce=gcrocepgbb17m&user=03522360960922298374&hash=tfhgbs86ka6divo3llbvp93mg4csvb38") no-repeat center/ cover;
             border-radius: 10px;
             box-shadow: 5px 20px 50px #000;
         }
@@ -130,14 +128,14 @@
             border-radius: 5px;
         }
 
-        button {
-            width: 60%;
+        #signup-btn{
+            width: 35%;
             height: 40px;
             margin: 10px auto;
             justify-content: center;
             display: block;
-            color: #fff;
-            background: #573b8a;
+            color: #c8815f;
+            background: #fff;
             font-size: 1em;
             font-weight: bold;
             margin-top: 20px;
@@ -148,8 +146,34 @@
             cursor: pointer;
         }
 
-        button:hover {
-            background: #6d44b8;
+        #login-btn{
+            width: 35%;
+            height: 40px;
+            margin: 10px auto;
+            justify-content: center;
+            display: block;
+            color: #fff;
+            background: #c8815f;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 20px;
+            outline: none;
+            border: none;
+            border-radius: 5px;
+            transition: .2s ease-in;
+            cursor: pointer;
+        }
+
+        #signup-btn:hover{
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+        }
+
+        #login-btn:hover {
+            background: transparent;
+            border: 2px solid #c8815f;
+            color: #c8815f;
         }
 
         .login {
@@ -161,7 +185,7 @@
         }
 
         .login label {
-            color: #573b8a;
+            color: #c8815f;
             transform: scale(.6);
         }
 

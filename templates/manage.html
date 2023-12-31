@@ -6,7 +6,6 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
     <link rel="stylesheet" href="/css/admin.css">
-    
     <title>Manage</title>
 </head>
 <body>
@@ -31,7 +30,7 @@
                     <div>
                         <label for="container" class="label-default"> Container</label>
                         <input type="text" name="container" id="container" class="input-default"
-                        placeholder="Container name">
+                        placeholder="Container name" required>
                         <i class='bx bx-plus-circle' ></i>
                         <i class='bx bx-trash'></i>
                     </div>
@@ -46,9 +45,40 @@
                 <div class="main-view">
                     <h3>Currently pages</h3>
                     <div class="view-list">
-                        <div>Men</div>
-                        <div>Women</div>
-                        <div>Kids</div>
+                        <div class="show-list">
+                            <div>Men<i id="openkinds" class='bx bx-chevron-right'></i></div>
+                            <div class="kind-list">
+                                <span>T-Shirt</span> /
+                                <span>Pants</span> /
+                                <span>Shoes</span>
+                            </div>
+                        </div>
+                        <div class="show-list">
+                            <div>Women<i id="openkinds" class='bx bx-chevron-right'></i></div>
+                            <div class="kind-list">
+                                <span>T-Shirt</span> /
+                                <span>Shoes</span>
+                            </div>
+                        </div>
+                        <div class="show-list">
+                            <div>Kids<i id="openkinds" class='bx bx-chevron-right'></i></div>
+                            <div class="kind-list">
+                                <span>T-Shirt</span> /
+                                <span>Pants</span> /
+                                <span>Shoes</span>
+                            </div>
+                        </div>
+
+                        <script>
+                            let  openkinds = document.querySelector('#openkinds');
+                            let kindList = document.querySelector('.kind-list');
+
+                            // open kinds
+                            openkinds.onclick = () => {
+                                kindList.classList.add('active');
+                            }
+                        </script>
+
                     </div>
                 </div>
             </div>
@@ -60,10 +90,10 @@
         <div class="products">
 
             <div class="colomn-items">
-                <div class="discount">
-                    <label for="discount" class="label-default">Discount</label><br>
-                    <input type="text" name="discount" id="discount" class="input-default"
-                    placeholder="Discount Value">
+                <div>
+                    <label for="product-id" class="label-default">Product ID</label><br>
+                    <input type="number" name="product-id" id="product-id" class="input-default"
+                    placeholder="Product ID">
                 </div>
                 <div class="product-name"> <!--describtion-->
                     <label for="product-name" class="label-default">Product name</label><br>
@@ -72,8 +102,13 @@
                 </div>
                 <div class="price">
                     <label for="price" class="label-default">Price</label><br>
-                    <input type="text" name="price" id="price" class="input-default"
-                    placeholder="Price value">
+                    <input type="number" name="price" id="price" class="input-default"
+                    min="1" placeholder="Price value">
+                </div>
+                <div class="discount">
+                    <label for="discount" class="label-default">Discount</label><br>
+                    <input type="text" name="discount" id="discount" class="input-default"
+                    placeholder="Discount Value">
                 </div>
             </div>
 
@@ -119,15 +154,12 @@
                         <i class='bx bx-trash'></i>
                     </div>
 
-                    <button onclick="">submit</button>
+                    <button>submit</button>
                 </div>
             </div>
         </div>
     </section>
 
-    
-    <a href="/admin/"><i id="back-btn" class='bx bx-arrow-back' ></i></a>
-    <!-- <script src="/js/products.js"></script>  -->
-    <script src="/js/manage.js"></script> 
+    <a href="/adminPage/manage+order.html"><i id="back-btn" class='bx bx-arrow-back' ></i></a>
 </body>
 </html>
