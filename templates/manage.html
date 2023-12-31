@@ -32,23 +32,23 @@
                         <label for="container" class="label-default"> Container</label>
                         <input type="text" name="container" id="container" class="input-default"
                         placeholder="Container name">
-                        <i class='bx bx-plus-circle' ></i>
-                        <i class='bx bx-trash'></i>
+                        <i class='bx bx-plus-circle' onclick="Container()"></i>
+                        <i class='bx bx-trash' onclick="deletecontiners()"></i>
                     </div>
                     <div>
                         <label for="kind" class="label-default"> Kind</label>
                         <input type="text" name="kind" id="kind" class="input-default"
                         placeholder="Kind name">
-                        <i class='bx bx-plus-circle' ></i>
-                        <i class='bx bx-trash'></i>
+                        <i class='bx bx-plus-circle' onclick="Postkind()"></i>
+                        <i class='bx bx-trash' onclick="deleteKind()"></i>
                     </div>
                 </div>
-                <div class="main-view">
+                <div class="main-view" >
                     <h3>Currently pages</h3>
-                    <div class="view-list">
-                        <div>Men</div>
+                    <div class="view-list" id="Currently">
+                        <!-- <div >Men</div>
                         <div>Women</div>
-                        <div>Kids</div>
+                        <div>Kids</div> -->
                     </div>
                 </div>
             </div>
@@ -96,30 +96,28 @@
                 </div>
             </div>
 
-            <div class="details">
-                <div class="add-details">
+            <form id="productForm">
+                <div class="details">
+                  <div class="add-details" id="dd-details">
                     <label for="size" class="label-default">details</label><br>
-                    <input type="text" name="size" id="size" class="input-default"
-                    placeholder="Size"> /
-                    <input type="text" name="color" id="color" class="input-default"
-                    placeholder="Color"> /
-                    <input type="number" min="1" name="quantity" id="quantity" class="input-default"
-                    placeholder="Quantity">
-                    <i class='bx bx-plus-circle' ></i>
-                </div>
-                <div class="flex1">
+                    <input type="text" name="size" id="size" class="input-default" placeholder="Size"> /
+                    <input type="text" name="color" id="color" class="input-default" placeholder="Color"> /
+                    <input type="number" min="1" name="quantity" id="quantity" class="input-default" placeholder="Quantity">
+                    <i class='bx bx-plus-circle'></i>
+                  </div>
+                  <div class="flex1">
                     <div class="delete-details">
-                        <select name="details-info" id="details-info">
-                            <option value="0">Select details info</option>
-                            <option value="detail1">XL / Blue / 3</option>
-                            <option value="detail2">S / Red / 1</option>
-                            <option value="detail3">L / Blue / 4</option>
-                            <option value="detail4">M / Green / 2</option>
-                        </select>
-                        <i class='bx bx-trash'></i>
+                      <select name="details-info" id="details-info">
+                        <option value="0">Select details info</option>
+                        <option value="detail1">XL / Blue / 3</option>
+                        <option value="detail2">S / Red / 1</option>
+                        <option value="detail3">L / Blue / 4</option>
+                        <option value="detail4">M / Green / 2</option>
+                      </select>
+                      <i class='bx bx-trash'></i>
                     </div>
 
-                    <button onclick="">submit</button>
+                    <button type="submit">Submit</button>
                 </div>
             </div>
         </div>
@@ -127,7 +125,190 @@
 
     
     <a href="/admin/main"><i id="back-btn" class='bx bx-arrow-back' ></i></a>
-    <script src="/js/products.js"></script> 
-    <script src="/js/manage.js"></script> 
+    
+    <script src="/js/manage.js"></script>
+    <script>
+    async function Postkind() {
+        const containerValue = document.getElementById('container').value;
+        const kindValue = document.getElementById('kind').value;
+        console.log(containerValue);
+        console.log(kindValue);
+
+        try {
+            const containerResponse = await fetch("/admin/product/container", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `Container=${containerValue}`,
+            });
+
+            if (containerResponse.ok) {
+                console.log(await containerResponse.text()); // Log the container response
+
+                const kindResponse = await fetch('/admin/product/kind', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "container": containerValue,
+                        "kind": kindValue
+                    })
+                });
+
+                if (kindResponse.ok) {
+                    console.log(await kindResponse.text()); // Log the kind response
+                } else {
+                    console.error('Error in kind request:', kindResponse.status);
+                }
+            } else {
+                console.error('Error in container request:', containerResponse.status);
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+        }
+    }
+
+
+
+
+
+    
+function deleteKind(){
+    const containerValue = document.getElementById('container').value;
+  const kindValue = document.getElementById('kind').value;
+  // delete kind 
+  fetch("/admin/product/kind", {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: `{"kind":"${kindValue}", "container":"${containerValue}"}`,
+  }).then(Response => Response.text()).then(data => {
+
+    console.log(data)
+
+})
+
+}
+function deletecontiners(){
+    const containerValue = document.getElementById('container').value.trim();
+    
+// DELETE container
+fetch("/admin/product/container", {
+    
+    method: 'DELETE',
+    headers: {
+      "Content-Type": "application/json",
+  },
+  body: `{"Container":"${containerValue}"}`,
+  }).then(Response => Response.text()).then(data => {
+
+    console.log(data)
+
+})
+}
+function postModel(event) {
+  event.preventDefault(); // Prevent the default form submission behavior
+  
+  const containerValue = document.getElementById('container').value;
+  const kindValue = document.getElementById('kind').value;
+  const discount = document.getElementById('discount').value;
+  const productname = document.getElementById('product-name').value;
+  const price = document.getElementById('price').value;
+  const image = document.getElementById('image').value;
+
+//   const sizeInput = document.getElementById('size').value;
+//   const colorInput = document.getElementById('color').value;
+//   const quantityInput = document.getElementById('quantity').value;
+
+//   const detailsInfoValue = document.getElementById('details-info').value;
+
+//   const sizesObject = {
+//     [sizeInput]: [
+//       {
+//         color: colorInput,
+//         quantity: parseInt(quantityInput), // Parse quantity as an integer
+//       },
+//     ],
+//   };
+
+  const postData = {
+  container: containerValue,
+  kind: kindValue,
+  model: {
+    sizes: {
+      "xl": {
+        "red": 1,
+        "blue": 2
+      },
+      "s": {
+        "red": 1
+      },
+      // Add more size/color combinations as needed
+    },
+    price: parseFloat(price),
+    description: productname,
+    discount: parseFloat(discount),
+    linkesImage: [image],
+  },
+};
+
+  fetch("/admin/product/model", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(postData),
+  })
+  .then(Response => Response.text()).then(data => {
+
+console.log(data)
+
+})
+  
+}
+
+// Add an event listener to the form for form submission
+document.addEventListener('DOMContentLoaded', function () {
+  const productForm = document.getElementById('productForm');
+  productForm.addEventListener('submit', postModel);
+});
+
+
+function Container(){
+  const containerValue = document.getElementById('container').value;
+  console.log(containerValue)
+  fetch("/admin/product/container", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: `Container=${containerValue}`,
+}).then(Response => Response.text()).then(data => {
+
+    console.log(data)
+
+})
+}
+function getContainer() {
+        fetch("/admin/product/container", {
+            method: "GET"
+        })
+        .then(response => response.json()) 
+        .then(data => {
+            console.log("Received data:", data); 
+            for (const key in data) {
+                if (Array.isArray(data[key])) {
+                    const container = document.createElement('div');
+                    container.innerHTML = `<strong>${key}:</strong> ${data[key].join(', ')}`;
+                    const viewList = document.getElementById('Currently'); 
+                    viewList.appendChild(container);
+                }
+            }
+        })}
+    document.addEventListener('DOMContentLoaded', getContainer);
+    </script>
 </body>
 </html>

@@ -342,11 +342,11 @@
 
 
     <script>
-        function Getproducts(kind, container, id, callfunction) {
+              function Getproducts(kind, container, id, callfunction) {
             fetch(`/product?kind=${kind}&container=${container}&id=${id}`, {
                 method: "GET",
             }).then(Response => Response.json()).then(data => {
-                callfunction(data)
+                //callfunction(data)
             })
         }
 
@@ -367,11 +367,12 @@ function isNearBottom() {
 
 // Function to load new products
 function loadNewProducts() {
-  // Your code to fetch and append new products goes here
-//   let m = document.location.pathname
-//   m = m.split('/')
-//   console.log(m)
-//   Getproducts(m[2], m[1] , );
+  // Your code to fetch new products goes here
+  let m = document.location.pathname;
+  m = m.split('/');
+  console.log(m);
+  Getproducts(m[2], m[1], m[3]);
+  
 }
 
 // Event listener for the scroll event
@@ -381,7 +382,23 @@ window.addEventListener('scroll', function() {
   }
 });
 
-        </script>
+// Function to handle the API response and display product IDs
+
+// Fetch products and call handleApiResponse when data is received
+function Getproducts(kind, container, id) {
+  fetch(`/product?kind=${kind}&container=${container}&id=${id}`, {
+    method: "GET",
+  })
+  .then(Response => Response.json()).then(data => {
+                //callfunction(data)
+            })
+    
+}
+
+
+        
+    </script>
+
 </body>
 
 </html>

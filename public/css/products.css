@@ -414,6 +414,7 @@ header {
     transition: .85s cubic-bezier(.075, .82, .165, 1);
 }
 
+<<<<<<< HEAD:public/css/products.css
 .sf-container {
     height: 100vh;
     display: flex;
@@ -459,6 +460,8 @@ header {
     border-color: #c8815f;
 }
 
+=======
+>>>>>>> 92b2129ba38791009882b9da6971a0523a12a4db:public/men/t-shirt/men_shirts.css
 /* responsive */
 @media (max-width: 1080px) {
     .nav_container {
