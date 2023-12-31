@@ -18,6 +18,7 @@ headerloginIcon.addEventListener('click', ()=> {
 
 closeLogin.addEventListener('click', ()=> {
     login.classList.remove('active-popup');
+<<<<<<< HEAD
 });
 
 
@@ -27,3 +28,6 @@ let password = document.querySelector('#password');
 pass.onclick = () => {
     password.classList.add('active');
 }
+=======
+});
+>>>>>>> beb469b2fdc40db0cf219a3937b9a57bf1959a5b

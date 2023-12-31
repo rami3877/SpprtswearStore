@@ -7,14 +7,63 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
     <link rel="stylesheet" href="/css/admin.css">
-    <title>Login</title>
+    <title>Admin Login</title>
 </head>
 
 <body>
     <header>
         <p class="logo"> SS </p>
 
-        <div class="title">
+        <div class="title"><!DOCTYPE html>
+            <html lang="en">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+                <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
+                <link rel="stylesheet" href="/css/admin.css">
+                <title>Login</title>
+            </head>
+            <body>
+                <header>
+                    <p class="logo"> SS </p>
+            
+                    <div class="title">
+                        <h1>Sportswear <br>Store</h1>
+                    </div>
+                </header>
+            
+                    <!-- login form -->
+                    <div class="form-login">
+                        <div class="trick-box">
+                            <div class="trick">
+                                <h2>administrator Login</h2>
+                                <form action="#">
+                                    <div class="input-box">
+                                        <label for="username"> username </label>
+                                        <input id="username" type="text" required>
+                                        <i class='bx bxs-envelope' ></i>
+                                    </div>
+                                    <div class="input-box">
+                                        <label for="password">Password</label>
+                                        <input id="password" type="password" required>
+                                        <i class='bx bxs-lock-alt' ></i>
+                                    </div>
+                                    <div class="rememberme">
+                                        <label>
+                                            <input type="checkbox"> Remember me
+                                        </label>
+                                        <input type="reset" value="Clear">
+                                    </div>
+                                    <div class="btn">
+                                        <button type="submit"> Login </button>  
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+            </body>
+            </html>
             <h1>Sportswear <br>Store</h1>
         </div>
     </header>
@@ -22,7 +71,7 @@
     <!-- login form -->
     <div class="form-login" id="login">
         <h2>administrator Login</h2>
-        <form action="#">
+        <div>
             <div class="input-box">
                 <label for="username"> username </label>
                 <input id="username" type="text" required>
@@ -39,14 +88,13 @@
                 </label>
                 <input type="reset" value="Clear">
             </div>
-        </form>
-
-            <div >
-                <button onclick="login()"> Login </button>
-            </div>
+        </div>
+        <div>
+            <button onclick="login()"> Login </button>
+        </div>
     </div>
     <script>
-       class apiFecth {
+        class apiFecth {
             static json(method_, path, callback, stringdata) {
                 fetch(path, {
                     method: method_,
@@ -72,14 +120,13 @@
                 "username": document.getElementById("username").value,
                 "password": document.getElementById("password").value
             }
-            apiFecth.From("POST", "/admin/login",  (data) => {
-                console.log(data)
+            apiFecth.From("POST", "/admin/login", (data) => {
                 if (data.err != undefined) {
                     let span = document.createElement("span")
                     span.textContent = data.err
                     document.getElementById("login").appendChild(span)
-                }else {
-                    window.location = "/admin/mains"
+                } else {
+                    window.location = "/admin/"
                 }
             }, `username=${admin.username}&password=${admin.password}`)
 

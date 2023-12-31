@@ -33,13 +33,15 @@
     <section class="shop-container">
         <h2 class="section-title">Exclusive {{.kind}} for {{.container}}</h2>
         <div class="shop-content">
-            <!-- box 1 -->
+            <!-- product box -->
             {{ range .listModels}}
             <div class="product-box" id="p{{.Id}}">
                 {{range .LinkesImage}}
                 <img id="imgProduct" src="{{.}}" alt="" class="product-img">
                 {{end}}
-                <h2 class="product-title" id="Description">{{.Description}}</h2>
+                <div class="box-title">
+                    <h2 class="product-title" id="Description">Nielsen Animal</h2>
+                </div>
                 <div class="price-cart">
                     <!-- Discount not work for now becase you need edit the server or use js -->
                     <span class="price"><span>$</span><span id="price">{{.Price}}</span></span>
@@ -67,6 +69,34 @@
             {{end}}
         </div>
     </section>
+
+        <!-- comments -->
+        <section class="comment-section">
+            <h3 id="com"> Comments <i class='bx bx-comment-detail bx-flashing' ></i></h3>
+            <br>
+            <div class="comments">
+                <div>
+                    <span class="user-name">EliasM :</span>
+                    <span class="user-comment"> what an amazing products i just found it here :)</span>
+                </div>
+                <div>
+                    <span class="user-name">Rami :</span>
+                    <span class="user-comment"> Thank you Sportswear Store for this beautiful website <3</span>
+                </div>
+                <br>
+                <div class="comment-tail">
+                    <div>
+                        <span>Add comment</span>
+                        <br>
+                        <textarea name="comment-box" id="comment-box" cols="50" rows="3"></textarea>
+                        <label id="send-comment" for="comment-box"> <i class='bx bx-send'></i> </label>
+                    </div>
+    
+                    <i class='bx bxs-chevrons-up bx-fade-up' id="close-com"></i>
+                </div>
+            </div>
+        </section>
+
     <script>
         var Order = new Map()
         // let pc = new ProductCookie();
@@ -211,10 +241,16 @@
             }
 
         }
-
-
-        if (getCoookie("cart").length != 0) {
-            let cookieCart = JSON.parse(getCoookie("cart"))
+        function getCookieValue(name) {
+            const regex = new RegExp(`(^| )${name}=([^;]+)`)
+            const match = document.cookie.match(regex)
+            if (match) {
+                return match[2]
+            }
+        }
+        
+        if (getCookieValue("cart").length != 0) {
+            let cookieCart = JSON.parse(getCookieValue("cart"))
             let cart = document.getElementById("cart-contant")
             for (const cartC in cookieCart) {
                 let NewArry = [];
@@ -309,6 +345,8 @@
         closeCart.onclick = () => {
             cart.classList.remove('active');
         }
+
+        
         function setCookie(name, value, days, path) {
             const data = new Date();
             data.setTime(data.getTime() + (days * 24 * 60 * 60 * 1000))
@@ -319,10 +357,7 @@
         function deleteCookie(name) {
             setCookie(name, null, null)
         }
-        function getCoookie(name) {
-            const cookie = decodeURIComponent(document.cookie).replace(`${name}=`, "")
-            return cookie
-        }
+
         function HasItem() {
             for (const d in Order) {
                 for (const f in Order[d]) {
@@ -336,7 +371,7 @@
 
     </script>
     <!--link to js-->
-
+    <!-- <script src="/public/js/products.js"></script> -->
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
@@ -350,21 +385,22 @@
             })
         }
 
-// Function to check if the user has reached the bottom of the page
-function isNearBottom() {
-  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-  const documentHeight = Math.max(
-    document.body.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.clientHeight,
-    document.documentElement.scrollHeight,
-    document.documentElement.offsetHeight
-  );
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        // Function to check if the user has reached the bottom of the page
+        function isNearBottom() {
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            const documentHeight = Math.max(
+                document.body.scrollHeight,
+                document.body.offsetHeight,
+                document.documentElement.clientHeight,
+                document.documentElement.scrollHeight,
+                document.documentElement.offsetHeight
+            );
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
 
-  return documentHeight - scrollTop - windowHeight < 100; // Adjust the threshold as needed
-}
+            return documentHeight - scrollTop - windowHeight < 100; // Adjust the threshold as needed
+        }
 
+<<<<<<< HEAD
 // Function to load new products
 function loadNewProducts() {
   // Your code to fetch new products goes here
@@ -374,14 +410,25 @@ function loadNewProducts() {
   Getproducts(m[2], m[1], m[3]);
   
 }
+=======
+        // Function to load new products
+        function loadNewProducts() {
+            // Your code to fetch and append new products goes here
+            //   let m = document.location.pathname
+            //   m = m.split('/')
+            //   console.log(m)
+            //   Getproducts(m[2], m[1] , );
+        }
+>>>>>>> beb469b2fdc40db0cf219a3937b9a57bf1959a5b
 
-// Event listener for the scroll event
-window.addEventListener('scroll', function() {
-  if (isNearBottom()) {
-    loadNewProducts();
-  }
-});
+        // Event listener for the scroll event
+        window.addEventListener('scroll', function () {
+            if (isNearBottom()) {
+                loadNewProducts();
+            }
+        });
 
+<<<<<<< HEAD
 // Function to handle the API response and display product IDs
 
 // Fetch products and call handleApiResponse when data is received
@@ -399,6 +446,9 @@ function Getproducts(kind, container, id) {
         
     </script>
 
+=======
+    </script>
+>>>>>>> beb469b2fdc40db0cf219a3937b9a57bf1959a5b
 </body>
 
 </html>

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/css/payment.css">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Akronim' rel='stylesheet'>
-    
+
     <title>Payment</title>
 </head>
 
@@ -18,7 +18,6 @@
                 <div>
                     <p class="logo"> SS </p>
                 </div>
-
                 <div class="header-title">
                     <i class='bx bx-cart'></i> Shopping cart
                 </div>
@@ -47,12 +46,17 @@
                                 <div><i class='bx bx-check-circle' id="checking"></i></div>
                             </a>
                         </button>
+
+                        <button class="method3">
+                            <span>**** **** **** *759</span>
+                            <div><i class='bx bx-check-circle' id="checking"></i></div>
+                        </button>
                     </div>
-                    <form action="#">
+                    <div>
                         <div class="cardholder-name">
-                            <label for="cardholder-name" class="label-default">Name</label>
+                            <label for="cardholder-name" class="label-default">Cardholder name</label>
                             <input type="text" name="cardholder-name" id="cardholder-name" class="input-default"
-                                placeholder="your name">
+                                placeholder="Cardholder name">
                         </div>
                         <div class="mobile-number">
                             <label for="mobile-number" class="label-default"> Mobile number </label>
@@ -66,49 +70,52 @@
                                     <label for="city" class="label-default">City</label>
                                     <input type="text" name="city" id="city" class="input-default" placeholder="City">
                                 </div>
-                        
+
                                 <div class="input-item">
                                     <label for="street" class="label-default">Street</label>
-                                    <input type="text" name="street" id="street" class="input-default" placeholder="Street">
+                                    <input type="text" name="street" id="street" class="input-default"
+                                        placeholder="Street">
                                 </div>
                             </div>
-                        
+
                             <div class="input-group">
                                 <div class="input-item">
                                     <label for="apartment" class="label-default">Apartment Number</label>
-                                    <input type="text" name="apartment" id="apartment" class="input-default" placeholder="Apartment Number">
+                                    <input type="text" name="apartment" id="apartment" class="input-default"
+                                        placeholder="Apartment Number">
                                 </div>
                                 <div class="input-item">
                                     <label for="building" class="label-default">Building Number</label>
-                                    <input type="text" name="building" id="building" class="input-default" placeholder="Building Number">
+                                    <input type="text" name="building" id="building" class="input-default"
+                                        placeholder="Building Number">
                                 </div>
 
-                        <div class="Visa_number">
-                            <label for="Visa_number" class="label-default"> Visa number </label>
-                            <input type="number" min="0" name="Visa_number" id="Visa_number" class="input-default"
-                                placeholder="**** **** **** ****">
-                        </div>
-                        <div class="input-flex">
-                            <div class="expire-date" id="expirydate">
-                                <span class="label-default">Expiration date</span>
-
+                                <div class="Visa_number">
+                                    <label for="Visa_number" class="label-default"> Visa number </label>
+                                    <input type="number" min="0" name="Visa_number" id="Visa_number"
+                                        class="input-default" placeholder="**** **** **** ****">
+                                </div>
                                 <div class="input-flex">
-                                    <input type="number" name="day" placeholder="31" min="1" max="31"
-                                        class="input-default" id="day">
-                                    /
-                                    <input type="number" name="month" placeholder="12" min="1" max="12"
-                                        class="input-default" id="month">
+                                    <div class="expire-date" id="expirydate">
+                                        <span class="label-default">Expiration date</span>
+
+                                        <div class="input-flex">
+                                            <input type="number" name="day" placeholder="31" min="1" max="31"
+                                                class="input-default" id="day">
+                                            /
+                                            <input type="number" name="month" placeholder="12" min="1" max="12"
+                                                class="input-default" id="month">
+                                        </div>
+                                    </div>
+
+                                    <div class="cvv">
+                                        <label for="cvv" class="label-default"> CVV</label>
+                                        <input type="number" name="cvv" id="cvv" min="0" class="input-default"
+                                            placeholder="* * *">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="cvv">
-                                <label for="cvv" class="label-default"> CVV</label>
-                                <input type="number" name="cvv" id="cvv" min="0" class="input-default"
-                                    placeholder="* * *">
                             </div>
-                        </div>
-
-                    </form>
                     <script>
                         class apiFecth {
                             static json(method_, path, callback, stringdata) {
@@ -156,19 +163,24 @@
                 <div class="pay-btn-width" >
                     <!-- onclick="posproduct()" -->
                     <button class="pay-btn" onclick="PostVisa()">
+<<<<<<< HEAD
                         <b >Pay</b> $<span id="payamount" >0</span>
                     </button >
+=======
+                        <b>Pay</b> $<span id="payamount">0</span>
+                    </button>
+>>>>>>> beb469b2fdc40db0cf219a3937b9a57bf1959a5b
                 </div>
 
-            
-            <!-- cart section -->
-            <section class="cart">
-                <div class="cart-border" id="cart-border">
-                    <h2 class="section-heading">Order Product</h2>
-                    <div class="total" id="totalBefor">
-                        <span>Total:</span> <span>$<span id="total">0</span></span>
-                    </div>
-            </section>
+
+                <!-- cart section -->
+                <section class="cart">
+                    <div class="cart-border" id="cart-border">
+                        <h2 class="section-heading">Order Product</h2>
+                        <div class="total" id="totalBefor">
+                            <span>Total:</span> <span>$<span id="total">0</span></span>
+                        </div>
+                </section>
         </div>
     </main>
 
@@ -211,17 +223,15 @@
                             <button id="product-delete-btn">
                                 <i class='bx bxs-trash'></i>
                             </button>
-                        </div>
-                  
-                            `
+                        </div> `
                 this.elementHtml.querySelector("#bx-minus").addEventListener("click", e => {
                     if (this.qty == 1) {
                         return
                     }
                     this.qty--
-                    var total = Number(document.getElementById("total").textContent) - this.price
+                    let total = Number(document.getElementById("total").textContent) - this.price
                     document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) - this.price
-                    document.getElementById("quantity").textContent = this.qty
+                    this.elementHtml.querySelector("#quantity").textContent = this.qty
                     document.getElementById("total").textContent = total
 
                 })
@@ -229,10 +239,10 @@
                     document.getElementById("total").textContent = Number(document.getElementById("total").textContent) + this.price
                     document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) + this.price
                     this.qty++
-                    document.getElementById("quantity").textContent = this.qty
+                    this.elementHtml.querySelector("#quantity").textContent = this.qty
                 })
                 this.elementHtml.querySelector("#product-delete-btn").addEventListener("click", e => {
-                    var total = Number(document.getElementById("total").textContent) - (this.qty * this.price)
+                    let total = Number(document.getElementById("total").textContent) - (this.qty * this.price)
                     document.getElementById("payamount").textContent = Number(document.getElementById("payamount").textContent) - this.price * this.qty
                     document.getElementById("total").textContent = total
                     this.elementHtml.remove()
@@ -261,8 +271,16 @@
 
         }
 
-        if (getCoookie("cart").length != 0) {
-            let cookieCart = JSON.parse(getCoookie("cart"))
+        function getCookieValue(name) {
+            const regex = new RegExp(`(^| )${name}=([^;]+)`)
+            const match = document.cookie.match(regex)
+            if (match) {
+                return match[2]
+            }
+        }
+
+        if (getCookieValue("cart").length != 0) {
+            let cookieCart = JSON.parse(getCookieValue("cart"))
             let cart = document.getElementById("cart-contant")
             for (const cartC in cookieCart) {
                 let NewArry = [];
@@ -270,7 +288,9 @@
                     NewArry[NewArry.length] = new ProductCookie(f);
                 }
                 Order[cartC] = NewArry;
+
             }
+
 
         }
         function setCookie(name, value, days, path) {
@@ -283,10 +303,7 @@
         function deleteCookie(name) {
             setCookie(name, null, null)
         }
-        function getCoookie(name) {
-            const cookie = decodeURIComponent(document.cookie).replace(`${name}=`, "")
-            return cookie
-        }
+
 
 
 

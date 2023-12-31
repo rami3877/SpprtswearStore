@@ -267,6 +267,14 @@ header {
     text-transform: uppercase;
 }
 
+.box-title{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4px;
+    margin-bottom: 2px;
+}
+
 .price-cart {
     display: flex;
     align-items: center;
@@ -327,7 +335,7 @@ header {
     background: #1e1e2a;
 }
 
-.comment-section {
+.comment-section{
     width: 94%;
     padding: 1.5%;
     margin: 0 0 2% 3%;
@@ -335,17 +343,17 @@ header {
     background: #1e1e2a;
 }
 
-#com {
+#com{
     width: fit-content;
     cursor: pointer;
     letter-spacing: 1.5px;
 }
 
-#com:hover {
+#com:hover{
     text-decoration: underline;
 }
 
-.comments div {
+.comments div{
     margin: 10px;
     padding-left: 8px;
     border-radius: 8px;
@@ -353,7 +361,7 @@ header {
     box-shadow: 0 0 30px rgba(0, 0, 0, .5);
 }
 
-.user-name {
+.user-name{
     width: fit-content;
     cursor: pointer;
     display: block;
@@ -362,54 +370,51 @@ header {
     font-weight: 500;
 }
 
-.user-name:hover {
+.user-name:hover{
     color: rgb(26, 26, 255);
 }
 
-.user-comment {
+.user-comment{
     padding-left: 8px;
 }
 
-.comments span {
+.comments span{
     font-weight: 600;
     letter-spacing: 1px;
 }
 
-#send-comment {
+#send-comment{
     cursor: pointer;
 }
-
-#send-comment:hover {
+#send-comment:hover{
     color: #c8815f;
 }
 
-#comment-box {
+#comment-box{
     background: transparent;
     color: #fff;
 }
-
-.comment-tail {
+.comment-tail{
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.comment-tail i {
+.comment-tail i{
     cursor: pointer;
     margin-right: 1.5rem;
     font-size: large;
 }
-
-.comment-tail i:hover {
+.comment-tail i:hover{
     scale: 1.2;
     color: #c8815f;
 }
 
-.comments {
+.comments{
     position: fixed;
 }
 
-.comments.active {
+.comments.active{
     position: relative;
     transition: .85s cubic-bezier(.075, .82, .165, 1);
 }
@@ -506,16 +511,4 @@ header {
     .cart {
         width: 100%;
     }
-}
-
-.flex-details {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.colortest {
-
-    width: 11px;
-    height: 11px;
 }

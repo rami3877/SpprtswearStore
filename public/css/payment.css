@@ -101,17 +101,17 @@ h1{
 .payment-method{
     display: flex;
     align-items: center;
-    gap: 40px;
+    justify-content: space-between;
     margin-bottom: 25px;
 }
 .payment-method button:active{
-    scale: .95;
+    scale: .97;
 }
 .method{
     display: flex;
     justify-content: space-between;
     padding: 3px 2%;
-    width: 50%;
+    width: 35%;
     box-shadow: 1px 1px 1.8px 1px var(--main-color);
     border-radius: 5.5px;
     font-size: large;
@@ -120,7 +120,7 @@ h1{
     color: var(--text-color);
 }
 .method2{
-    width: 50%;
+    width: 35%;
     box-shadow: 1px 1px 1.8px 1px var(--main-color);
     border-radius: 5.5px;
     font-size: large;
@@ -132,6 +132,17 @@ h1{
     justify-content: space-between;
     padding: 3px 2%;
     color: var(--text-color);
+}
+.method3{
+    display: flex;
+    justify-content: space-between;
+    width: 25%;
+    padding: 5px 3px 0 6px;
+    box-shadow: 1px 1px 1.8px 1px var(--main-color);
+    border-radius: 5.5px;
+    font-size: large;
+    font-weight: 500;
+    letter-spacing: 1px;
 }
 .method i{
     font-size: larger;
@@ -304,6 +315,7 @@ h1{
     }
     .payment-method button{
         width: 100%;
+        margin-bottom: 10px;
     }
     .expire-date,
     .cvv{
