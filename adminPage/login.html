@@ -18,29 +18,35 @@
     </header>
 
         <!-- login form -->
-        <div class="form-login">
-            <h2>administrator Login</h2>
-            <form action="#">
-                <div class="input-box">
-                    <label for="username"> username </label>
-                    <input id="username" type="text" required>
-                    <i class='bx bxs-envelope' ></i>
+        <div class="home-page">
+            <div class="trick-box">
+                <div class="trick">
+                    <h2>Administrator Login</h2>
+                    <div class="form-login">
+                        <form action="#">
+                            <div class="input-box">
+                                <label for="username"> username </label>
+                                <input id="username" type="text" required>
+                                <i class='bx bxs-envelope' ></i>
+                            </div>
+                            <div class="input-box">
+                                <label for="password">Password</label>
+                                <input id="password" type="password" required>
+                                <i class='bx bxs-lock-alt' ></i>
+                            </div>
+                            <div class="rememberme">
+                                <label>
+                                    <input type="checkbox"> Remember me
+                                </label>
+                                <input type="reset" value="Clear">
+                            </div>
+                            <div class="btn">
+                                <button type="submit"> <i class='bx bx-log-in'></i>Login </button>  
+                            </div>
+                        </form>
+                    </div>
                 </div>
-                <div class="input-box">
-                    <label for="password">Password</label>
-                    <input id="password" type="password" required>
-                    <i class='bx bxs-lock-alt' ></i>
-                </div>
-                <div class="rememberme">
-                    <label>
-                        <input type="checkbox"> Remember me
-                    </label>
-                    <input type="reset" value="Clear">
-                </div>
-                <div class="btn">
-                    <button type="submit"> Login </button>  
-                </div>
-            </form>
+            </div>
         </div>
 </body>
 </html>
